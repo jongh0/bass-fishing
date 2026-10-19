@@ -89,7 +89,7 @@
       <button type="button" class="tab-btn" data-target="tab-waterlevel">🌊 실시간 수위 · 취수탑 계측정보 (RAWRIS)</button>
       <button type="button" class="tab-btn" data-target="tab-guide">📘 물색별 컬러 · 싱커 환산 · 수온 사전</button>
       <button type="button" class="tab-btn" data-target="tab-weather">🌤️ 기압 · 월령 · 피딩타임 정밀 브리핑</button>
-      <button type="button" class="tab-btn" data-target="tab-log">📓 나만의 현장 조행 기록장</button>
+      <!-- [추후 재활성화 가능] <button type="button" class="tab-btn" data-target="tab-log">📓 나만의 현장 조행 기록장</button> -->
     </nav>
 
     <!-- ================= TAB 1: 메인 루어 시뮬레이터 ================= -->
@@ -493,7 +493,7 @@
       </div>
     </section>
 
-    <!-- ================= TAB 5: 나만의 현장 조행 기록장 ================= -->
+    <!-- ================= TAB 5: 나만의 현장 조행 기록장 (추후 재활성화 가능하도록 보존) =================
     <section id="tab-log" class="tab-section">
       <div class="guide-card">
         <h3>📓 나만의 필드 히트 루어 & 환경(수위·기압) 기록장</h3>
@@ -523,6 +523,7 @@
         <div class="log-card-list" id="catchLogList"></div>
       </div>
     </section>
+    ======================================================================================== -->
   </div>
 
   <!-- 모바일 전용 하단 고정 네비게이션 바 -->
@@ -543,15 +544,17 @@
       <span class="m-icon">🌤️</span>
       <span>기압·물때</span>
     </button>
+    <!-- [추후 재활성화 가능]
     <button type="button" class="m-nav-item" data-target="tab-log">
       <span class="m-icon">📓</span>
       <span>조행기록</span>
     </button>
+    -->
   </nav>
 
-  <script src="js/water-levels-data.js?v=20261019_5"></script>
-  <script src="js/lures-data.js?v=20261019_5"></script>
-  <script src="js/weather-api.js?v=20261019_5"></script>
-  <script src="js/app.js?v=20261019_5"></script>
+  <script src="js/water-levels-data.js?v=20261019_6"></script>
+  <script src="js/lures-data.js?v=20261019_6"></script>
+  <script src="js/weather-api.js?v=20261019_6"></script>
+  <script src="js/app.js?v=20261019_6"></script>
 </body>
 </html>
