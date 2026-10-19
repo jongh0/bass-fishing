@@ -346,7 +346,7 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
       const spot = KOREA_SPOTS.find(s => s.id === spotId) || defaultSpot;
       lat = spot.lat;
       lon = spot.lon;
-      customName = spot.name.replace(/^[^\s]+\s/, "").replace(/\s*\(·?.*$/, "");
+      customName = spot.name.replace(/^[📍🌊🏞️]\s*/, "");
       equipNo = spot.equipNo || 4140;
     }
 
