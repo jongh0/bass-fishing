@@ -1,12 +1,12 @@
 // === 1. 국내 대표 배스 필드 12곳 프리셋 데이터 ===
 const KOREA_SPOTS = [
   { id: "gps", name: "📍 내 현재 위치 (GPS 실시간)", lat: null, lon: null, region: "GPS 자동 탐색" },
+  { id: "asan", name: "충남 아산호 (신정호/석축/연안)", lat: 36.9012, lon: 126.8834, region: "충청남도 아산시 영인면" },
   { id: "yedang", name: "충남 예산 예당호 (국민 배스 성지)", lat: 36.6388, lon: 126.8015, region: "충청남도 예산군 응봉면" },
   { id: "daecheong", name: "대전/충북 대청호 (빅배스/브레이크)", lat: 36.4775, lon: 127.4808, region: "대전광역시 동구 / 청주시" },
   { id: "andong", name: "경북 안동호 (딥크랭킹/교각/석축)", lat: 36.6056, lon: 128.8124, region: "경상북도 안동시 와룡면" },
   { id: "hapcheon", name: "경남 합천호 (급심/수몰나무 커버)", lat: 35.5653, lon: 128.0268, region: "경상남도 합천군 대병면" },
   { id: "pyeongtaek", name: "경기/충남 평택호 (석축/수초/보트)", lat: 36.9355, lon: 126.9421, region: "경기도 평택시 현덕면" },
-  { id: "asan", name: "충남 아산호 (신정호/석축/연안)", lat: 36.9012, lon: 126.8834, region: "충청남도 아산시 영인면" },
   { id: "daeho", name: "충남 당진 대호만 (수초/갈대/런커)", lat: 36.9885, lon: 126.5262, region: "충청남도 당진시 정미면" },
   { id: "jangseong", name: "전남 장성호 (남녘 빅배스 성지)", lat: 35.3672, lon: 126.8195, region: "전라남도 장성군 북하면" },
   { id: "naju", name: "전남 나주호 (중층/석축/수몰나무)", lat: 34.9614, lon: 126.8542, region: "전라남도 나주시 다도면" },
