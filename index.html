@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="theme-color" content="#070c17" />
+  <meta name="description" content="실시간 위치·날씨·기압·수온 연동 사계절 & 시간대별 배스 루어 택티컬 시뮬레이터 및 필드 가이드" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>🎣 배스 택티컬 프로 v3.0 — 실시간 기상·기압 & 루어 시뮬레이터</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- 1. 상단 타이틀 헤더 -->
+    <header class="app-header">
+      <div class="title-group">
+        <h1>🎣 사계절 & 실시간 기상 연동 배스 택티컬 시뮬레이터 v3.0</h1>
+        <p>실시간 GPS 날씨 · 기압 추이 · 월령 · 수온 · 물색에 따른 19종 하드/와이어/소프트베이트 완벽 매칭 & 수중 액션</p>
+      </div>
+      <div class="badge-row">
+        <span class="cat-badge cat-hard">● 하드베이트 (7종)</span>
+        <span class="cat-badge cat-wire">● 와이어베이트 (3종)</span>
+        <span class="cat-badge cat-soft">● 소프트베이트 채비 (9종)</span>
+      </div>
+    </header>
+
+    <!-- 2. 실시간 위치 · 날씨 · 기압 · 배스 활성도(Bite Index) 배너 -->
+    <section class="live-weather-banner">
+      <div class="weather-top-bar">
+        <div class="location-selector-group">
+          <select id="spotSelect" class="spot-select" aria-label="배스 포인트 선택"></select>
+          <button type="button" class="btn-gps" id="btnGpsLocate">📍 내 현재 위치(GPS)</button>
+          <button type="button" class="btn-apply-live" id="btnApplyLive">⚡ 실시간 날씨·수온 시뮬레이터 자동 반영</button>
+        </div>
+        <div class="live-status-pill">
+          <span class="pulse-dot"></span>
+          <span id="liveStatusText">실시간 기상 데이터 연결 중...</span>
+        </div>
+      </div>
+
+      <div class="weather-metrics-grid">
+        <div class="metric-card">
+          <span class="m-label">🌡️ 현재 기온 / 날씨</span>
+          <span class="m-val" id="mAirTemp">--°C</span>
+          <span class="m-sub" id="mAirSub">실시간 조회 중</span>
+        </div>
+        <div class="metric-card">
+          <span class="m-label">💧 실시간 추정 수온</span>
+          <span class="m-val" id="mWaterTemp">--°C</span>
+          <span class="m-sub" id="mWaterSub">계절 열용량 보정</span>
+        </div>
+        <div class="metric-card">
+          <span class="m-label">💨 현재 풍속 / 수면</span>
+          <span class="m-val" id="mWind">-- m/s</span>
+          <span class="m-sub" id="mWindSub">풍향 분석 중</span>
+        </div>
+        <div class="metric-card">
+          <span class="m-label">🧭 해면 기압 (부레 활성)</span>
+          <span class="m-val" id="mPressure">---- hPa</span>
+          <span class="m-sub" id="mPressureSub">3시간 기압 추이</span>
+        </div>
+        <div class="metric-card">
+          <span class="m-label">🌅 일출 / 일몰 (골든타임)</span>
+          <span class="m-val" id="mSunTime">--:-- / --:--</span>
+          <span class="m-sub" id="mSunSub">음력 월령 계산 중</span>
+        </div>
+        <div class="metric-card" style="border-color: rgba(34, 197, 94, 0.45); background: rgba(34, 197, 94, 0.06);">
+          <span class="m-label">🔥 실시간 배스 활성도 지수</span>
+          <span class="m-val" id="mBiteScore" style="color:#4ade80;">--점</span>
+          <span class="m-sub" id="mBiteSub">기압·수온·조도 종합</span>
+        </div>
+      </div>
+
+      <div class="bite-tactic-strip" id="livePressureTactic">
+        <span>📡 실시간 기압 변화와 일출·일몰 데이터를 바탕으로 오늘의 필드 공략 브리핑을 계산합니다...</span>
+      </div>
+    </section>
+
+    <!-- 3. PC 상단 네비게이션 탭 바 -->
+    <nav class="nav-tabs-bar" aria-label="주요 기능 탭">
+      <button type="button" class="tab-btn active" data-target="tab-simulator">🎯 루어 매칭 & 수중 시뮬레이터</button>
+      <button type="button" class="tab-btn" data-target="tab-guide">📘 물색별 컬러 · 싱커 환산 · 수온 사전</button>
+      <button type="button" class="tab-btn" data-target="tab-weather">🌤️ 기압 · 월령 · 피딩타임 정밀 브리핑</button>
+      <button type="button" class="tab-btn" data-target="tab-log">📓 나만의 현장 조행 기록장</button>
+    </nav>
+
+    <!-- ================= TAB 1: 메인 루어 시뮬레이터 ================= -->
+    <section id="tab-simulator" class="tab-section active">
+      <!-- 모바일 전용 필터 요약/접기 바 -->
+      <div class="controls-header-mobile" id="mobileControlToggle">
+        <div>
+          <strong style="font-size:0.86rem; color:#f8fafc;">🎛️ 필드 조건 설정: </strong>
+          <span class="summary-chips" id="mobileControlSummary">16°C · 새벽/해질녘 · 보통 · 석축</span>
+        </div>
+        <span id="mobileToggleIcon" style="font-size:0.78rem; color:#94a3b8; font-weight:700;">▼ 상세 조절</span>
+      </div>
+
+      <!-- 7대 환경 컨트롤 그리드 -->
+      <div class="controls-grid collapsed-mobile" id="controlsGrid">
+        <!-- 1. 계절 프리셋 -->
+        <div class="control-box">
+          <div class="control-label">
+            <span>1. 계절 (Season Preset)</span>
+            <span class="val-highlight" id="seasonLabel">가을 (Autumn)</span>
+          </div>
+          <div class="btn-group" id="seasonGroup">
+            <button type="button" class="btn-toggle" data-season="spring">🌸 봄</button>
+            <button type="button" class="btn-toggle" data-season="summer">☀️ 여름</button>
+            <button type="button" class="btn-toggle active" data-season="autumn">🍁 가을</button>
+            <button type="button" class="btn-toggle" data-season="winter">❄️ 겨울</button>
+          </div>
+        </div>
+
+        <!-- 2. 출조 시간대 -->
+        <div class="control-box">
+          <div class="control-label">
+            <span>2. 출조 시간대 (Time of Day)</span>
+            <span class="val-highlight" id="timeLabel">새벽/해질녘 (피딩)</span>
+          </div>
+          <div class="btn-group" id="timeGroup">
+            <button type="button" class="btn-toggle active" data-time="dawn_dusk">🌅 새벽/해질녘</button>
+            <button type="button" class="btn-toggle" data-time="midday">☀️ 한낮(직사광)</button>
+            <button type="button" class="btn-toggle" data-time="night">🌙 야간(Night)</button>
+          </div>
+        </div>
+
+        <!-- 3. 수온 슬라이더 -->
+        <div class="control-box">
+          <div class="control-label">
+            <span>3. 현재 수온 (Water Temp)</span>
+            <span class="val-highlight" id="tempLabel">16°C</span>
+          </div>
+          <input type="range" id="tempSlider" min="4" max="30" step="1" value="16" aria-label="현재 수온 조절" />
+          <div class="range-ticks">
+            <span>4°C(동절기)</span>
+            <span>12°C</span>
+            <span>18°C(최적)</span>
+            <span>24°C</span>
+            <span>30°C(한여름)</span>
+          </div>
+        </div>
+
+        <!-- 4. 바람 / 수면 상태 -->
+        <div class="control-box">
+          <div class="control-label">
+            <span>4. 바람 & 수면 파도</span>
+            <span class="val-highlight" id="windLabel">보통 (잔파도)</span>
+          </div>
+          <div class="btn-group" id="windGroup">
+            <button type="button" class="btn-toggle" data-wind="calm">장판 / 무풍</button>
+            <button type="button" class="btn-toggle active" data-wind="moderate">보통 (잔파도)</button>
+            <button type="button" class="btn-toggle" data-wind="strong">강풍 / 파도</button>
+          </div>
+        </div>
+
+        <!-- 5. 물색 / 탁도 (NEW) -->
+        <div class="control-box">
+          <div class="control-label">
+            <span>5. 물색 & 탁도 (Water Clarity)</span>
+            <span class="val-highlight" id="clarityLabel">보통 (녹조/수초물)</span>
+          </div>
+          <div class="btn-group" id="clarityGroup">
+            <button type="button" class="btn-toggle" data-clarity="clear">💧 맑음(Clear)</button>
+            <button type="button" class="btn-toggle active" data-clarity="stained">🌿 보통(Stained)</button>
+            <button type="button" class="btn-toggle" data-clarity="muddy">🟤 탁수(흙탕물)</button>
+          </div>
+        </div>
+
+        <!-- 6. 포인트 지형 -->
+        <div class="control-box">
+          <div class="control-label">
+            <span>6. 핵심 지형 & 커버</span>
+            <span class="val-highlight" id="structLabel">석축 / 브레이크라인</span>
+          </div>
+          <div class="btn-group" id="structGroup">
+            <button type="button" class="btn-toggle" data-struct="shallow_weed">수초/연밭</button>
+            <button type="button" class="btn-toggle active" data-struct="rock_slope">석축/브레이크</button>
+            <button type="button" class="btn-toggle" data-struct="heavy_cover">수몰나무/커버</button>
+            <button type="button" class="btn-toggle" data-struct="deep_open">딥채널/오픈</button>
+          </div>
+        </div>
+
+        <!-- 7. 카테고리 & BFS 필터 -->
+        <div class="control-box">
+          <div class="control-label">
+            <span>7. 베이트 분류 & BFS 모드</span>
+            <span class="val-highlight" id="tackleLabel">전체 (19종)</span>
+          </div>
+          <div class="btn-group" id="catFilterGroup" style="margin-bottom: 6px;">
+            <button type="button" class="btn-toggle active" data-cat="ALL">전체</button>
+            <button type="button" class="btn-toggle" data-cat="HARD">하드</button>
+            <button type="button" class="btn-toggle" data-cat="WIRE">와이어</button>
+            <button type="button" class="btn-toggle" data-cat="SOFT">소프트(웜)</button>
+          </div>
+          <div class="btn-group" id="tackleGroup">
+            <button type="button" class="btn-toggle active" data-tackle="ALL">올라운드 태클</button>
+            <button type="button" class="btn-toggle" data-tackle="BFS">⚡ BFS 피네스 전용 필터</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 시뮬레이터 좌우 그리드 -->
+      <div class="main-grid">
+        <!-- 좌측: 2D 수중 캔버스 + 상세 택티컬 카드 -->
+        <div class="visualizer-card">
+          <div class="canvas-header">
+            <h2>🌊 실시간 수중 조도 · 물색 · 루어 액션 시뮬레이션</h2>
+            <span style="font-size:0.78rem; color:var(--text-muted);">랭킹에서 루어를 터치하면 수중 궤적이 즉시 변경됩니다</span>
+          </div>
+
+          <div class="canvas-wrapper">
+            <canvas id="waterCanvas" width="760" height="350"></canvas>
+          </div>
+
+          <div class="detail-panel" id="detailPanel"></div>
+        </div>
+
+        <!-- 우측: 맞춤 루어 랭킹 리스트 -->
+        <div class="ranking-card">
+          <div class="ranking-header">
+            <h2>🏆 현재 필드 & 날씨 맞춤 랭킹</h2>
+            <span style="font-size:0.8rem; color:var(--accent); font-weight:700;" id="resultCountLabel">총 19개 루어 분석됨</span>
+          </div>
+          <div class="lure-list" id="lureListContainer"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: 물색별 컬러 · 싱커 환산 · 수온 사전 ================= -->
+    <section id="tab-guide" class="tab-section">
+      <div class="guide-grid">
+        <!-- 1. 물색별 추천 컬러 팔레트 -->
+        <div class="guide-card">
+          <h3>🎨 물색(Water Clarity)별 필승 루어/웜 컬러 가이드</h3>
+          <div id="dynamicColorGuideBox"></div>
+        </div>
+
+        <!-- 2. 싱커 무게 환산표 (oz <-> g) -->
+        <div class="guide-card">
+          <h3>⚖️ 배스 싱커(봉돌) 무게 환산 & 주력 채비 치트시트</h3>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+            현장에서 온스(oz)와 그램(g) 표기가 헷갈릴 때 즉시 확인하세요.
+          </p>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>온스 (oz)</th>
+                <th>그램 (g)</th>
+                <th>대표 활용 채비 & 루어</th>
+              </tr>
+            </thead>
+            <tbody id="sinkerTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- 3. 수온 구간별 배스 생태 & 공략 패턴 -->
+        <div class="guide-card" style="grid-column: 1 / -1;">
+          <h3>🌡️ 사계절 수온 구간별 배스 포지션 & 핵심 전술</h3>
+          <div class="pattern-list" id="waterTempPatternsList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: 기압 · 월령 · 피딩타임 정밀 브리핑 ================= -->
+    <section id="tab-weather" class="tab-section">
+      <div class="guide-grid">
+        <div class="guide-card" style="grid-column: 1 / -1;">
+          <h3>📡 실시간 기압(부레 압력) · 월령(물때) · 일출일몰 정밀 분석</h3>
+          <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:14px;">
+            상단에서 선택한 필드(또는 내 GPS 위치)의 실시간 기상 데이터를 바탕으로 분석한 오늘의 배스 움직임입니다.
+          </p>
+          <div id="deepWeatherAnalysisBox"></div>
+        </div>
+
+        <div class="guide-card">
+          <h3>🧭 왜 배스 낚시에서 '기압(hPa)'이 중요할까요?</h3>
+          <div class="pattern-list">
+            <div class="pattern-item" style="border-left-color:#22c55e;">
+              <div class="p-head"><span>📉 저기압 접근 / 기압 하락기 (1005~1013hPa)</span></div>
+              <div class="p-desc">물속 압력이 낮아져 배스의 부레가 편안해지고 중층·연안 쉘로우로 떠올라 공격적으로 먹이 활동을 합니다. 흐리거나 비 오기 직전이 최고의 대박 찬스입니다.</div>
+            </div>
+            <div class="pattern-item" style="border-left-color:#f59e0b;">
+              <div class="p-head"><span>📈 고기압 상승 / 맑고 일교차 큰 날 (1020hPa+)</span></div>
+              <div class="p-desc">부레가 팽창해 배스가 불편함을 느끼고 수몰나무, 석축 구멍, 깊은 브레이크라인 바닥에 배를 깔고 움직이지 않습니다. 폴링이 느린 피네스 채비로 눈앞에 떨어뜨려야 합니다.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-card">
+          <h3>🪢 라인(Line) 선택 & 직관적 매듭 핵심 요약</h3>
+          <div class="pattern-list">
+            <div class="pattern-item">
+              <div class="p-head"><span>카본 라인 (Fluorocarbon) — 침강성·고감도</span></div>
+              <div class="p-desc">비중(1.78)이 물보다 무거워 가라앉으며 쓸림에 강합니다. BFS(5~8lb), 바닥 채비(프리리그/다운샷/러버지그) 및 크랭크/바이브 등 대부분의 배스 루어 주력 라인입니다.</div>
+            </div>
+            <div class="pattern-item">
+              <div class="p-head"><span>합사 (PE Braided) & 나일론 (Mono) — 부력·탑워터</span></div>
+              <div class="p-desc">물에 뜨는 성질이 있어 포퍼·펜슬베이트·버즈베이트·프로그 등 수면(Topwater) 루어 액션을 살리는 데 필수입니다. 헤비 커버 프로그는 합사 3~4호 직결을 권장합니다.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: 나만의 현장 조행 기록장 ================= -->
+    <section id="tab-log" class="tab-section">
+      <div class="guide-card">
+        <h3>📓 나만의 필드 히트 루어 & 환경 기록장</h3>
+        <p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:14px;">
+          현장에서 배스를 히트했을 때 기록해 두면 현재 위치, 기온, 추정 수온, 해면 기압, 풍속이 스마트폰/PC 브라우저에 자동 저장됩니다.
+        </p>
+
+        <div class="log-form-grid">
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">히트 루어 / 채비</label>
+            <select id="logLureInput" class="log-input"></select>
+          </div>
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">배스 사이즈 (cm)</label>
+            <input type="number" id="logSizeInput" class="log-input" value="40" min="10" max="75" placeholder="예: 45" />
+          </div>
+          <div>
+            <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">포인트 특징 / 컬러 메모</label>
+            <input type="text" id="logMemoInput" class="log-input" placeholder="예: 수몰나무 그늘 그린펌킨 폴링 바이트" />
+          </div>
+        </div>
+
+        <button type="button" class="btn-apply-live" id="btnAddCatchLog" style="width:100%; justify-content:center; padding:11px;">
+          ➕ 현재 날씨·기압·루어 정보로 조행 기록 저장하기
+        </button>
+
+        <div class="log-card-list" id="catchLogList"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 모바일 전용 하단 고정 네비게이션 바 -->
+  <nav class="mobile-bottom-nav" aria-label="모바일 하단 메뉴">
+    <button type="button" class="m-nav-item active" data-target="tab-simulator">
+      <span class="m-icon">🎯</span>
+      <span>시뮬레이터</span>
+    </button>
+    <button type="button" class="m-nav-item" data-target="tab-guide">
+      <span class="m-icon">📘</span>
+      <span>컬러·채비표</span>
+    </button>
+    <button type="button" class="m-nav-item" data-target="tab-weather">
+      <span class="m-icon">🌤️</span>
+      <span>기압·물때</span>
+    </button>
+    <button type="button" class="m-nav-item" data-target="tab-log">
+      <span class="m-icon">📓</span>
+      <span>조행기록</span>
+    </button>
+  </nav>
+
+  <script src="js/lures-data.js"></script>
+  <script src="js/weather-api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

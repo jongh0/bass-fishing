@@ -1,0 +1,10 @@
+{
+  "name": "배스 택티컬 프로 v3.0 — 실시간 기상·기압 & 루어 시뮬레이터",
+  "short_name": "배스택티컬",
+  "description": "실시간 위치·날씨·기압·수온 연동 사계절 배스 루어 택티컬 시뮬레이터",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#070c17",
+  "theme_color": "#070c17",
+  "orientation": "any"
+}
