@@ -1,23 +1,23 @@
 // === 1. 국내 대표 배스 필드 프리셋 데이터 (농어촌공사 RAWRIS 실시간 수위 equipNo 연동 · GPS/아산호 우선 후 수원 기준 거리순 정렬) ===
 const KOREA_SPOTS = [
-  { id: "gps", name: "📍 내 현재 위치 (GPS 실시간 + 인근 저수지 수위)", lat: null, lon: null, equipNo: null, region: "GPS 자동 탐색" },
-  { id: "asan", name: "🌊 충남 아산호 (신정호/석축/연안 · 수위연동)", lat: 36.9012, lon: 126.8834, equipNo: 4140, region: "충청남도 아산시 영인면 / 평택시" },
-  { id: "giheung", name: "🌊 경기 용인 기흥(신갈)저수지 (수원 ~7km · 수위연동)", lat: 37.2350, lon: 127.0970, equipNo: 897, region: "경기도 용인시 기흥구 공세동" },
-  { id: "idong", name: "🌊 경기 용인 이동저수지/송전지 (수원 ~22km · 수위연동)", lat: 37.1107, lon: 127.1845, equipNo: 899, region: "경기도 용인시 처인구 이동읍" },
-  { id: "misan", name: "🌊 경기 안성 미산저수지 (수원 ~25km · 수위연동)", lat: 37.1310, lon: 127.2570, equipNo: 913, region: "경기도 안성시 양성면 미산리" },
-  { id: "gosam", name: "🌊 경기 안성 고삼저수지 (수원 ~30km · 수위연동)", lat: 37.0818, lon: 127.2719, equipNo: 920, region: "경기도 안성시 고삼면 봉산리" },
-  { id: "pyeongtaek", name: "🌊 경기/충남 평택호 (수원 ~40km · 수위연동)", lat: 36.9138, lon: 126.9096, equipNo: 4140, region: "경기도 평택시 현덕면 권관리" },
-  { id: "sapgyo", name: "🌊 충남 당진/아산 삽교호 (수원 ~45km · 수위연동)", lat: 36.8876, lon: 126.8286, equipNo: 4139, region: "충청남도 당진시 신평면 운정리" },
-  { id: "daeho", name: "🌊 충남 당진 대호만 (수원 ~59km · 수위연동)", lat: 36.9990, lon: 126.4553, equipNo: 4318, region: "충청남도 당진시 정미면" },
-  { id: "yedang", name: "🌊 충남 예산 예당호 (수원 ~73km · 수위연동)", lat: 36.6290, lon: 126.8020, equipNo: 1081, region: "충청남도 예산군 응봉면" },
-  { id: "daecheong", name: "대전/충북 대청호 (수원 ~96km · 빅배스/브레이크)", lat: 36.4775, lon: 127.4808, equipNo: null, region: "대전광역시 동구 / 청주시" },
-  { id: "tapjeong", name: "🌊 충남 논산 탑정호 (수원 ~122km · 수위연동)", lat: 36.1760, lon: 127.1810, equipNo: 1046, region: "충청남도 논산시 부적면" },
-  { id: "busa", name: "🌊 충남 보령/서천 부사호 (수원 ~127km · 수위연동)", lat: 36.1907, lon: 126.5582, equipNo: 3928, region: "충청남도 보령시 웅천읍" },
-  { id: "andong", name: "경북 안동호 (수원 ~175km · 딥크랭킹/석축)", lat: 36.6056, lon: 128.8124, equipNo: null, region: "경상북도 안동시 와룡면" },
-  { id: "hapcheon", name: "경남 합천호 (수원 ~209km · 급심/수몰나무)", lat: 35.5653, lon: 128.0268, equipNo: null, region: "경상남도 합천군 대병면" },
-  { id: "jangseong", name: "🌊 전남 장성호 (수원 ~209km · 수위연동)", lat: 35.3880, lon: 126.8390, equipNo: 1311, region: "전라남도 장성군 북하면" },
-  { id: "damyang", name: "🌊 전남 담양호 (수원 ~210km · 수위연동)", lat: 35.3777, lon: 127.0117, equipNo: 1212, region: "전라남도 담양군 용면" },
-  { id: "naju", name: "🌊 전남 나주호 (수원 ~256km · 수위연동)", lat: 34.9637, lon: 126.8450, equipNo: 1206, region: "전라남도 나주시 다도면" }
+  { id: "gps", name: "📍 내 현재 위치 (GPS 실시간 탐색)", lat: null, lon: null, equipNo: null, region: "GPS 자동 탐색" },
+  { id: "asan", name: "🌊 충남 아산호 (평택호 · 수위연동)", lat: 36.9012, lon: 126.8834, equipNo: 4140, region: "충청남도 아산시 영인면 / 평택시" },
+  { id: "giheung", name: "🌊 용인 기흥저수지 (수원 7km · 수위)", lat: 37.2350, lon: 127.0970, equipNo: 897, region: "경기도 용인시 기흥구 공세동" },
+  { id: "idong", name: "🌊 용인 이동저수지 (수원 22km · 수위)", lat: 37.1107, lon: 127.1845, equipNo: 899, region: "경기도 용인시 처인구 이동읍" },
+  { id: "misan", name: "🌊 안성 미산저수지 (수원 25km · 수위)", lat: 37.1310, lon: 127.2570, equipNo: 913, region: "경기도 안성시 양성면 미산리" },
+  { id: "gosam", name: "🌊 안성 고삼저수지 (수원 30km · 수위)", lat: 37.0818, lon: 127.2719, equipNo: 920, region: "경기도 안성시 고삼면 봉산리" },
+  { id: "pyeongtaek", name: "🌊 경기 평택호 (수원 40km · 수위)", lat: 36.9138, lon: 126.9096, equipNo: 4140, region: "경기도 평택시 현덕면 권관리" },
+  { id: "sapgyo", name: "🌊 당진 삽교호 (수원 45km · 수위)", lat: 36.8876, lon: 126.8286, equipNo: 4139, region: "충청남도 당진시 신평면 운정리" },
+  { id: "daeho", name: "🌊 당진 대호만 (수원 59km · 수위)", lat: 36.9990, lon: 126.4553, equipNo: 4318, region: "충청남도 당진시 정미면" },
+  { id: "yedang", name: "🌊 예산 예당호 (수원 73km · 수위)", lat: 36.6290, lon: 126.8020, equipNo: 1081, region: "충청남도 예산군 응봉면" },
+  { id: "daecheong", name: "🏞️ 대전 대청호 (수원 96km · 댐)", lat: 36.4775, lon: 127.4808, equipNo: null, region: "대전광역시 동구 / 청주시" },
+  { id: "tapjeong", name: "🌊 논산 탑정호 (수원 122km · 수위)", lat: 36.1760, lon: 127.1810, equipNo: 1046, region: "충청남도 논산시 부적면" },
+  { id: "busa", name: "🌊 보령 부사호 (수원 127km · 수위)", lat: 36.1907, lon: 126.5582, equipNo: 3928, region: "충청남도 보령시 웅천읍" },
+  { id: "andong", name: "🏞️ 경북 안동호 (수원 175km · 댐)", lat: 36.6056, lon: 128.8124, equipNo: null, region: "경상북도 안동시 와룡면" },
+  { id: "hapcheon", name: "🏞️ 경남 합천호 (수원 209km · 댐)", lat: 35.5653, lon: 128.0268, equipNo: null, region: "경상남도 합천군 대병면" },
+  { id: "jangseong", name: "🌊 전남 장성호 (수원 209km · 수위)", lat: 35.3880, lon: 126.8390, equipNo: 1311, region: "전라남도 장성군 북하면" },
+  { id: "damyang", name: "🌊 전남 담양호 (수원 210km · 수위)", lat: 35.3777, lon: 127.0117, equipNo: 1212, region: "전라남도 담양군 용면" },
+  { id: "naju", name: "🌊 전남 나주호 (수원 256km · 수위)", lat: 34.9637, lon: 126.8450, equipNo: 1206, region: "전라남도 나주시 다도면" }
 ];
 
 // === 2. 19종 배스 루어 & 채비 완벽 데이터베이스 (물색/훅/싱커/시간대 확장) ===

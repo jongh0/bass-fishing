@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>🎣 배스 택티컬 프로 v3.5 — 실시간 기상·수위(RAWRIS) & 루어 시뮬레이터</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="css/style.css?v=20261019_4" />
+  <link rel="stylesheet" href="css/style.css?v=20261019_5" />
 </head>
 <body>
   <div class="container">
@@ -32,7 +32,7 @@
         <div class="location-selector-group">
           <select id="spotSelect" class="spot-select" aria-label="배스 포인트 선택"></select>
           <button type="button" class="btn-gps" id="btnGpsLocate">📍 내 현재 위치(GPS)</button>
-          <button type="button" class="btn-apply-live" id="btnApplyLive">⚡ 실시간 날씨·수위 시뮬레이터 자동 반영</button>
+          <button type="button" class="btn-apply-live" id="btnApplyLive">⚡ 실시간 기상·수위 반영</button>
         </div>
         <div class="live-status-pill">
           <span class="pulse-dot"></span>
@@ -256,8 +256,8 @@
             <span class="rawris-branch" id="rwBranchSub">경기 · 평택 | 담수호/저수지 실시간 계측정보</span>
           </div>
           <div class="rawris-header-right">
-            <button type="button" class="btn-rawris-tab active" id="btnShowCustomTower">📊 계측정보 요약 & 취수탑 그래픽</button>
-            <button type="button" class="btn-rawris-tab" id="btnShowLiveIframe">🌐 농어촌공사 실시간 그래프 원본 보기</button>
+            <button type="button" class="btn-rawris-tab active" id="btnShowCustomTower">📊 취수탑 & 계측요약</button>
+            <button type="button" class="btn-rawris-tab" id="btnShowLiveIframe">🌐 농어촌공사 수위 그래프</button>
           </div>
         </div>
 
@@ -395,7 +395,7 @@
           </div>
 
           <!-- 배스 수위 변동 전술 브리핑 박스 -->
-          <div style="padding: 0 20px 18px 20px;">
+          <div style="padding: 0 14px 16px 14px;">
             <div class="tactical-box" id="rwTacticalBriefingBox" style="margin:0;">
               <strong>🌊 현재 수위 변동 기반 배스 포지션 & 공략 전술</strong>
               <span id="rwTacticalText"><strong style="color:#22c55e; display:inline;">[📈 오름수위 (+0.05m / +1.2%)]</strong> 전일 대비 수위가 오르는 '오름수위' 찬스입니다! 새롭게 물에 잠긴 연안 육초대·갈대·수초 엣지로 베이트피쉬와 빅배스가 대거 올라붙습니다. 쉘로우 무빙 루어(스피너베이트, 채터베이트, 쉘로우 크랭크)와 프로그/노싱커로 연안을 적극 공략하세요!</span>
@@ -404,16 +404,16 @@
         </div>
 
         <!-- 뷰 2: 농어촌공사(RAWRIS) 공식 실시간 팝업 & 시간별/일별/월별 그래프 iframe -->
-        <div id="rawrisIframeView" style="display:none; padding: 14px 20px 20px 20px;">
+        <div id="rawrisIframeView" style="display:none; padding: 12px 14px 16px 14px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-            <span style="font-size:0.82rem; color:var(--text-muted);">
+            <span style="font-size:0.8rem; color:var(--text-muted);">
               💡 아래 화면에서 <strong>[그래프]</strong> 탭을 누르면 농어촌공사 실시간 <strong>시간별 / 일별 / 월별 수위 변화 그래프</strong>를 직접 조작할 수 있습니다.
             </span>
             <a id="rawrisDirectLink" href="https://rawris-am.ekr.or.kr/wrms/gis/popviewequip_gis?equip_no=4140" target="_blank" rel="noopener" style="font-size:0.8rem; color:#38bdf8; font-weight:700; text-decoration:none;">
               ↗ 새 창에서 크게 열기
             </a>
           </div>
-          <div style="width:100%; height:580px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:#f6f8fa;">
+          <div style="width:100%; height:520px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:#f6f8fa;">
             <iframe id="rawrisLiveIframe" title="농어촌공사 실시간 계측정보 및 그래프" style="width:100%; height:100%; border:0;"></iframe>
           </div>
         </div>
@@ -549,9 +549,9 @@
     </button>
   </nav>
 
-  <script src="js/water-levels-data.js?v=20261019_4"></script>
-  <script src="js/lures-data.js?v=20261019_4"></script>
-  <script src="js/weather-api.js?v=20261019_4"></script>
-  <script src="js/app.js?v=20261019_4"></script>
+  <script src="js/water-levels-data.js?v=20261019_5"></script>
+  <script src="js/lures-data.js?v=20261019_5"></script>
+  <script src="js/weather-api.js?v=20261019_5"></script>
+  <script src="js/app.js?v=20261019_5"></script>
 </body>
 </html>
