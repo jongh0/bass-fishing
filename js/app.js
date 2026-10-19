@@ -10,7 +10,7 @@ let state = {
   catFilter: "ALL",
   tackleFilter: "ALL",
   selectedLureId: "chatterbait",
-  selectedSpotId: "yedang",
+  selectedSpotId: "gps",
   activeTab: "tab-simulator",
   mobileControlsOpen: false
 };
@@ -301,9 +301,9 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
       applyLiveWeatherToSimulator(false);
     }
   } catch (err) {
-    statusEl.textContent = "GPS 권한 거부됨 → 예당호 기준으로 표시 중";
+    statusEl.textContent = "GPS 권한 확인 필요 → 예당호 기준으로 임시 표시 중";
     const fallback = KOREA_SPOTS[1];
-    const w = await WeatherEngine.fetchLiveWeather(fallback.lat, fallback.lon, "충남 예산 예당호");
+    const w = await WeatherEngine.fetchLiveWeather(fallback.lat, fallback.lon, "충남 예산 예당호 (GPS 미허용 기본값)");
     renderWeatherBanner(w);
     if (autoSyncSimulator) {
       applyLiveWeatherToSimulator(false);
