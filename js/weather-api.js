@@ -1,7 +1,8 @@
-// === 실시간 GPS 위치 · 기상 · 기압 · 월령 · 수온 추정 · 배스 활성도 엔진 ===
+// === 실시간 GPS 위치 · 기상 · 기압 · 농어촌공사(RAWRIS) 수위 · 월령 · 수온 추정 · 배스 활성도 엔진 ===
 
 const WeatherEngine = {
   currentData: null,
+  waterLevelsCache: null,
 
   // WMO Weather Code -> 한글 상태 및 아이콘
   getWeatherDesc(code) {
@@ -24,11 +25,11 @@ const WeatherEngine = {
 
   // 음력 월령(Moon Phase) 및 물때 계산 (보름/그믐 대물 찬스 판별)
   getMoonPhase(date = new Date()) {
-    const lp = 2551443; // 삭망월 주기(초)
+    const lp = 2551443;
     const now = date.getTime() / 1000;
     const newMoonRef = new Date("2024-01-11T11:57:00Z").getTime() / 1000;
     const phaseSec = ((now - newMoonRef) % lp + lp) % lp;
-    const phaseRatio = phaseSec / lp; // 0.0 ~ 1.0
+    const phaseRatio = phaseSec / lp;
     const lunarAge = Math.round(phaseRatio * 29.53 * 10) / 10;
 
     let label = "";
@@ -73,13 +74,11 @@ const WeatherEngine = {
   // 기온 + 계절별 수체 열용량 보정으로 현실적인 추정 수온(Water Temp) 산출
   estimateWaterTemp(airTemp, date = new Date()) {
     const m = date.getMonth() + 1;
-    // 계절별 한국 저수지/호수 평균 기저 수온
     const monthlyBaseWater = {
       1: 5, 2: 6, 3: 10, 4: 15, 5: 20, 6: 24,
       7: 27, 8: 28, 9: 24, 10: 18, 11: 12, 12: 7
     };
     const base = monthlyBaseWater[m] || 16;
-    // 물은 공기보다 비열이 커서 기온 변화의 약 45%만 따라가며 계절 기저 수온과 수렴함
     const estimated = Math.round(base * 0.55 + airTemp * 0.45);
     return Math.max(4, Math.min(30, estimated));
   },
@@ -97,11 +96,9 @@ const WeatherEngine = {
       ssHour = ss.getHours() + ss.getMinutes() / 60;
     }
 
-    // 일출 전 1시간 ~ 일출 후 2.5시간 OR 일몰 전 2시간 ~ 일몰 후 1시간 = 새벽/해질녘 골든타임
     if ((hour >= srHour - 1.0 && hour <= srHour + 2.5) || (hour >= ssHour - 2.0 && hour <= ssHour + 1.0)) {
       return "dawn_dusk";
     }
-    // 일출 후 2.5시간 ~ 일몰 전 2시간 = 한낮
     if (hour > srHour + 2.5 && hour < ssHour - 2.0) {
       return "midday";
     }
@@ -115,13 +112,148 @@ const WeatherEngine = {
     return "strong";
   },
 
-  // 기압(hPa) 및 최근 3시간 기압 변화량 + 날씨 + 수온 + 시간대를 종합한 배스 활성도 지수(Bite Index)
-  analyzeBiteIndex({ pressure, pressureDiff3h, weatherCode, windSpeedMs, waterTemp, timeOfDay, moonBonus }) {
+  // GPS 위경도 기준 가장 가까운 RAWRIS 수위 계측 포인트 찾기
+  findNearestEquipSpot(lat, lon) {
+    let bestSpot = null;
+    let minDist = Infinity;
+    for (const s of KOREA_SPOTS) {
+      if (!s.equipNo || s.lat == null || s.lon == null) continue;
+      const dLat = s.lat - lat;
+      const dLon = s.lon - lon;
+      const dist = Math.sqrt(dLat * dLat + dLon * dLon);
+      if (dist < minDist) {
+        minDist = dist;
+        bestSpot = s;
+      }
+    }
+    return bestSpot || KOREA_SPOTS[1]; // 기본 아산호
+  },
+
+  // 한국농어촌공사(RAWRIS) 수위 데이터 로드 및 오름/내림수위 전술 분석
+  async fetchWaterLevelData(equipNo) {
+    if (!equipNo) return null;
+
+    let raw = null;
+
+    // 1. 먼저 저장소 내 실시간 동기화 데이터(data/water-levels.json) 로드
+    try {
+      if (!this.waterLevelsCache) {
+        const res = await fetch(`./data/water-levels.json?t=${Date.now()}`);
+        if (res.ok) {
+          this.waterLevelsCache = await res.json();
+        }
+      }
+      if (this.waterLevelsCache?.equips?.[equipNo]) {
+        raw = this.waterLevelsCache.equips[equipNo];
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    // 2. 브라우저 직접 호출 시도 (사내망/로컬/CORS 허용 환경일 경우 최신 10분 데이터 즉시 덮어쓰기)
+    try {
+      const directUrl = `https://rawris-am.ekr.or.kr/wrms/query/json?qid=rawris.wrms.gis.popup.view_info_reservoir&db_type=undefined&equip_no=${equipNo}`;
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 2200);
+      const resLive = await fetch(directUrl, { signal: ctrl.signal });
+      clearTimeout(timer);
+      if (resLive.ok) {
+        const arr = await resLive.json();
+        if (arr && arr[0]) raw = arr[0];
+      }
+    } catch (e) {
+      // CORS 제한 시 1번 스냅샷 데이터 사용
+    }
+
+    if (!raw) return null;
+
+    const nowRate = parseFloat(raw.now_rate || 0);
+    const ydayRate = parseFloat(raw.yday_rate || 0);
+    const norRate = parseFloat(raw.nor_rate || 0);
+    const nowWlvl = parseFloat(raw.now_wlvl || 0);
+    const ydayWlvl = parseFloat(raw.yday_wlvl || 0);
+    const fullWlvl = parseFloat(raw.r_level_full || 0);
+    const minWlvl = parseFloat(raw.r_level_defense || 0);
+    const floodWlvl = parseFloat(raw.r_level_flood || 0);
+    const altitudeWlvl = parseFloat(raw.r_altitude || 0);
+    const dischargeNow = parseFloat(raw.t_discharge_volume || 0);
+    const dischargeYday = parseFloat(raw.y_discharge_volume || 0);
+
+    const diffWlvl = Math.round((nowWlvl - ydayWlvl) * 100) / 100;
+    const diffRate = Math.round((nowRate - ydayRate) * 10) / 10;
+
+    let trend = "stable"; // rising | stable | falling
+    let trendLabel = "⚖️ 평수위 / 수위 안정";
+    let trendBadgeColor = "#38bdf8";
+    let waterTactic = "";
+    let biteBonus = 0;
+
+    if (diffWlvl >= 0.02 || diffRate >= 0.4) {
+      trend = "rising";
+      trendLabel = `📈 오름수위 (+${diffWlvl.toFixed(2)}m / +${diffRate.toFixed(1)}%)`;
+      trendBadgeColor = "#22c55e";
+      biteBonus = 9;
+      waterTactic = "전일 대비 수위가 오르는 '오름수위' 찬스입니다! 새롭게 물에 잠긴 연안 육초대·갈대·수초 엣지로 베이트피쉬와 빅배스가 대거 올라붙습니다. 쉘로우 무빙 루어(스피너베이트, 채터베이트, 쉘로우 크랭크)와 프로그/노싱커로 연안을 적극 공략하세요!";
+    } else if (diffWlvl <= -0.02 || diffRate <= -0.4 || dischargeNow > 0) {
+      trend = "falling";
+      trendLabel = `📉 내림수위/배수 (${diffWlvl.toFixed(2)}m / ${diffRate.toFixed(1)}%)`;
+      trendBadgeColor = "#f59e0b";
+      biteBonus = -9;
+      waterTactic = "전일 대비 수위가 빠지는 '배수(내림수위)' 진행 중입니다. 배스가 수위 저하에 경계심을 느끼고 얕은 연안에서 빠져나와 1차 브레이크라인 턱, 수몰나무 깊은 그늘, 본류 물골(채널)로 후퇴합니다. 다운샷·네꼬리그·프리리그 등 슬로우 피네스 채비나 새물유입구(인렛) 위주로 공략하세요.";
+    } else {
+      trend = "stable";
+      trendLabel = `⚖️ 수위 안정 (저수율 ${nowRate.toFixed(1)}%)`;
+      trendBadgeColor = "#38bdf8";
+      biteBonus = 3;
+      if (nowRate <= 55) {
+        waterTactic = `현재 저수율 ${nowRate.toFixed(1)}%로 갈수기(저수위) 상태입니다. 평소 물속에 잠겨 있던 바닥 석축과 브레이크라인이 드러나 배스들이 좁은 본류권 깊은 물골에 밀집해 있으므로 프리리그·메탈바이브·딥크랭크 장타가 유리합니다.`;
+      } else if (nowRate >= 85) {
+        waterTactic = `현재 저수율 ${nowRate.toFixed(1)}%로 풍부한 만수위권입니다. 연안 수초와 수몰나무 커버까지 물이 차 있어 커버 피칭(러버지그, 프리리그)과 연안 패러럴 캐스팅이 모두 위력적입니다.`;
+      } else {
+        waterTactic = `수위 변동 없이 안정적인 컨디션(${nowRate.toFixed(1)}%)입니다. 시간대별 정석 패턴(아침/저녁 연안 피딩, 한낮 브레이크라인/쉐이드)으로 접근하세요.`;
+      }
+    }
+
+    return {
+      equipNo,
+      equipName: raw.equip_name,
+      headName: raw.buseo_head_name,
+      branchName: raw.buseo_branch_name,
+      address: `${raw.equip_addr1 || ""} ${raw.equip_addr2 || ""}`.trim(),
+      nowDate: raw.now_date,
+      ydayDate: raw.yday_date,
+      nowRate,
+      ydayRate,
+      norRate,
+      nowWlvl,
+      ydayWlvl,
+      fullWlvl,
+      minWlvl,
+      floodWlvl,
+      altitudeWlvl,
+      totalStorage: raw.r_total_storage,
+      effecStorage: raw.r_effec_storage,
+      areaWatershed: raw.area_watershed,
+      nowVow: raw.now_vow,
+      ydayVow: raw.yday_vow,
+      dischargeNow,
+      dischargeYday,
+      diffWlvl,
+      diffRate,
+      trend,
+      trendLabel,
+      trendBadgeColor,
+      waterTactic,
+      biteBonus
+    };
+  },
+
+  // 기압(hPa) 및 최근 3시간 기압 변화량 + 날씨 + 수온 + 시간대 + 수위변동을 종합한 배스 활성도 지수(Bite Index)
+  analyzeBiteIndex({ pressure, pressureDiff3h, weatherCode, windSpeedMs, waterTemp, timeOfDay, moonBonus, waterLevelBonus = 0 }) {
     let score = 55;
     let pressureStatus = "";
     let pressureTactic = "";
 
-    // 1. 기압 변화 트렌드 분석 (배스 부레 압력 및 중층 부상 여부)
     if (pressureDiff3h <= -1.5) {
       score += 16;
       pressureStatus = `📉 기압 하락세 (${pressureDiff3h.toFixed(1)}hPa / 3h) — 피딩 최고조!`;
@@ -144,15 +276,13 @@ const WeatherEngine = {
       pressureTactic = "기압 변동이 적어 배스가 표준적인 시간대별 회유 루트를 따릅니다. 피딩 타임에는 연안, 한낮에는 브레이크라인을 공략하세요.";
     }
 
-    // 2. 날씨(조도) 보정
     const wInfo = this.getWeatherDesc(weatherCode);
     if (wInfo.cloudFactor === "overcast" || wInfo.cloudFactor === "rain") {
-      score += 10; // 흐리거나 약한 비는 조도가 낮아져 하루 종일 피딩 가능
+      score += 10;
     } else if (wInfo.cloudFactor === "storm") {
       score -= 15;
     }
 
-    // 3. 수온 활성도 보정 (15~24도 최적)
     if (waterTemp >= 15 && waterTemp <= 24) {
       score += 12;
     } else if (waterTemp >= 11 && waterTemp <= 27) {
@@ -161,16 +291,14 @@ const WeatherEngine = {
       score -= 12;
     }
 
-    // 4. 시간대 보정
     if (timeOfDay === "dawn_dusk") score += 10;
     else if (timeOfDay === "night") score += 3;
 
-    // 5. 적당한 바람(잔파도)은 수면 경계심을 낮추고 용존산소를 높임
     if (windSpeedMs >= 1.8 && windSpeedMs <= 4.5) score += 6;
     else if (windSpeedMs > 7.0) score -= 10;
 
-    // 6. 월령 보너스
     score += Math.round((moonBonus || 4) * 0.5);
+    score += waterLevelBonus;
 
     const finalScore = Math.max(20, Math.min(98, Math.round(score)));
     let grade = "보통 (Standard)";
@@ -211,23 +339,24 @@ const WeatherEngine = {
     }
   },
 
-  // Open-Meteo 실시간 날씨·기압·일출일몰 API 조회
-  async fetchLiveWeather(lat, lon, customSpotName = null) {
+  // Open-Meteo 실시간 날씨·기압·일출일몰 API + 농어촌공사(RAWRIS) 실시간 수위 통합 조회
+  async fetchLiveWeather(lat, lon, customSpotName = null, equipNo = null) {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&hourly=surface_pressure&daily=sunrise,sunset&timezone=Asia%2FSeoul&forecast_days=1`;
 
-    const res = await fetch(url);
+    const [res, waterLevel] = await Promise.all([
+      fetch(url),
+      this.fetchWaterLevelData(equipNo)
+    ]);
     if (!res.ok) throw new Error("날씨 데이터를 불러오지 못했습니다.");
     const data = await res.json();
 
     const cur = data.current;
     const airTemp = Math.round(cur.temperature_2m * 10) / 10;
     const apparentTemp = Math.round(cur.apparent_temperature * 10) / 10;
-    // Open-Meteo 기본 풍속 단위는 km/h이므로 m/s로 변환 (나누기 3.6)
     const windSpeedMs = Math.round((cur.wind_speed_10m / 3.6) * 10) / 10;
     const windDir = this.getWindDirText(cur.wind_direction_10m);
     const pressure = cur.surface_pressure;
 
-    // 최근 3시간 기압 변화량 계산
     const nowHourIndex = new Date().getHours();
     let pressureDiff3h = 0;
     if (data.hourly && data.hourly.surface_pressure && nowHourIndex >= 3) {
@@ -261,7 +390,8 @@ const WeatherEngine = {
       windSpeedMs,
       waterTemp: estimatedWaterTemp,
       timeOfDay,
-      moonBonus: moon.bonus
+      moonBonus: moon.bonus,
+      waterLevelBonus: waterLevel ? waterLevel.biteBonus : 0
     });
 
     this.currentData = {
@@ -286,6 +416,7 @@ const WeatherEngine = {
       season,
       timeOfDay,
       moon,
+      waterLevel,
       biteAnalysis
     };
 

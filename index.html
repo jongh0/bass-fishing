@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="description" content="실시간 위치·날씨·기압·수온 연동 사계절 & 시간대별 배스 루어 택티컬 시뮬레이터 및 필드 가이드" />
+  <meta name="description" content="실시간 위치·날씨·기압·수온·농어촌공사(RAWRIS) 수위 연동 사계절 배스 루어 택티컬 시뮬레이터" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>🎣 배스 택티컬 프로 v3.0 — 실시간 기상·기압 & 루어 시뮬레이터</title>
+  <title>🎣 배스 택티컬 프로 v3.5 — 실시간 기상·수위(RAWRIS) & 루어 시뮬레이터</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -16,8 +16,8 @@
     <!-- 1. 상단 타이틀 헤더 -->
     <header class="app-header">
       <div class="title-group">
-        <h1>🎣 사계절 & 실시간 기상 연동 배스 택티컬 시뮬레이터 v3.0</h1>
-        <p>실시간 GPS 날씨 · 기압 추이 · 월령 · 수온 · 물색에 따른 19종 하드/와이어/소프트베이트 완벽 매칭 & 수중 액션</p>
+        <h1>🎣 사계절 & 실시간 기상·수위 연동 배스 택티컬 시뮬레이터 v3.5</h1>
+        <p>실시간 날씨 · 기압 · 농어촌공사(RAWRIS) 수위(오름/배수) · 수온 · 물색 기반 19종 루어 완벽 매칭 & 수중 액션</p>
       </div>
       <div class="badge-row">
         <span class="cat-badge cat-hard">● 하드베이트 (7종)</span>
@@ -26,17 +26,17 @@
       </div>
     </header>
 
-    <!-- 2. 실시간 위치 · 날씨 · 기압 · 배스 활성도(Bite Index) 배너 -->
+    <!-- 2. 실시간 위치 · 날씨 · 기압 · 수위(RAWRIS) · 배스 활성도(Bite Index) 배너 -->
     <section class="live-weather-banner">
       <div class="weather-top-bar">
         <div class="location-selector-group">
           <select id="spotSelect" class="spot-select" aria-label="배스 포인트 선택"></select>
           <button type="button" class="btn-gps" id="btnGpsLocate">📍 내 현재 위치(GPS)</button>
-          <button type="button" class="btn-apply-live" id="btnApplyLive">⚡ 실시간 날씨·수온 시뮬레이터 자동 반영</button>
+          <button type="button" class="btn-apply-live" id="btnApplyLive">⚡ 실시간 날씨·수위 시뮬레이터 자동 반영</button>
         </div>
         <div class="live-status-pill">
           <span class="pulse-dot"></span>
-          <span id="liveStatusText">실시간 기상 데이터 연결 중...</span>
+          <span id="liveStatusText">실시간 기상·수위 데이터 연결 중...</span>
         </div>
       </div>
 
@@ -50,6 +50,11 @@
           <span class="m-label">💧 실시간 추정 수온</span>
           <span class="m-val" id="mWaterTemp">--°C</span>
           <span class="m-sub" id="mWaterSub">계절 열용량 보정</span>
+        </div>
+        <div class="metric-card" style="border-color: rgba(56, 189, 248, 0.45); background: rgba(56, 189, 248, 0.06);">
+          <span class="m-label">🌊 실시간 저수율 / 현수위</span>
+          <span class="m-val" id="mWaterLevel">--% (-- EL.m)</span>
+          <span class="m-sub" id="mWaterLevelSub">농어촌공사 수위 연동</span>
         </div>
         <div class="metric-card">
           <span class="m-label">💨 현재 풍속 / 수면</span>
@@ -69,18 +74,19 @@
         <div class="metric-card" style="border-color: rgba(34, 197, 94, 0.45); background: rgba(34, 197, 94, 0.06);">
           <span class="m-label">🔥 실시간 배스 활성도 지수</span>
           <span class="m-val" id="mBiteScore" style="color:#4ade80;">--점</span>
-          <span class="m-sub" id="mBiteSub">기압·수온·조도 종합</span>
+          <span class="m-sub" id="mBiteSub">기압·수위·수온 종합</span>
         </div>
       </div>
 
       <div class="bite-tactic-strip" id="livePressureTactic">
-        <span>📡 실시간 기압 변화와 일출·일몰 데이터를 바탕으로 오늘의 필드 공략 브리핑을 계산합니다...</span>
+        <span>📡 실시간 기압 변화, 농어촌공사 저수지 수위(오름/배수), 일출·일몰 데이터를 바탕으로 오늘의 공략 브리핑을 계산합니다...</span>
       </div>
     </section>
 
     <!-- 3. PC 상단 네비게이션 탭 바 -->
     <nav class="nav-tabs-bar" aria-label="주요 기능 탭">
       <button type="button" class="tab-btn active" data-target="tab-simulator">🎯 루어 매칭 & 수중 시뮬레이터</button>
+      <button type="button" class="tab-btn" data-target="tab-waterlevel">🌊 실시간 수위 · 취수탑 계측정보 (RAWRIS)</button>
       <button type="button" class="tab-btn" data-target="tab-guide">📘 물색별 컬러 · 싱커 환산 · 수온 사전</button>
       <button type="button" class="tab-btn" data-target="tab-weather">🌤️ 기압 · 월령 · 피딩타임 정밀 브리핑</button>
       <button type="button" class="tab-btn" data-target="tab-log">📓 나만의 현장 조행 기록장</button>
@@ -92,12 +98,12 @@
       <div class="controls-header-mobile" id="mobileControlToggle">
         <div>
           <strong style="font-size:0.86rem; color:#f8fafc;">🎛️ 필드 조건 설정: </strong>
-          <span class="summary-chips" id="mobileControlSummary">16°C · 새벽/해질녘 · 보통 · 석축</span>
+          <span class="summary-chips" id="mobileControlSummary">16°C · 새벽/해질녘 · 오름수위 · 석축</span>
         </div>
         <span id="mobileToggleIcon" style="font-size:0.78rem; color:#94a3b8; font-weight:700;">▼ 상세 조절</span>
       </div>
 
-      <!-- 7대 환경 컨트롤 그리드 -->
+      <!-- 8대 환경 컨트롤 그리드 -->
       <div class="controls-grid collapsed-mobile" id="controlsGrid">
         <!-- 1. 계절 프리셋 -->
         <div class="control-box">
@@ -142,10 +148,23 @@
           </div>
         </div>
 
-        <!-- 4. 바람 / 수면 상태 -->
+        <!-- 4. 수위 변동 상태 (오름수위 / 안정 / 배수기) - NEW! -->
         <div class="control-box">
           <div class="control-label">
-            <span>4. 바람 & 수면 파도</span>
+            <span>4. 수위 변동 (RAWRIS 연동)</span>
+            <span class="val-highlight" id="waterTrendLabel">📈 오름수위 (연안 활성)</span>
+          </div>
+          <div class="btn-group" id="waterTrendGroup">
+            <button type="button" class="btn-toggle active" data-wtrend="rising">📈 오름수위</button>
+            <button type="button" class="btn-toggle" data-wtrend="stable">⚖️ 평수위/안정</button>
+            <button type="button" class="btn-toggle" data-wtrend="falling">📉 내림/배수기</button>
+          </div>
+        </div>
+
+        <!-- 5. 바람 / 수면 상태 -->
+        <div class="control-box">
+          <div class="control-label">
+            <span>5. 바람 & 수면 파도</span>
             <span class="val-highlight" id="windLabel">보통 (잔파도)</span>
           </div>
           <div class="btn-group" id="windGroup">
@@ -155,10 +174,10 @@
           </div>
         </div>
 
-        <!-- 5. 물색 / 탁도 (NEW) -->
+        <!-- 6. 물색 / 탁도 -->
         <div class="control-box">
           <div class="control-label">
-            <span>5. 물색 & 탁도 (Water Clarity)</span>
+            <span>6. 물색 & 탁도 (Water Clarity)</span>
             <span class="val-highlight" id="clarityLabel">보통 (녹조/수초물)</span>
           </div>
           <div class="btn-group" id="clarityGroup">
@@ -168,10 +187,10 @@
           </div>
         </div>
 
-        <!-- 6. 포인트 지형 -->
+        <!-- 7. 포인트 지형 -->
         <div class="control-box">
           <div class="control-label">
-            <span>6. 핵심 지형 & 커버</span>
+            <span>7. 핵심 지형 & 커버</span>
             <span class="val-highlight" id="structLabel">석축 / 브레이크라인</span>
           </div>
           <div class="btn-group" id="structGroup">
@@ -182,10 +201,10 @@
           </div>
         </div>
 
-        <!-- 7. 카테고리 & BFS 필터 -->
+        <!-- 8. 카테고리 & BFS 필터 -->
         <div class="control-box">
           <div class="control-label">
-            <span>7. 베이트 분류 & BFS 모드</span>
+            <span>8. 베이트 분류 & BFS 모드</span>
             <span class="val-highlight" id="tackleLabel">전체 (19종)</span>
           </div>
           <div class="btn-group" id="catFilterGroup" style="margin-bottom: 6px;">
@@ -220,7 +239,7 @@
         <!-- 우측: 맞춤 루어 랭킹 리스트 -->
         <div class="ranking-card">
           <div class="ranking-header">
-            <h2>🏆 현재 필드 & 날씨 맞춤 랭킹</h2>
+            <h2>🏆 현재 필드 & 수위·날씨 맞춤 랭킹</h2>
             <span style="font-size:0.8rem; color:var(--accent); font-weight:700;" id="resultCountLabel">총 19개 루어 분석됨</span>
           </div>
           <div class="lure-list" id="lureListContainer"></div>
@@ -228,16 +247,187 @@
       </div>
     </section>
 
-    <!-- ================= TAB 2: 물색별 컬러 · 싱커 환산 · 수온 사전 ================= -->
+    <!-- ================= TAB 2: 농어촌공사(RAWRIS) 실시간 수위 · 취수탑 계측정보 ================= -->
+    <section id="tab-waterlevel" class="tab-section">
+      <div class="rawris-widget-card">
+        <div class="rawris-header-bar">
+          <div class="rawris-title-left">
+            <h3 id="rwEquipTitle">아산호(평택호)</h3>
+            <span class="rawris-branch" id="rwBranchSub">경기 · 평택 | 담수호/저수지 실시간 계측정보</span>
+          </div>
+          <div class="rawris-header-right">
+            <button type="button" class="btn-rawris-tab active" id="btnShowCustomTower">📊 계측정보 요약 & 취수탑 그래픽</button>
+            <button type="button" class="btn-rawris-tab" id="btnShowLiveIframe">🌐 농어촌공사 실시간 그래프 원본 보기</button>
+          </div>
+        </div>
+
+        <!-- 뷰 1: 첨부 이미지 완벽 재현 (취수탑 + 제원표 + 비교표) -->
+        <div id="rawrisCustomView">
+          <div class="rawris-body-grid">
+            <!-- 좌측 컬럼: 저수율 3열 카드 + 취수탑 수위 그래픽 -->
+            <div class="rawris-left-col">
+              <div class="rawris-rate-box">
+                <div class="rawris-rate-col">
+                  <span class="rawris-rate-label">평년 저수율</span>
+                  <div class="rawris-rate-val"><span id="rwNorRate">89.7</span><small>%</small></div>
+                </div>
+                <div class="rawris-rate-divider"></div>
+                <div class="rawris-rate-col">
+                  <span class="rawris-rate-label">전일 저수율</span>
+                  <div class="rawris-rate-val"><span id="rwYdayRate">85.7</span><small>%</small></div>
+                </div>
+                <div class="rawris-rate-divider"></div>
+                <div class="rawris-rate-col">
+                  <span class="rawris-rate-label">금일 저수율</span>
+                  <div class="rawris-rate-val" style="color:#38bdf8;"><span id="rwNowRate">86.9</span><small>%</small></div>
+                </div>
+              </div>
+
+              <!-- 취수탑 & 수위 애니메이션 그래픽 (첨부 이미지 재현) -->
+              <div class="rawris-tower-graphic">
+                <div class="tower-dam-wall"></div>
+
+                <!-- 취수탑 구조물 SVG -->
+                <svg class="tower-structure-svg" viewBox="0 0 420 295" preserveAspectRatio="xMidYMid slice">
+                  <!-- 상단 난간 -->
+                  <line x1="0" y1="92" x2="420" y2="92" stroke="#64748b" stroke-width="3" />
+                  <!-- 취수탑 지붕 (기와지붕 형태) -->
+                  <polygon points="75,52 140,18 205,52" fill="#334155" stroke="#1e293b" stroke-width="2" />
+                  <!-- 취수탑 상부 전망실 -->
+                  <rect x="92" y="52" width="96" height="40" fill="#e2e8f0" stroke="#475569" stroke-width="2" />
+                  <rect x="102" y="58" width="22" height="26" fill="#0f172a" opacity="0.75" />
+                  <rect x="129" y="58" width="22" height="26" fill="#0f172a" opacity="0.75" />
+                  <rect x="156" y="58" width="22" height="26" fill="#0f172a" opacity="0.75" />
+                  <!-- 취수탑 수직 원통 기둥 -->
+                  <rect x="106" y="92" width="68" height="161" fill="#cbd5e1" stroke="#475569" stroke-width="2" />
+                  <rect x="132" y="92" width="16" height="161" fill="#94a3b8" />
+                  <!-- 수중 취수구 밸브 창 -->
+                  <rect x="114" y="145" width="12" height="14" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1" />
+                  <rect x="154" y="175" width="12" height="14" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1" />
+                  <rect x="114" y="205" width="12" height="14" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1" />
+                  <!-- 하단 배수관 및 사면 제방 -->
+                  <rect x="174" y="232" width="246" height="16" fill="#94a3b8" stroke="#475569" stroke-width="1.5" />
+                  <path d="M 270 253 Q 345 225 420 155 L 420 253 Z" fill="#6d4c41" />
+                </svg>
+
+                <!-- 실시간 물 높이 레이어 -->
+                <div class="tower-water-fill" id="rwWaterFill" style="height: 138px;"></div>
+
+                <!-- 만수위 기준선 -->
+                <div class="tower-line-full"></div>
+
+                <!-- 하단 토양 레이어 -->
+                <div class="tower-ground-base"></div>
+
+                <!-- 만수위 / 현수위 / 사수위 뱃지 -->
+                <div class="tower-badge badge-full" id="rwBadgeFull">2.50 EL.m (만수위)</div>
+                <div class="tower-badge badge-curr" id="rwBadgeCurr" style="bottom: 162px;">2.05 EL.m (현수위)</div>
+                <div class="tower-badge badge-min" id="rwBadgeMin">-2.00 EL.m (사수위)</div>
+              </div>
+            </div>
+
+            <!-- 우측 컬럼: 제원 리스트 + 전일/금일 비교 테이블 -->
+            <div class="rawris-right-col">
+              <div class="rawris-spec-card">
+                <div class="rawris-spec-row">
+                  <span class="s-label">제정고</span>
+                  <span class="s-val"><span id="rwAltitude">8.50</span><small>EL.m</small></span>
+                </div>
+                <div class="rawris-spec-row">
+                  <span class="s-label">홍수위</span>
+                  <span class="s-val"><span id="rwFlood">4.50</span><small>EL.m</small></span>
+                </div>
+                <div class="rawris-spec-row">
+                  <span class="s-label">만수위</span>
+                  <span class="s-val"><span id="rwFull">2.50</span><small>EL.m</small></span>
+                </div>
+                <div class="rawris-spec-row">
+                  <span class="s-label">사수위</span>
+                  <span class="s-val"><span id="rwMin">-2.00</span><small>EL.m</small></span>
+                </div>
+                <div class="rawris-spec-row">
+                  <span class="s-label">총저수량</span>
+                  <span class="s-val"><span id="rwTotalStorage">98,980</span><small>천m³</small></span>
+                </div>
+                <div class="rawris-spec-row">
+                  <span class="s-label">유효저수량</span>
+                  <span class="s-val"><span id="rwEffecStorage">82,892</span><small>천m³</small></span>
+                </div>
+                <div class="rawris-spec-row">
+                  <span class="s-label">유역면적</span>
+                  <span class="s-val"><span id="rwWatershed">163,400</span><small>ha</small></span>
+                </div>
+                <div class="rawris-spec-row">
+                  <span class="s-label">소재지</span>
+                  <span class="s-val" id="rwAddress">경기도 평택시 현덕면 권관리 564-01</span>
+                </div>
+                <div class="rawris-spec-row">
+                  <span class="s-label">관할지사</span>
+                  <span class="s-val" id="rwOffice">경기 평택</span>
+                </div>
+              </div>
+
+              <div class="rawris-comp-card">
+                <table class="rawris-comp-table">
+                  <tr>
+                    <td id="rwYdayDate">2026-10-18</td>
+                    <td class="comp-mid">기준일시</td>
+                    <td id="rwNowDate" style="color:#38bdf8;">2026-10-19 22:40</td>
+                  </tr>
+                  <tr>
+                    <td id="rwYdayVow">71,065.7</td>
+                    <td class="comp-mid">저수량 <small>(천m³)</small></td>
+                    <td id="rwNowVow">72,058</td>
+                  </tr>
+                  <tr>
+                    <td id="rwYdayWlvl">2.00</td>
+                    <td class="comp-mid">저수위 <small>(EL.m)</small></td>
+                    <td id="rwNowWlvl" style="color:#4ade80;">2.05</td>
+                  </tr>
+                  <tr>
+                    <td id="rwYdayDischarge">0</td>
+                    <td class="comp-mid">방류량 <small>(천m³)</small></td>
+                    <td id="rwNowDischarge">0</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 배스 수위 변동 전술 브리핑 박스 -->
+          <div style="padding: 0 20px 18px 20px;">
+            <div class="tactical-box" id="rwTacticalBriefingBox" style="margin:0;">
+              <strong>🌊 현재 수위 변동 기반 배스 포지션 & 공략 전술</strong>
+              <span id="rwTacticalText">수위 데이터를 분석 중입니다...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 뷰 2: 농어촌공사(RAWRIS) 공식 실시간 팝업 & 시간별/일별/월별 그래프 iframe -->
+        <div id="rawrisIframeView" style="display:none; padding: 14px 20px 20px 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+            <span style="font-size:0.82rem; color:var(--text-muted);">
+              💡 아래 화면에서 <strong>[그래프]</strong> 탭을 누르면 농어촌공사 실시간 <strong>시간별 / 일별 / 월별 수위 변화 그래프</strong>를 직접 조작할 수 있습니다.
+            </span>
+            <a id="rawrisDirectLink" href="https://rawris-am.ekr.or.kr/wrms/gis/popviewequip_gis?equip_no=4140" target="_blank" rel="noopener" style="font-size:0.8rem; color:#38bdf8; font-weight:700; text-decoration:none;">
+              ↗ 새 창에서 크게 열기
+            </a>
+          </div>
+          <div style="width:100%; height:580px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:#f6f8fa;">
+            <iframe id="rawrisLiveIframe" title="농어촌공사 실시간 계측정보 및 그래프" style="width:100%; height:100%; border:0;"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: 물색별 컬러 · 싱커 환산 · 수온 사전 ================= -->
     <section id="tab-guide" class="tab-section">
       <div class="guide-grid">
-        <!-- 1. 물색별 추천 컬러 팔레트 -->
         <div class="guide-card">
           <h3>🎨 물색(Water Clarity)별 필승 루어/웜 컬러 가이드</h3>
           <div id="dynamicColorGuideBox"></div>
         </div>
 
-        <!-- 2. 싱커 무게 환산표 (oz <-> g) -->
         <div class="guide-card">
           <h3>⚖️ 배스 싱커(봉돌) 무게 환산 & 주력 채비 치트시트</h3>
           <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
@@ -255,7 +445,6 @@
           </table>
         </div>
 
-        <!-- 3. 수온 구간별 배스 생태 & 공략 패턴 -->
         <div class="guide-card" style="grid-column: 1 / -1;">
           <h3>🌡️ 사계절 수온 구간별 배스 포지션 & 핵심 전술</h3>
           <div class="pattern-list" id="waterTempPatternsList"></div>
@@ -263,27 +452,27 @@
       </div>
     </section>
 
-    <!-- ================= TAB 3: 기압 · 월령 · 피딩타임 정밀 브리핑 ================= -->
+    <!-- ================= TAB 4: 기압 · 월령 · 피딩타임 정밀 브리핑 ================= -->
     <section id="tab-weather" class="tab-section">
       <div class="guide-grid">
         <div class="guide-card" style="grid-column: 1 / -1;">
-          <h3>📡 실시간 기압(부레 압력) · 월령(물때) · 일출일몰 정밀 분석</h3>
+          <h3>📡 실시간 기압(부레 압력) · 수위(오름/배수) · 월령(물때) 정밀 분석</h3>
           <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:14px;">
-            상단에서 선택한 필드(또는 내 GPS 위치)의 실시간 기상 데이터를 바탕으로 분석한 오늘의 배스 움직임입니다.
+            상단에서 선택한 필드(또는 내 GPS 위치)의 실시간 기상 및 농어촌공사 수위 데이터를 바탕으로 분석한 오늘의 배스 움직임입니다.
           </p>
           <div id="deepWeatherAnalysisBox"></div>
         </div>
 
         <div class="guide-card">
-          <h3>🧭 왜 배스 낚시에서 '기압(hPa)'이 중요할까요?</h3>
+          <h3>🧭 왜 배스 낚시에서 '기압(hPa)'과 '수위(EL.m)'가 중요할까요?</h3>
           <div class="pattern-list">
             <div class="pattern-item" style="border-left-color:#22c55e;">
-              <div class="p-head"><span>📉 저기압 접근 / 기압 하락기 (1005~1013hPa)</span></div>
-              <div class="p-desc">물속 압력이 낮아져 배스의 부레가 편안해지고 중층·연안 쉘로우로 떠올라 공격적으로 먹이 활동을 합니다. 흐리거나 비 오기 직전이 최고의 대박 찬스입니다.</div>
+              <div class="p-head"><span>📈 오름수위 + 📉 저기압 접근 — 연중 최고의 폭풍 입질</span></div>
+              <div class="p-desc">수위가 오르면서 연안 육초가 물에 잠기면 곤충과 베이트피쉬가 쉘로우로 몰리고, 저기압으로 부레 압력까지 편안해진 배스들이 가장 공격적으로 얕은 연안을 습격합니다.</div>
             </div>
             <div class="pattern-item" style="border-left-color:#f59e0b;">
-              <div class="p-head"><span>📈 고기압 상승 / 맑고 일교차 큰 날 (1020hPa+)</span></div>
-              <div class="p-desc">부레가 팽창해 배스가 불편함을 느끼고 수몰나무, 석축 구멍, 깊은 브레이크라인 바닥에 배를 깔고 움직이지 않습니다. 폴링이 느린 피네스 채비로 눈앞에 떨어뜨려야 합니다.</div>
+              <div class="p-head"><span>📉 배수기(내림수위) + 📈 고기압 급상승 — 극한의 터프 컨디션</span></div>
+              <div class="p-desc">물이 빠지기 시작하면 배스는 고립될까 봐 본능적으로 1차 브레이크라인 아래나 본류 물골(채널)로 후퇴합니다. 연안 쉘로우 고집을 버리고 수심 2.5m+ 브레이크라인과 새물유입구를 노리세요.</div>
             </div>
           </div>
         </div>
@@ -304,12 +493,12 @@
       </div>
     </section>
 
-    <!-- ================= TAB 4: 나만의 현장 조행 기록장 ================= -->
+    <!-- ================= TAB 5: 나만의 현장 조행 기록장 ================= -->
     <section id="tab-log" class="tab-section">
       <div class="guide-card">
-        <h3>📓 나만의 필드 히트 루어 & 환경 기록장</h3>
+        <h3>📓 나만의 필드 히트 루어 & 환경(수위·기압) 기록장</h3>
         <p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:14px;">
-          현장에서 배스를 히트했을 때 기록해 두면 현재 위치, 기온, 추정 수온, 해면 기압, 풍속이 스마트폰/PC 브라우저에 자동 저장됩니다.
+          현장에서 배스를 히트했을 때 기록해 두면 현재 위치, 기온, 추정 수온, 저수율/현수위, 해면 기압이 스마트폰/PC 브라우저에 자동 저장됩니다.
         </p>
 
         <div class="log-form-grid">
@@ -323,12 +512,12 @@
           </div>
           <div>
             <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">포인트 특징 / 컬러 메모</label>
-            <input type="text" id="logMemoInput" class="log-input" placeholder="예: 수몰나무 그늘 그린펌킨 폴링 바이트" />
+            <input type="text" id="logMemoInput" class="log-input" placeholder="예: 오름수위 육초대 채터베이트 히트" />
           </div>
         </div>
 
         <button type="button" class="btn-apply-live" id="btnAddCatchLog" style="width:100%; justify-content:center; padding:11px;">
-          ➕ 현재 날씨·기압·루어 정보로 조행 기록 저장하기
+          ➕ 현재 날씨·수위·기압·루어 정보로 조행 기록 저장하기
         </button>
 
         <div class="log-card-list" id="catchLogList"></div>
@@ -341,6 +530,10 @@
     <button type="button" class="m-nav-item active" data-target="tab-simulator">
       <span class="m-icon">🎯</span>
       <span>시뮬레이터</span>
+    </button>
+    <button type="button" class="m-nav-item" data-target="tab-waterlevel">
+      <span class="m-icon">🌊</span>
+      <span>실시간수위</span>
     </button>
     <button type="button" class="m-nav-item" data-target="tab-guide">
       <span class="m-icon">📘</span>

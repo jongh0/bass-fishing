@@ -1,8 +1,10 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages (with Live RAWRIS Water Levels)
 
 on:
   push:
     branches: ["main"]
+  schedule:
+    - cron: "15 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -23,6 +25,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Refresh RAWRIS Water Levels (if reachable)
+        run: node scripts/update-water-levels.js || true
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

@@ -1,16 +1,17 @@
-// === 메인 애플리케이션 컨트롤러 (스코어링 엔진 · 2D 캔버스 · 실시간 날씨 동기화 · 조행일지) ===
+// === 메인 애플리케이션 컨트롤러 (스코어링 엔진 · 2D 캔버스 · 실시간 날씨/RAWRIS 수위 동기화 · 조행일지) ===
 
 let state = {
   season: "autumn",
   time: "dawn_dusk",
   temp: 16,
+  waterTrend: "rising", // rising (오름수위) | stable (평수위) | falling (내림/배수기)
   wind: "moderate",
   clarity: "stained",
   struct: "rock_slope",
   catFilter: "ALL",
   tackleFilter: "ALL",
   selectedLureId: "chatterbait",
-  selectedSpotId: "asan",
+  selectedSpotId: "asan", // 기본값: 충남 아산호
   activeTab: "tab-simulator",
   mobileControlsOpen: false
 };
@@ -26,6 +27,12 @@ const timeLabels = {
   dawn_dusk: "🌅 새벽/해질녘 (피딩)",
   midday: "☀️ 한낮 (직사광/쉐이드)",
   night: "🌙 야간 (나이트 게임)"
+};
+
+const waterTrendLabels = {
+  rising: "📈 오름수위 (연안 활성)",
+  stable: "⚖️ 평수위 / 안정",
+  falling: "📉 내림수위 (배수기)"
 };
 
 const windLabels = {
@@ -47,9 +54,13 @@ const structLabels = {
   deep_open: "오픈워터 / 딥채널"
 };
 
-// === 1. 루어 매칭 스코어 계산 엔진 (수온 + 계절 + 시간대 + 지형 + 바람 + 물색 + BFS) ===
+// 오름수위 vs 내림수위(배수기) 강점 루어 분류
+const RISING_WATER_LURES = ["hollow_frog", "buzzbait", "spinnerbait", "chatterbait", "shallow_crank", "no_sinker", "top_popper_pencil", "rubber_jig"];
+const FALLING_WATER_LURES = ["downshot_rig", "neko_rig", "free_rig", "mid_strolling", "deep_crank", "metal_vibe", "suspending_shad", "kaizer_rig"];
+
+// === 1. 루어 매칭 스코어 계산 엔진 (수온 + 계절 + 시간대 + 수위변동 + 지형 + 바람 + 물색 + BFS) ===
 function computeScore(lure) {
-  let score = 46;
+  let score = 45;
 
   // 1) 수온 매칭
   const [minT, maxT] = lure.tempRange;
@@ -57,29 +68,29 @@ function computeScore(lure) {
     const mid = (minT + maxT) / 2;
     const dist = Math.abs(state.temp - mid);
     const span = Math.max(1, (maxT - minT) / 2);
-    score += 21 - Math.round((dist / span) * 6);
+    score += 20 - Math.round((dist / span) * 6);
   } else {
     const diff = state.temp < minT ? (minT - state.temp) : (state.temp - maxT);
-    score -= Math.min(26, diff * 3.4);
+    score -= Math.min(25, diff * 3.3);
   }
 
   // 2) 계절 매칭
   if (lure.bestSeasons.includes(state.season)) {
-    score += 7;
+    score += 6;
   }
 
   // 3) 시간대 매칭
   if (lure.bestTime[0] === state.time) {
-    score += 11;
+    score += 10;
   } else if (lure.bestTime.includes(state.time)) {
-    score += 6;
+    score += 5;
   } else {
     score -= 8;
   }
 
   // 4) 지형 매칭
   if (lure.bestStruct[0] === state.struct) {
-    score += 12;
+    score += 11;
   } else if (lure.bestStruct.includes(state.struct)) {
     score += 6;
   } else {
@@ -93,16 +104,27 @@ function computeScore(lure) {
     score -= 5;
   }
 
-  // 6) 물색(Clarity) 매칭 (NEW)
+  // 6) 물색(Clarity) 매칭
   if (lure.bestClarity && lure.bestClarity[0] === state.clarity) {
-    score += 7;
+    score += 6;
   } else if (lure.bestClarity && lure.bestClarity.includes(state.clarity)) {
     score += 3;
   } else {
-    score -= 5;
+    score -= 4;
   }
 
-  // 7) BFS 피네스 보너스
+  // 7) 수위 변동(오름수위 vs 배수기) 매칭 (NEW!)
+  if (state.waterTrend === "rising") {
+    if (RISING_WATER_LURES.includes(lure.id)) score += 7;
+    else if (lure.depthRange[0] >= 2.0) score -= 4;
+  } else if (state.waterTrend === "falling") {
+    if (FALLING_WATER_LURES.includes(lure.id)) score += 8;
+    else if (lure.depthRange[1] <= 0.3) score -= 8; // 배수기에는 수면 탑워터 효율 급감
+  } else {
+    score += 3;
+  }
+
+  // 8) BFS 피네스 보너스
   if (state.tackleFilter === "BFS" && lure.bfsFriendly) {
     score += 3;
   }
@@ -130,6 +152,7 @@ function syncControlButtons() {
 
   toggleGroup("#seasonGroup", "data-season", state.season);
   toggleGroup("#timeGroup", "data-time", state.time);
+  toggleGroup("#waterTrendGroup", "data-wtrend", state.waterTrend);
   toggleGroup("#windGroup", "data-wind", state.wind);
   toggleGroup("#clarityGroup", "data-clarity", state.clarity);
   toggleGroup("#structGroup", "data-struct", state.struct);
@@ -144,14 +167,14 @@ function renderUI() {
   document.getElementById("seasonLabel").textContent = seasonPresets[state.season].label;
   document.getElementById("timeLabel").textContent = timeLabels[state.time];
   document.getElementById("tempLabel").textContent = `${state.temp}°C`;
+  document.getElementById("waterTrendLabel").textContent = waterTrendLabels[state.waterTrend];
   document.getElementById("windLabel").textContent = windLabels[state.wind];
   document.getElementById("clarityLabel").textContent = clarityLabels[state.clarity];
   document.getElementById("structLabel").textContent = structLabels[state.struct];
 
-  // 모바일 요약 바 텍스트 업데이트
   const mobileSummaryEl = document.getElementById("mobileControlSummary");
   if (mobileSummaryEl) {
-    mobileSummaryEl.textContent = `${state.temp}°C · ${timeLabels[state.time].split(" ")[1]} · ${clarityLabels[state.clarity].split(" ")[0]} · ${structLabels[state.struct].split(" ")[0]}`;
+    mobileSummaryEl.textContent = `${state.temp}°C · ${waterTrendLabels[state.waterTrend].split(" ")[1]} · ${clarityLabels[state.clarity].split(" ")[0]} · ${structLabels[state.struct].split(" ")[0]}`;
   }
 
   const ranked = getFilteredAndRankedLures();
@@ -215,6 +238,15 @@ function renderUI() {
     const currentTimeTip = activeLure.timeTip[state.time];
     const currentColorRec = activeLure.colorGuide ? activeLure.colorGuide[state.clarity] : "내추럴 컬러";
 
+    let waterTrendAdvice = "";
+    if (state.waterTrend === "rising") {
+      waterTrendAdvice = "📈 [오름수위 전술] 수위가 상승하여 연안 육초·수초대가 잠긴 상태입니다. 브레이크라인보다 과감히 얕은 연안 커버 바짝 붙여서 캐스팅하세요.";
+    } else if (state.waterTrend === "falling") {
+      waterTrendAdvice = "📉 [배수기/내림수위 전술] 배수로 인해 배스가 쉘로우를 버리고 1차 브레이크라인 턱이나 본류 깊은 물골(채널)로 내려갔습니다. 캐스팅 거리를 늘리고 템포를 늦추세요.";
+    } else {
+      waterTrendAdvice = "⚖️ [평수위 안정 전술] 수위 변동이 안정적이므로 시간대별 베이트피쉬 회유 루트와 그늘(쉐이드) 스트럭처를 정석대로 공략하세요.";
+    }
+
     detailEl.innerHTML = `
       <div class="detail-top">
         <div>
@@ -250,8 +282,9 @@ function renderUI() {
       </div>
 
       <div class="tactical-box" style="border-color:rgba(250, 204, 21, 0.35); background:rgba(250, 204, 21, 0.07);">
-        <strong style="color:#facc15;">🕒 [${timeLabels[state.time]}] 시간대 공략 포인트</strong>
-        ${currentTimeTip}
+        <strong style="color:#facc15;">🕒 [${timeLabels[state.time]}] & [${waterTrendLabels[state.waterTrend]}] 공략 포인트</strong>
+        ${currentTimeTip}<br/>
+        <span style="color:#93c5fd; font-size:0.81rem; display:inline-block; margin-top:4px;">${waterTrendAdvice}</span>
       </div>
 
       <div class="tactical-box">
@@ -260,7 +293,6 @@ function renderUI() {
       </div>
     `;
 
-    // 조행 일지 폼의 히트 루어 셀렉트 박스도 동기화
     const logLureSelect = document.getElementById("logLureInput");
     if (logLureSelect && !logLureSelect.dataset.userEdited) {
       logLureSelect.value = activeLure.name;
@@ -270,13 +302,13 @@ function renderUI() {
   renderGuideTabDynamic();
 }
 
-// === 4. 실시간 날씨 조회 & 시뮬레이터 자동 동기화 ===
+// === 4. 실시간 날씨 & 농어촌공사(RAWRIS) 수위 조회 및 자동 동기화 ===
 async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
   const statusEl = document.getElementById("liveStatusText");
-  statusEl.textContent = "기상 위성·기압 데이터 수신 중...";
+  statusEl.textContent = "기상청 날씨 & 농어촌공사(RAWRIS) 수위 데이터 수신 중...";
 
   try {
-    let lat, lon, customName = null;
+    let lat, lon, customName = null, equipNo = null;
     if (spotId === "gps") {
       const pos = await new Promise((resolve, reject) => {
         if (!navigator.geolocation) reject(new Error("브라우저가 GPS를 지원하지 않습니다."));
@@ -287,15 +319,19 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
       });
       lat = pos.coords.latitude;
       lon = pos.coords.longitude;
+      const nearestSpot = WeatherEngine.findNearestEquipSpot(lat, lon);
+      equipNo = nearestSpot ? nearestSpot.equipNo : 4140;
     } else {
       const spot = KOREA_SPOTS.find(s => s.id === spotId) || KOREA_SPOTS[1];
       lat = spot.lat;
       lon = spot.lon;
-      customName = spot.name.replace(/^[^\s]+\s/, "");
+      customName = spot.name.replace(/^[^\s]+\s/, "").replace(/\s*\(·?.*$/, "");
+      equipNo = spot.equipNo || 4140; // 수위 미연동 댐 선택 시 취수탑 뷰어는 기본 아산호로 유지하거나 안내 표시
     }
 
-    const w = await WeatherEngine.fetchLiveWeather(lat, lon, customName);
+    const w = await WeatherEngine.fetchLiveWeather(lat, lon, customName, equipNo);
     renderWeatherBanner(w);
+    renderRawrisWidget(w.waterLevel);
 
     if (autoSyncSimulator) {
       applyLiveWeatherToSimulator(false);
@@ -303,21 +339,115 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
   } catch (err) {
     statusEl.textContent = "GPS 권한 확인 필요 → 충남 아산호 기준으로 표시 중";
     const fallback = KOREA_SPOTS[1];
-    const w = await WeatherEngine.fetchLiveWeather(fallback.lat, fallback.lon, "충남 아산호 (기본값)");
+    const w = await WeatherEngine.fetchLiveWeather(fallback.lat, fallback.lon, "충남 아산호 (기본값)", fallback.equipNo);
     renderWeatherBanner(w);
+    renderRawrisWidget(w.waterLevel);
     if (autoSyncSimulator) {
       applyLiveWeatherToSimulator(false);
     }
   }
 }
 
+function formatComma(num) {
+  if (num == null || num === "") return "-";
+  const n = Number(num);
+  return isNaN(n) ? String(num) : n.toLocaleString("ko-KR");
+}
+
+// 첨부 이미지와 동일한 RAWRIS 수위·취수탑 대시보드 렌더링
+function renderRawrisWidget(wl) {
+  if (!wl) return;
+
+  document.getElementById("rwEquipTitle").textContent = wl.equipName;
+  document.getElementById("rwBranchSub").textContent = `${wl.headName} · ${wl.branchName} | 실시간 수위 계측정보 (${wl.nowDate} 기준)`;
+
+  document.getElementById("rwNorRate").textContent = wl.norRate ? wl.norRate.toFixed(1) : "-";
+  document.getElementById("rwYdayRate").textContent = wl.ydayRate.toFixed(1);
+  document.getElementById("rwNowRate").textContent = wl.nowRate.toFixed(1);
+
+  document.getElementById("rwAltitude").textContent = wl.altitudeWlvl.toFixed(2);
+  document.getElementById("rwFlood").textContent = wl.floodWlvl.toFixed(2);
+  document.getElementById("rwFull").textContent = wl.fullWlvl.toFixed(2);
+  document.getElementById("rwMin").textContent = wl.minWlvl.toFixed(2);
+  document.getElementById("rwTotalStorage").textContent = formatComma(wl.totalStorage);
+  document.getElementById("rwEffecStorage").textContent = formatComma(wl.effecStorage);
+  document.getElementById("rwWatershed").textContent = formatComma(wl.areaWatershed);
+  document.getElementById("rwAddress").textContent = wl.address || "-";
+  document.getElementById("rwOffice").textContent = `${wl.headName} ${wl.branchName}`;
+
+  document.getElementById("rwYdayDate").textContent = wl.ydayDate;
+  document.getElementById("rwNowDate").textContent = wl.nowDate;
+  document.getElementById("rwYdayVow").textContent = formatComma(wl.ydayVow);
+  document.getElementById("rwNowVow").textContent = formatComma(wl.nowVow);
+  document.getElementById("rwYdayWlvl").textContent = wl.ydayWlvl.toFixed(2);
+
+  const nowWlvlEl = document.getElementById("rwNowWlvl");
+  const diffStr = wl.diffWlvl > 0 ? ` (▲+${wl.diffWlvl.toFixed(2)})` : wl.diffWlvl < 0 ? ` (▼${wl.diffWlvl.toFixed(2)})` : "";
+  nowWlvlEl.textContent = `${wl.nowWlvl.toFixed(2)}${diffStr}`;
+  nowWlvlEl.style.color = wl.trendBadgeColor;
+
+  document.getElementById("rwYdayDischarge").textContent = formatComma(wl.dischargeYday);
+  document.getElementById("rwNowDischarge").textContent = formatComma(wl.dischargeNow);
+
+  // 취수탑 물 높이 및 만수위/현수위/사수위 뱃지 업데이트
+  document.getElementById("rwBadgeFull").textContent = `${wl.fullWlvl.toFixed(2)} EL.m (만수위)`;
+  document.getElementById("rwBadgeCurr").textContent = `${wl.nowWlvl.toFixed(2)} EL.m (현수위)`;
+  document.getElementById("rwBadgeMin").textContent = `${wl.minWlvl.toFixed(2)} EL.m (사수위)`;
+
+  // 사수위(42px) ~ 만수위(192px) 사이 비율(150px 구간)로 물 높이 계산
+  const clampedRate = Math.max(5, Math.min(108, wl.nowRate));
+  const waterHeightPx = Math.round((clampedRate / 100) * 150);
+  const waterFillEl = document.getElementById("rwWaterFill");
+  const badgeCurrEl = document.getElementById("rwBadgeCurr");
+  if (waterFillEl && badgeCurrEl) {
+    waterFillEl.style.height = `${waterHeightPx}px`;
+    // 만수위 뱃지(197px)와 겹치지 않도록 위치 보정
+    const badgeBottom = Math.min(166, Math.max(44, 42 + waterHeightPx - 14));
+    badgeCurrEl.style.bottom = `${badgeBottom}px`;
+  }
+
+  // 전술 브리핑 업데이트
+  document.getElementById("rwTacticalText").innerHTML = `
+    <strong style="color:${wl.trendBadgeColor}; display:inline;">[${wl.trendLabel}]</strong> ${wl.waterTactic}
+  `;
+
+  // 공식 실시간 그래프 링크 및 iframe URL 갱신
+  const popupUrl = `https://rawris-am.ekr.or.kr/wrms/gis/popviewequip_gis?equip_no=${wl.equipNo}`;
+  const directLink = document.getElementById("rawrisDirectLink");
+  if (directLink) directLink.href = popupUrl;
+
+  const iframe = document.getElementById("rawrisLiveIframe");
+  if (iframe && iframe.dataset.loadedEquip !== String(wl.equipNo)) {
+    iframe.dataset.pendingUrl = popupUrl;
+    if (document.getElementById("rawrisIframeView").style.display !== "none") {
+      iframe.src = popupUrl;
+      iframe.dataset.loadedEquip = String(wl.equipNo);
+    }
+  }
+}
+
 function renderWeatherBanner(w) {
-  document.getElementById("liveStatusText").textContent = `${w.locationName} (${w.updatedAt} 실시간 기상청/Open-Meteo 연동)`;
+  const wl = w.waterLevel;
+  const wlStatusText = wl ? ` · 수위계측(${wl.equipName} ${wl.nowDate})` : "";
+  document.getElementById("liveStatusText").textContent = `${w.locationName} (${w.updatedAt} 기상청${wlStatusText} 실시간 연동)`;
+
   document.getElementById("mAirTemp").textContent = `${w.airTemp}°C`;
   document.getElementById("mAirSub").textContent = `체감 ${w.apparentTemp}°C · ${w.weatherIcon} ${w.weatherText}`;
 
   document.getElementById("mWaterTemp").textContent = `약 ${w.estimatedWaterTemp}°C`;
   document.getElementById("mWaterSub").textContent = `계절 열용량 보정 추정 수온`;
+
+  // 실시간 수위 카드 업데이트
+  const wlValEl = document.getElementById("mWaterLevel");
+  const wlSubEl = document.getElementById("mWaterLevelSub");
+  if (wl) {
+    wlValEl.textContent = `${wl.nowRate.toFixed(1)}% (${wl.nowWlvl.toFixed(2)}m)`;
+    wlSubEl.textContent = `${wl.equipName}: ${wl.trendLabel}`;
+    wlSubEl.style.color = wl.trendBadgeColor;
+  } else {
+    wlValEl.textContent = `수위 미지원`;
+    wlSubEl.textContent = `일반 하천/보 구간`;
+  }
 
   document.getElementById("mWind").textContent = `${w.windSpeedMs} m/s`;
   document.getElementById("mWindSub").textContent = `${w.windDir} · ${windLabels[w.windState]}`;
@@ -334,18 +464,35 @@ function renderWeatherBanner(w) {
   biteEl.style.color = w.biteAnalysis.color;
   document.getElementById("mBiteSub").textContent = w.biteAnalysis.grade;
 
+  const waterBrief = wl
+    ? `<div style="margin-top:5px; padding-top:5px; border-top:1px dashed rgba(255,255,255,0.12);">
+         <strong style="color:${wl.trendBadgeColor}; margin-right:8px;">🌊 [${wl.equipName} ${wl.trendLabel}]</strong>
+         <span>${wl.waterTactic}</span>
+       </div>`
+    : "";
+
   document.getElementById("livePressureTactic").innerHTML = `
-    <div>
-      <strong style="color:${w.biteAnalysis.color}; margin-right:8px;">${w.biteAnalysis.pressureStatus}</strong>
-      <span>${w.biteAnalysis.pressureTactic}</span>
+    <div style="width:100%;">
+      <div>
+        <strong style="color:${w.biteAnalysis.color}; margin-right:8px;">${w.biteAnalysis.pressureStatus}</strong>
+        <span>${w.biteAnalysis.pressureTactic}</span>
+      </div>
+      ${waterBrief}
     </div>
   `;
 
-  // 실시간 기압/월령 분석 탭 상세 업데이트
   const deepWeatherBox = document.getElementById("deepWeatherAnalysisBox");
   if (deepWeatherBox) {
     deepWeatherBox.innerHTML = `
       <div class="pattern-list">
+        ${wl ? `
+        <div class="pattern-item" style="border-left-color:${wl.trendBadgeColor};">
+          <div class="p-head">
+            <span>🌊 농어촌공사(RAWRIS) 실시간 수위 & 배수기/오름수위 판별 (${wl.equipName})</span>
+            <span class="p-range">금일 ${wl.nowRate}% (${wl.nowWlvl} EL.m) / 전일 ${wl.ydayRate}% (${wl.ydayWlvl} EL.m)</span>
+          </div>
+          <div class="p-desc">${wl.waterTactic}</div>
+        </div>` : ""}
         <div class="pattern-item" style="border-left-color:${w.biteAnalysis.color};">
           <div class="p-head">
             <span>📊 현재 기압 & 부레 활성도 브리핑</span>
@@ -383,6 +530,9 @@ function applyLiveWeatherToSimulator(showToast = true) {
   state.time = w.timeOfDay;
   state.temp = w.estimatedWaterTemp;
   state.wind = w.windState;
+  if (w.waterLevel) {
+    state.waterTrend = w.waterLevel.trend;
+  }
   if (w.precipitation > 2.0 || w.windSpeedMs >= 5.5) {
     state.clarity = "muddy";
   }
@@ -394,14 +544,13 @@ function applyLiveWeatherToSimulator(showToast = true) {
   if (showToast) {
     const btn = document.getElementById("btnApplyLive");
     const orig = btn.innerHTML;
-    btn.innerHTML = "✅ 실시간 환경 반영 완료!";
+    btn.innerHTML = "✅ 실시간 기상·수위 반영 완료!";
     setTimeout(() => { btn.innerHTML = orig; }, 1800);
   }
 }
 
 // === 5. 가이드 탭 (물색 컬러 팔레트 & 싱커표 & 수온 치트시트) 렌더링 ===
 function initStaticGuideTables() {
-  // 싱커 테이블
   const sinkerBody = document.getElementById("sinkerTableBody");
   if (sinkerBody) {
     sinkerBody.innerHTML = SINKER_CHART.map(row => `
@@ -413,7 +562,6 @@ function initStaticGuideTables() {
     `).join("");
   }
 
-  // 수온별 생태 패턴
   const tempPatternEl = document.getElementById("waterTempPatternsList");
   if (tempPatternEl) {
     tempPatternEl.innerHTML = WATER_TEMP_PATTERNS.map(p => `
@@ -475,7 +623,7 @@ function renderCatchLogs() {
   if (logs.length === 0) {
     container.innerHTML = `
       <div style="text-align:center; padding:26px; color:var(--text-muted); font-size:0.86rem;">
-        아직 저장된 조행 기록이 없습니다. 위 버튼을 눌러 오늘 히트한 루어와 필드 환경(기온·기압·수온)을 원클릭으로 기록해 보세요!
+        아직 저장된 조행 기록이 없습니다. 위 버튼을 눌러 오늘 히트한 루어와 필드 환경(기온·수위·기압·수온)을 원클릭으로 기록해 보세요!
       </div>
     `;
     return;
@@ -490,7 +638,7 @@ function renderCatchLogs() {
           <span class="mini-tag tag-bfs">${item.spot}</span>
         </div>
         <div style="font-size:0.78rem; color:var(--text-muted);">
-          📅 ${item.date} | 🌡️ 기온 ${item.airTemp}°C (수온 ${item.waterTemp}°C) | 🧭 ${item.pressure}hPa | 💨 ${item.wind}
+          📅 ${item.date} | 🌡️ 기온 ${item.airTemp}°C (수온 ${item.waterTemp}°C) | 🌊 ${item.waterLevelText || "평수위"} | 🧭 ${item.pressure}hPa
         </div>
         ${item.memo ? `<div style="font-size:0.82rem; color:#e2e8f0; margin-top:4px;">💬 ${item.memo}</div>` : ""}
       </div>
@@ -518,6 +666,7 @@ function setupCatchLogForm() {
       const lure = document.getElementById("logLureInput").value;
       const memo = document.getElementById("logMemoInput").value.trim();
       const w = WeatherEngine.currentData;
+      const wl = w?.waterLevel;
       const now = new Date();
       const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
 
@@ -529,6 +678,7 @@ function setupCatchLogForm() {
         sizeCm,
         airTemp: w ? w.airTemp : state.temp,
         waterTemp: state.temp,
+        waterLevelText: wl ? `저수율 ${wl.nowRate}% (${wl.nowWlvl}m, ${waterTrendLabels[state.waterTrend]})` : waterTrendLabels[state.waterTrend],
         pressure: w ? w.pressure : 1013,
         wind: windLabels[state.wind],
         memo
@@ -575,7 +725,6 @@ function drawScene() {
   const H = canvas.height;
   ctx.clearRect(0, 0, W, H);
 
-  // 1. 하늘 배경 (출조 시간대별)
   const skyGrad = ctx.createLinearGradient(0, 0, 0, 54);
   if (state.time === "dawn_dusk") {
     skyGrad.addColorStop(0, "#311042");
@@ -591,7 +740,6 @@ function drawScene() {
   ctx.fillStyle = skyGrad;
   ctx.fillRect(0, 0, W, 54);
 
-  // 해 / 노을 / 달
   if (state.time === "dawn_dusk") {
     ctx.fillStyle = "rgba(251, 146, 60, 0.85)";
     ctx.beginPath();
@@ -613,7 +761,6 @@ function drawScene() {
     });
   }
 
-  // 2. 물색(Clarity) & 시간대 기반 수중 배경
   const waterGrad = ctx.createLinearGradient(0, 54, 0, H);
   if (state.time === "night") {
     waterGrad.addColorStop(0, "#082032");
@@ -634,7 +781,6 @@ function drawScene() {
   ctx.fillStyle = waterGrad;
   ctx.fillRect(0, 54, W, H - 54);
 
-  // 3. 수면 파도 애니메이션
   ctx.beginPath();
   const waveAmp = state.wind === "calm" ? 1.2 : state.wind === "moderate" ? 3.5 : 6.8;
   const waveFreq = state.wind === "strong" ? 0.045 : 0.025;
@@ -647,7 +793,6 @@ function drawScene() {
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // 4. 수심 그리드 라인 (1m ~ 4m)
   ctx.font = "11px sans-serif";
   ctx.fillStyle = "rgba(148, 163, 184, 0.68)";
   ctx.strokeStyle = "rgba(148, 163, 184, 0.14)";
@@ -664,7 +809,6 @@ function drawScene() {
   });
   ctx.fillText("수면 0m", 6, 48);
 
-  // 5. 바닥 지형 및 스트럭처
   ctx.beginPath();
   ctx.moveTo(0, H);
   ctx.lineTo(0, depthToY(0.3, H));
@@ -718,7 +862,6 @@ function drawScene() {
     });
   }
 
-  // 6. 선택된 루어 타겟 수심층 및 액션 궤적
   const activeLure = LURES.find(l => l.id === state.selectedLureId) || LURES[0];
   const [minD, maxD] = activeLure.depthRange;
   const zoneTop = depthToY(minD, H);
@@ -810,7 +953,6 @@ function drawScene() {
       actionLabel = "중층 롤링 / 유영 리트리브";
   }
 
-  // 가이드 점선
   ctx.beginPath();
   ctx.setLineDash([3, 5]);
   ctx.strokeStyle = "rgba(56, 189, 248, 0.45)";
@@ -820,7 +962,6 @@ function drawScene() {
   ctx.stroke();
   ctx.setLineDash([]);
 
-  // 낚싯줄
   ctx.beginPath();
   ctx.moveTo(rodTipX, rodTipY);
   ctx.quadraticCurveTo((rodTipX + lureX) / 2, Math.min(lureY, 66), lureX, lureY);
@@ -828,7 +969,6 @@ function drawScene() {
   ctx.lineWidth = 1.3;
   ctx.stroke();
 
-  // 루어 진동 파동 링
   const pulseRadius = 8 + ((animTick * 18) % 22) * (activeLure.vibration / 85);
   ctx.beginPath();
   ctx.arc(lureX, lureY, pulseRadius, 0, Math.PI * 2);
@@ -836,7 +976,6 @@ function drawScene() {
   ctx.lineWidth = 1.5;
   ctx.stroke();
 
-  // 루어 본체
   const lureColor = activeLure.category === "HARD" ? "#f59e0b" : activeLure.category === "WIRE" ? "#c084fc" : "#10b981";
   ctx.fillStyle = lureColor;
   ctx.beginPath();
@@ -846,7 +985,6 @@ function drawScene() {
   ctx.lineWidth = 1.5;
   ctx.stroke();
 
-  // 추적하는 배스 실루엣
   const bassX = lureX + 38 + Math.sin(animTick * 3) * 8;
   const bassY = Math.min(localBottomY - 14, lureY + 10);
   ctx.fillStyle = "rgba(74, 222, 128, 0.85)";
@@ -860,7 +998,6 @@ function drawScene() {
   ctx.closePath();
   ctx.fill();
 
-  // 우측 상단 액션 자막 박스
   ctx.fillStyle = "rgba(15, 23, 42, 0.86)";
   ctx.fillRect(W - 265, 8, 255, 32);
   ctx.strokeStyle = "#334155";
@@ -874,7 +1011,6 @@ function drawScene() {
 
 // === 8. 이벤트 바인딩 & 초기화 ===
 function initEvents() {
-  // 포인트 선택 드롭다운 초기화
   const spotSelect = document.getElementById("spotSelect");
   if (spotSelect) {
     spotSelect.innerHTML = KOREA_SPOTS.map(s => `<option value="${s.id}" ${s.id === state.selectedSpotId ? "selected" : ""}>${s.name}</option>`).join("");
@@ -893,6 +1029,31 @@ function initEvents() {
   document.getElementById("btnApplyLive")?.addEventListener("click", () => {
     applyLiveWeatherToSimulator(true);
   });
+
+  // RAWRIS 탭 내부 뷰 전환 (커스텀 취수탑 그래픽 vs 농어촌공사 실시간 그래프 원본 iframe)
+  const btnTower = document.getElementById("btnShowCustomTower");
+  const btnIframe = document.getElementById("btnShowLiveIframe");
+  const customView = document.getElementById("rawrisCustomView");
+  const iframeView = document.getElementById("rawrisIframeView");
+  const iframeEl = document.getElementById("rawrisLiveIframe");
+
+  if (btnTower && btnIframe && customView && iframeView) {
+    btnTower.addEventListener("click", () => {
+      btnTower.classList.add("active");
+      btnIframe.classList.remove("active");
+      customView.style.display = "block";
+      iframeView.style.display = "none";
+    });
+    btnIframe.addEventListener("click", () => {
+      btnIframe.classList.add("active");
+      btnTower.classList.remove("active");
+      customView.style.display = "none";
+      iframeView.style.display = "block";
+      if (iframeEl && iframeEl.dataset.pendingUrl && iframeEl.src !== iframeEl.dataset.pendingUrl) {
+        iframeEl.src = iframeEl.dataset.pendingUrl;
+      }
+    });
+  }
 
   // 모바일 필터 접기/펼치기
   const mobileToggleHeader = document.getElementById("mobileControlToggle");
@@ -938,6 +1099,16 @@ function initEvents() {
     renderUI();
   });
 
+  // 수위 변동 (오름수위 / 안정 / 배수기)
+  document.querySelectorAll("#waterTrendGroup .btn-toggle").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.waterTrend = btn.getAttribute("data-wtrend");
+      const top = getFilteredAndRankedLures()[0];
+      if (top) state.selectedLureId = top.id;
+      renderUI();
+    });
+  });
+
   // 바람
   document.querySelectorAll("#windGroup .btn-toggle").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -948,7 +1119,7 @@ function initEvents() {
     });
   });
 
-  // 물색 (NEW)
+  // 물색
   document.querySelectorAll("#clarityGroup .btn-toggle").forEach(btn => {
     btn.addEventListener("click", () => {
       state.clarity = btn.getAttribute("data-clarity");
@@ -1014,6 +1185,6 @@ window.addEventListener("DOMContentLoaded", () => {
   renderUI();
   requestAnimationFrame(drawScene);
 
-  // 초기 실시간 기상 조회 (기본: 예당호, 사용자가 '내 위치 GPS' 클릭 시 즉시 GPS로 전환)
+  // 기본 선택 포인트(충남 아산호) 실시간 기상 및 RAWRIS 수위 조회
   loadWeatherForSpot(state.selectedSpotId, true);
 });
