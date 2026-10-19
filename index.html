@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>🎣 배스 택티컬 프로 v3.5 — 실시간 기상·수위(RAWRIS) & 루어 시뮬레이터</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css?v=20261019_4" />
 </head>
 <body>
   <div class="container">
@@ -53,8 +53,8 @@
         </div>
         <div class="metric-card" style="border-color: rgba(56, 189, 248, 0.45); background: rgba(56, 189, 248, 0.06);">
           <span class="m-label">🌊 실시간 저수율 / 현수위</span>
-          <span class="m-val" id="mWaterLevel">--% (-- EL.m)</span>
-          <span class="m-sub" id="mWaterLevelSub">농어촌공사 수위 연동</span>
+          <span class="m-val" id="mWaterLevel">86.9% (2.05m)</span>
+          <span class="m-sub" id="mWaterLevelSub" style="color:#22c55e;">아산호(평택호): 📈 오름수위 (+0.05m / +1.2%)</span>
         </div>
         <div class="metric-card">
           <span class="m-label">💨 현재 풍속 / 수면</span>
@@ -398,7 +398,7 @@
           <div style="padding: 0 20px 18px 20px;">
             <div class="tactical-box" id="rwTacticalBriefingBox" style="margin:0;">
               <strong>🌊 현재 수위 변동 기반 배스 포지션 & 공략 전술</strong>
-              <span id="rwTacticalText">수위 데이터를 분석 중입니다...</span>
+              <span id="rwTacticalText"><strong style="color:#22c55e; display:inline;">[📈 오름수위 (+0.05m / +1.2%)]</strong> 전일 대비 수위가 오르는 '오름수위' 찬스입니다! 새롭게 물에 잠긴 연안 육초대·갈대·수초 엣지로 베이트피쉬와 빅배스가 대거 올라붙습니다. 쉘로우 무빙 루어(스피너베이트, 채터베이트, 쉘로우 크랭크)와 프로그/노싱커로 연안을 적극 공략하세요!</span>
             </div>
           </div>
         </div>
@@ -549,8 +549,9 @@
     </button>
   </nav>
 
-  <script src="js/lures-data.js"></script>
-  <script src="js/weather-api.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/water-levels-data.js?v=20261019_4"></script>
+  <script src="js/lures-data.js?v=20261019_4"></script>
+  <script src="js/weather-api.js?v=20261019_4"></script>
+  <script src="js/app.js?v=20261019_4"></script>
 </body>
 </html>

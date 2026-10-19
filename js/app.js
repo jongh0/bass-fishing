@@ -307,6 +307,27 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
   const statusEl = document.getElementById("liveStatusText");
   statusEl.textContent = "기상청 날씨 & 농어촌공사(RAWRIS) 수위 데이터 수신 중...";
 
+  // 1. 포인트 정보 및 수위 계측 코드(equipNo) 우선 파악하여 수위 위젯 즉시 렌더링
+  const defaultSpot = KOREA_SPOTS.find(s => s.id === "asan") || KOREA_SPOTS[1];
+  const initialSpot = spotId !== "gps" ? (KOREA_SPOTS.find(s => s.id === spotId) || defaultSpot) : defaultSpot;
+  const initialEquipNo = initialSpot.equipNo || 4140;
+
+  try {
+    const quickWl = await WeatherEngine.fetchWaterLevelData(initialEquipNo);
+    if (quickWl) {
+      renderRawrisWidget(quickWl);
+      const wlValEl = document.getElementById("mWaterLevel");
+      const wlSubEl = document.getElementById("mWaterLevelSub");
+      if (wlValEl && wlSubEl) {
+        wlValEl.textContent = `${quickWl.nowRate.toFixed(1)}% (${quickWl.nowWlvl.toFixed(2)}m)`;
+        wlSubEl.textContent = `${quickWl.equipName}: ${quickWl.trendLabel}`;
+        wlSubEl.style.color = quickWl.trendBadgeColor;
+      }
+    }
+  } catch (e) {
+    // ignore quick render error
+  }
+
   try {
     let lat, lon, customName = null, equipNo = null;
     if (spotId === "gps") {
@@ -322,11 +343,11 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
       const nearestSpot = WeatherEngine.findNearestEquipSpot(lat, lon);
       equipNo = nearestSpot ? nearestSpot.equipNo : 4140;
     } else {
-      const spot = KOREA_SPOTS.find(s => s.id === spotId) || KOREA_SPOTS[1];
+      const spot = KOREA_SPOTS.find(s => s.id === spotId) || defaultSpot;
       lat = spot.lat;
       lon = spot.lon;
       customName = spot.name.replace(/^[^\s]+\s/, "").replace(/\s*\(·?.*$/, "");
-      equipNo = spot.equipNo || 4140; // 수위 미연동 댐 선택 시 취수탑 뷰어는 기본 아산호로 유지하거나 안내 표시
+      equipNo = spot.equipNo || 4140;
     }
 
     const w = await WeatherEngine.fetchLiveWeather(lat, lon, customName, equipNo);
@@ -338,12 +359,17 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
     }
   } catch (err) {
     statusEl.textContent = "GPS 권한 확인 필요 → 충남 아산호 기준으로 표시 중";
-    const fallback = KOREA_SPOTS[1];
-    const w = await WeatherEngine.fetchLiveWeather(fallback.lat, fallback.lon, "충남 아산호 (기본값)", fallback.equipNo);
-    renderWeatherBanner(w);
-    renderRawrisWidget(w.waterLevel);
-    if (autoSyncSimulator) {
-      applyLiveWeatherToSimulator(false);
+    const fallback = defaultSpot;
+    try {
+      const w = await WeatherEngine.fetchLiveWeather(fallback.lat, fallback.lon, "충남 아산호 (기본값)", fallback.equipNo);
+      renderWeatherBanner(w);
+      renderRawrisWidget(w.waterLevel);
+      if (autoSyncSimulator) {
+        applyLiveWeatherToSimulator(false);
+      }
+    } catch (innerErr) {
+      const fallbackWl = await WeatherEngine.fetchWaterLevelData(fallback.equipNo);
+      if (fallbackWl) renderRawrisWidget(fallbackWl);
     }
   }
 }

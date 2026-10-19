@@ -135,12 +135,20 @@ const WeatherEngine = {
 
     let raw = null;
 
-    // 1. 먼저 저장소 내 실시간 동기화 데이터(data/water-levels.json) 로드
+    // 0. 내장 스크립트(js/water-levels-data.js -> window.RAWRIS_WATER_LEVELS)에서 즉시 기본 로드 (PC 캐시/CORS/방화벽 무관 100% 보장)
+    if (typeof window !== "undefined" && window.RAWRIS_WATER_LEVELS?.equips?.[equipNo]) {
+      raw = window.RAWRIS_WATER_LEVELS.equips[equipNo];
+    }
+
+    // 1. 저장소 내 최신 동기화 JSON(data/water-levels.json) 로드 시도
     try {
       if (!this.waterLevelsCache) {
         const res = await fetch(`./data/water-levels.json?t=${Date.now()}`);
         if (res.ok) {
-          this.waterLevelsCache = await res.json();
+          const json = await res.json();
+          if (json?.equips && Object.keys(json.equips).length > 0) {
+            this.waterLevelsCache = json;
+          }
         }
       }
       if (this.waterLevelsCache?.equips?.[equipNo]) {
@@ -150,19 +158,19 @@ const WeatherEngine = {
       // ignore
     }
 
-    // 2. 브라우저 직접 호출 시도 (사내망/로컬/CORS 허용 환경일 경우 최신 10분 데이터 즉시 덮어쓰기)
+    // 2. 브라우저 직접 호출 시도 (CORS 허용 환경일 경우 최신 10분 데이터 즉시 덮어쓰기)
     try {
       const directUrl = `https://rawris-am.ekr.or.kr/wrms/query/json?qid=rawris.wrms.gis.popup.view_info_reservoir&db_type=undefined&equip_no=${equipNo}`;
       const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 2200);
+      const timer = setTimeout(() => ctrl.abort(), 1800);
       const resLive = await fetch(directUrl, { signal: ctrl.signal });
       clearTimeout(timer);
       if (resLive.ok) {
         const arr = await resLive.json();
-        if (arr && arr[0]) raw = arr[0];
+        if (arr && arr[0] && arr[0].equip_name) raw = arr[0];
       }
     } catch (e) {
-      // CORS 제한 시 1번 스냅샷 데이터 사용
+      // CORS 제한 시 0/1번 스냅샷 데이터 사용
     }
 
     if (!raw) return null;

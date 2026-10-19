@@ -38,17 +38,39 @@ async function fetchEquipDetail(equipNo) {
 }
 
 async function main() {
+  const outDir = path.join(__dirname, "..", "data");
+  if (!fs.existsSync(outDir)) {
+    fs.mkdirSync(outDir, { recursive: true });
+  }
+  const outPath = path.join(outDir, "water-levels.json");
+  const jsOutPath = path.join(__dirname, "..", "js", "water-levels-data.js");
+
+  // 기존 스냅샷 데이터가 있으면 먼저 로드 (해외 GitHub Actions 러너에서 한국농어촌공사 방화벽 차단 시 기존 데이터 보존)
+  let existingEquips = {};
+  if (fs.existsSync(outPath)) {
+    try {
+      const prev = JSON.parse(fs.readFileSync(outPath, "utf8"));
+      if (prev && prev.equips) {
+        existingEquips = prev.equips;
+      }
+    } catch (e) {
+      // ignore parse error
+    }
+  }
+
   const result = {
     updatedAt: new Date().toISOString(),
-    equips: {}
+    equips: { ...existingEquips }
   };
 
+  let successCount = 0;
   const uniqueEquipNos = [...new Set(TARGET_EQUIPS.map(t => t.equipNo))];
   for (const equipNo of uniqueEquipNos) {
     try {
       const info = await fetchEquipDetail(equipNo);
-      if (info) {
+      if (info && info.equip_name) {
         result.equips[equipNo] = info;
+        successCount++;
         console.log(`[OK] ${equipNo} ${info.equip_name}: 금일 ${info.now_rate}% (${info.now_wlvl} EL.m) / 전일 ${info.yday_rate}% (${info.yday_wlvl} EL.m) [${info.now_date}]`);
       }
     } catch (err) {
@@ -56,13 +78,14 @@ async function main() {
     }
   }
 
-  const outDir = path.join(__dirname, "..", "data");
-  if (!fs.existsSync(outDir)) {
-    fs.mkdirSync(outDir, { recursive: true });
+  if (Object.keys(result.equips).length > 0) {
+    fs.writeFileSync(outPath, JSON.stringify(result, null, 2), "utf8");
+    const jsContent = `// 한국농어촌공사(RAWRIS) 실시간 수위 스냅샷 데이터 (네트워크/CORS 무관 즉시 로드 보장)\nwindow.RAWRIS_WATER_LEVELS = ${JSON.stringify(result, null, 2)};\n`;
+    fs.writeFileSync(jsOutPath, jsContent, "utf8");
+    console.log(`Saved ${Object.keys(result.equips).length} reservoir records (freshly fetched: ${successCount}) to ${outPath} and ${jsOutPath}`);
+  } else {
+    console.warn("[SKIP] No reservoir records available to write; keeping existing files.");
   }
-  const outPath = path.join(outDir, "water-levels.json");
-  fs.writeFileSync(outPath, JSON.stringify(result, null, 2), "utf8");
-  console.log(`Saved ${Object.keys(result.equips).length} reservoir records to ${outPath}`);
 }
 
 main().catch(err => {
