@@ -9,15 +9,15 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>🎣 배스 택티컬 프로 v3.5 — 실시간 기상·수위(RAWRIS) & 루어 시뮬레이터</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="css/style.css?v=20261019_5" />
+  <link rel="stylesheet" href="css/style.css?v=20261019_8" />
 </head>
 <body>
   <div class="container">
     <!-- 1. 상단 타이틀 헤더 -->
     <header class="app-header">
       <div class="title-group">
-        <h1>🎣 사계절 & 실시간 기상·수위 연동 배스 택티컬 시뮬레이터 v3.5</h1>
-        <p>실시간 날씨 · 기압 · 농어촌공사(RAWRIS) 수위(오름/배수) · 수온 · 물색 기반 19종 루어 완벽 매칭 & 수중 액션</p>
+        <h1>🎣 <span class="pc-only-inline">사계절 & 실시간 기상·수위 연동 </span>배스 택티컬 시뮬레이터 <small style="font-size:0.78em; opacity:0.85;">v3.5</small></h1>
+        <p class="header-sub-desc">실시간 날씨 · 기압 · 농어촌공사(RAWRIS) 수위(오름/배수) · 수온 · 물색 기반 19종 루어 완벽 매칭 & 수중 액션</p>
       </div>
       <div class="badge-row">
         <span class="cat-badge cat-hard">● 하드베이트 (7종)</span>
@@ -42,44 +42,46 @@
 
       <div class="weather-metrics-grid">
         <div class="metric-card">
-          <span class="m-label">🌡️ 현재 기온 / 날씨</span>
+          <span class="m-label">🌡️ 기온 / 날씨</span>
           <span class="m-val" id="mAirTemp">--°C</span>
           <span class="m-sub" id="mAirSub">실시간 조회 중</span>
         </div>
         <div class="metric-card">
-          <span class="m-label">💧 실시간 추정 수온</span>
+          <span class="m-label">💧 추정 수온</span>
           <span class="m-val" id="mWaterTemp">--°C</span>
-          <span class="m-sub" id="mWaterSub">계절 열용량 보정</span>
+          <span class="m-sub" id="mWaterSub">열용량 보정</span>
         </div>
         <div class="metric-card" style="border-color: rgba(56, 189, 248, 0.45); background: rgba(56, 189, 248, 0.06);">
-          <span class="m-label">🌊 실시간 저수율 / 현수위</span>
+          <span class="m-label">🌊 저수율 / 현수위</span>
           <span class="m-val" id="mWaterLevel">86.9% (2.05m)</span>
-          <span class="m-sub" id="mWaterLevelSub" style="color:#22c55e;">아산호(평택호): 📈 오름수위 (+0.05m / +1.2%)</span>
+          <span class="m-sub" id="mWaterLevelSub" style="color:#22c55e;">아산호: 📈 오름수위 (+0.05m)</span>
         </div>
         <div class="metric-card">
-          <span class="m-label">💨 현재 풍속 / 수면</span>
+          <span class="m-label">💨 풍속 / 수면</span>
           <span class="m-val" id="mWind">-- m/s</span>
           <span class="m-sub" id="mWindSub">풍향 분석 중</span>
         </div>
         <div class="metric-card">
-          <span class="m-label">🧭 해면 기압 (부레 활성)</span>
+          <span class="m-label">🧭 해면 기압</span>
           <span class="m-val" id="mPressure">---- hPa</span>
-          <span class="m-sub" id="mPressureSub">3시간 기압 추이</span>
+          <span class="m-sub" id="mPressureSub">3시간 추이</span>
         </div>
         <div class="metric-card">
-          <span class="m-label">🌅 일출 / 일몰 (골든타임)</span>
+          <span class="m-label">🌅 일출 / 일몰</span>
           <span class="m-val" id="mSunTime">--:-- / --:--</span>
-          <span class="m-sub" id="mSunSub">음력 월령 계산 중</span>
+          <span class="m-sub" id="mSunSub">음력 물때</span>
         </div>
-        <div class="metric-card" style="border-color: rgba(34, 197, 94, 0.45); background: rgba(34, 197, 94, 0.06);">
+        <div class="metric-card metric-card-bite" style="border-color: rgba(34, 197, 94, 0.45); background: rgba(34, 197, 94, 0.06);">
           <span class="m-label">🔥 실시간 배스 활성도 지수</span>
-          <span class="m-val" id="mBiteScore" style="color:#4ade80;">--점</span>
-          <span class="m-sub" id="mBiteSub">기압·수위·수온 종합</span>
+          <div class="bite-val-wrap">
+            <span class="m-val" id="mBiteScore" style="color:#4ade80;">--점</span>
+            <span class="m-sub" id="mBiteSub">기압·수위·수온 종합</span>
+          </div>
         </div>
       </div>
 
       <div class="bite-tactic-strip" id="livePressureTactic">
-        <span>📡 실시간 기압 변화, 농어촌공사 저수지 수위(오름/배수), 일출·일몰 데이터를 바탕으로 오늘의 공략 브리핑을 계산합니다...</span>
+        <span>📡 실시간 기압·수위 브리핑 수신 중...</span>
       </div>
     </section>
 
@@ -552,9 +554,9 @@
     -->
   </nav>
 
-  <script src="js/water-levels-data.js?v=20261019_7"></script>
-  <script src="js/lures-data.js?v=20261019_7"></script>
-  <script src="js/weather-api.js?v=20261019_7"></script>
-  <script src="js/app.js?v=20261019_7"></script>
+  <script src="js/water-levels-data.js?v=20261019_8"></script>
+  <script src="js/lures-data.js?v=20261019_8"></script>
+  <script src="js/weather-api.js?v=20261019_8"></script>
+  <script src="js/app.js?v=20261019_8"></script>
 </body>
 </html>

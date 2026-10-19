@@ -491,17 +491,17 @@ function renderWeatherBanner(w) {
   document.getElementById("mBiteSub").textContent = w.biteAnalysis.grade;
 
   const waterBrief = wl
-    ? `<div style="margin-top:5px; padding-top:5px; border-top:1px dashed rgba(255,255,255,0.12);">
-         <strong style="color:${wl.trendBadgeColor}; margin-right:8px;">🌊 [${wl.equipName} ${wl.trendLabel}]</strong>
-         <span>${wl.waterTactic}</span>
+    ? `<div class="tactic-water-row" style="margin-top:4px; padding-top:4px; border-top:1px dashed rgba(255,255,255,0.12);">
+         <strong style="color:${wl.trendBadgeColor}; margin-right:6px;">🌊 [${wl.equipName} ${wl.trendLabel}]</strong>
+         <span class="tactic-detail-pc">${wl.waterTactic}</span>
        </div>`
     : "";
 
   document.getElementById("livePressureTactic").innerHTML = `
     <div style="width:100%;">
-      <div>
-        <strong style="color:${w.biteAnalysis.color}; margin-right:8px;">${w.biteAnalysis.pressureStatus}</strong>
-        <span>${w.biteAnalysis.pressureTactic}</span>
+      <div class="tactic-pressure-row">
+        <strong style="color:${w.biteAnalysis.color}; margin-right:6px;">${w.biteAnalysis.pressureStatus}</strong>
+        <span class="tactic-detail-pc">${w.biteAnalysis.pressureTactic}</span>
       </div>
       ${waterBrief}
     </div>
