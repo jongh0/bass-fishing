@@ -9,7 +9,6 @@ let state = {
   clarity: "stained",
   struct: "rock_slope",
   catFilter: "ALL",
-  tackleFilter: "ALL",
   selectedLureId: "chatterbait",
   selectedSpotId: "asan", // 기본값: 충남 아산호
   activeTab: "tab-simulator",
@@ -42,7 +41,7 @@ const windLabels = {
 };
 
 const clarityLabels = {
-  clear: "맑음 (Clear)",
+  clear: "맑음",
   stained: "보통 (녹조/수초물)",
   muddy: "탁수 (흙탕물)"
 };
@@ -58,7 +57,7 @@ const structLabels = {
 const RISING_WATER_LURES = ["hollow_frog", "buzzbait", "spinnerbait", "chatterbait", "shallow_crank", "no_sinker", "top_popper_pencil", "rubber_jig"];
 const FALLING_WATER_LURES = ["downshot_rig", "neko_rig", "free_rig", "mid_strolling", "deep_crank", "metal_vibe", "suspending_shad", "kaizer_rig"];
 
-// === 1. 루어 매칭 스코어 계산 엔진 (수온 + 계절 + 시간대 + 수위변동 + 지형 + 바람 + 물색 + BFS) ===
+// === 1. 루어 매칭 스코어 계산 엔진 (수온 + 계절 + 시간대 + 수위변동 + 지형 + 바람 + 물색) ===
 function computeScore(lure) {
   let score = 45;
 
@@ -124,18 +123,12 @@ function computeScore(lure) {
     score += 3;
   }
 
-  // 8) BFS 피네스 보너스
-  if (state.tackleFilter === "BFS" && lure.bfsFriendly) {
-    score += 3;
-  }
-
   return Math.max(15, Math.min(99, Math.round(score)));
 }
 
 function getFilteredAndRankedLures() {
   return LURES
     .filter(l => state.catFilter === "ALL" || l.category === state.catFilter)
-    .filter(l => state.tackleFilter === "ALL" || l.bfsFriendly)
     .map(l => ({ ...l, score: computeScore(l) }))
     .sort((a, b) => b.score - a.score);
 }
@@ -157,7 +150,6 @@ function syncControlButtons() {
   toggleGroup("#clarityGroup", "data-clarity", state.clarity);
   toggleGroup("#structGroup", "data-struct", state.struct);
   toggleGroup("#catFilterGroup", "data-cat", state.catFilter);
-  toggleGroup("#tackleGroup", "data-tackle", state.tackleFilter);
 }
 
 // === 3. 메인 UI 렌더링 ===
@@ -178,8 +170,8 @@ function renderUI() {
   }
 
   const ranked = getFilteredAndRankedLures();
-  document.getElementById("tackleLabel").textContent =
-    state.tackleFilter === "BFS" ? `⚡ BFS 전용 (${ranked.length}종)` : `전체 (${ranked.length}종)`;
+  const catLabels = { ALL: "전체", HARD: "하드베이트", WIRE: "와이어베이트", SOFT: "소프트베이트" };
+  document.getElementById("tackleLabel").textContent = `${catLabels[state.catFilter] || "전체"} (${ranked.length}종)`;
   document.getElementById("resultCountLabel").textContent = `총 ${ranked.length}개 루어 분석됨`;
 
   if (!ranked.some(l => l.id === state.selectedLureId) && ranked.length > 0) {
@@ -211,7 +203,6 @@ function renderUI() {
           <span class="rank-num">${idx + 1}</span>
           <span class="lure-title">${lure.name}</span>
           <span class="mini-tag ${catTagClass}">${lure.catLabel}</span>
-          ${lure.bfsFriendly ? '<span class="mini-tag tag-bfs">BFS 호환</span>' : ''}
         </div>
       </div>
       <div class="score-bar-wrap">
@@ -252,7 +243,6 @@ function renderUI() {
         <div>
           <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
             <span class="cat-badge ${catBadgeClass}" style="padding:3px 10px; font-size:0.74rem;">${activeLure.catLabel}</span>
-            ${activeLure.bfsFriendly ? '<span class="mini-tag tag-bfs">⚡ BFS 추천</span>' : ''}
           </div>
           <div class="detail-title">${activeLure.name}</div>
           <div class="detail-sub">공략 수심층: ${activeLure.depthText} | 권장 리트리브 템포: ${activeLure.speed}</div>
@@ -263,10 +253,6 @@ function renderUI() {
       </div>
 
       <div class="detail-specs">
-        <div class="spec-item">
-          <span class="label">⚡ BFS 피네스 권장 세팅</span>
-          <div class="value">${activeLure.bfsSpec}</div>
-        </div>
         <div class="spec-item" style="border-left-color:#a855f7;">
           <span class="label">🎣 스탠다드 베이트/스피닝 세팅</span>
           <div class="value">${activeLure.stdSpec}</div>
@@ -305,23 +291,27 @@ function renderUI() {
 // === 4. 실시간 날씨 & 농어촌공사(RAWRIS) 수위 조회 및 자동 동기화 ===
 async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
   const statusEl = document.getElementById("liveStatusText");
-  statusEl.textContent = "기상청 날씨 & 농어촌공사(RAWRIS) 수위 데이터 수신 중...";
+  statusEl.textContent = "기상청 날씨 & 농어촌공사 수위 데이터 수신 중...";
 
   // 1. 포인트 정보 및 수위 계측 코드(equipNo) 우선 파악하여 수위 위젯 즉시 렌더링
   const defaultSpot = KOREA_SPOTS.find(s => s.id === "asan") || KOREA_SPOTS[1];
   const initialSpot = spotId !== "gps" ? (KOREA_SPOTS.find(s => s.id === spotId) || defaultSpot) : defaultSpot;
-  const initialEquipNo = initialSpot.equipNo || 4140;
+  const initialEquipNo = spotId !== "gps" ? initialSpot.equipNo : defaultSpot.equipNo;
 
   try {
     const quickWl = await WeatherEngine.fetchWaterLevelData(initialEquipNo);
-    if (quickWl) {
-      renderRawrisWidget(quickWl);
-      const wlValEl = document.getElementById("mWaterLevel");
-      const wlSubEl = document.getElementById("mWaterLevelSub");
-      if (wlValEl && wlSubEl) {
+    renderRawrisWidget(quickWl, initialSpot.name);
+    const wlValEl = document.getElementById("mWaterLevel");
+    const wlSubEl = document.getElementById("mWaterLevelSub");
+    if (wlValEl && wlSubEl) {
+      if (quickWl) {
         wlValEl.textContent = `${quickWl.nowRate.toFixed(1)}% (${quickWl.nowWlvl.toFixed(2)}m)`;
         wlSubEl.textContent = `${quickWl.equipName}: ${quickWl.trendLabel}`;
         wlSubEl.style.color = quickWl.trendBadgeColor;
+      } else {
+        wlValEl.textContent = `수위 미지원`;
+        wlSubEl.textContent = `다목적댐 (수자원공사 관할)`;
+        wlSubEl.style.color = "var(--text-muted)";
       }
     }
   } catch (e) {
@@ -347,12 +337,12 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
       lat = spot.lat;
       lon = spot.lon;
       customName = spot.name.replace(/^[📍🌊🏞️]\s*/, "");
-      equipNo = spot.equipNo || 4140;
+      equipNo = spot.equipNo;
     }
 
     const w = await WeatherEngine.fetchLiveWeather(lat, lon, customName, equipNo);
     renderWeatherBanner(w);
-    renderRawrisWidget(w.waterLevel);
+    renderRawrisWidget(w.waterLevel, customName || w.locationName);
 
     if (autoSyncSimulator) {
       applyLiveWeatherToSimulator(false);
@@ -361,7 +351,7 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
     statusEl.textContent = "GPS 권한 확인 필요 → 충남 아산호 기준으로 표시 중";
     const fallback = defaultSpot;
     try {
-      const w = await WeatherEngine.fetchLiveWeather(fallback.lat, fallback.lon, "충남 아산호 (기본값)", fallback.equipNo);
+      const w = await WeatherEngine.fetchLiveWeather(fallback.lat, fallback.lon, "충남 아산호", fallback.equipNo);
       renderWeatherBanner(w);
       renderRawrisWidget(w.waterLevel);
       if (autoSyncSimulator) {
@@ -381,8 +371,39 @@ function formatComma(num) {
 }
 
 // 첨부 이미지와 동일한 RAWRIS 수위·취수탑 대시보드 렌더링
-function renderRawrisWidget(wl) {
-  if (!wl) return;
+function renderRawrisWidget(wl, fallbackSpotName = "선택한 필드") {
+  if (!wl) {
+    document.getElementById("rwEquipTitle").textContent = fallbackSpotName;
+    document.getElementById("rwBranchSub").textContent = "한국수자원공사 관할 다목적댐 (농어촌공사 계측 대상 외)";
+    document.getElementById("rwNorRate").textContent = "-";
+    document.getElementById("rwYdayRate").textContent = "-";
+    document.getElementById("rwNowRate").textContent = "-";
+    document.getElementById("rwAltitude").textContent = "-";
+    document.getElementById("rwFlood").textContent = "-";
+    document.getElementById("rwFull").textContent = "-";
+    document.getElementById("rwMin").textContent = "-";
+    document.getElementById("rwTotalStorage").textContent = "-";
+    document.getElementById("rwEffecStorage").textContent = "-";
+    document.getElementById("rwWatershed").textContent = "-";
+    document.getElementById("rwAddress").textContent = fallbackSpotName;
+    document.getElementById("rwOffice").textContent = "한국수자원공사";
+    document.getElementById("rwYdayDate").textContent = "전일";
+    document.getElementById("rwNowDate").textContent = "금일";
+    document.getElementById("rwYdayVow").textContent = "-";
+    document.getElementById("rwNowVow").textContent = "-";
+    document.getElementById("rwYdayWlvl").textContent = "-";
+    const nowWlvlEl = document.getElementById("rwNowWlvl");
+    nowWlvlEl.textContent = "-";
+    nowWlvlEl.style.color = "var(--text-muted)";
+    document.getElementById("rwYdayDischarge").textContent = "-";
+    document.getElementById("rwNowDischarge").textContent = "-";
+    document.getElementById("rwBadgeFull").textContent = "만수위";
+    document.getElementById("rwBadgeCurr").textContent = "수위 미지원";
+    document.getElementById("rwBadgeMin").textContent = "사수위";
+    document.getElementById("rwTacticalText").innerHTML =
+      `<strong style="color:#38bdf8; display:inline;">[댐 수위 안내]</strong> 해당 필드는 한국수자원공사 관할 다목적댐으로 농어촌공사 저수지 계측 대상이 아닙니다. 상단 컨트롤 패널의 '4. 수위 변동'에서 현장 수위 상태(오름/평수위/배수)를 직접 선택해 시뮬레이션하세요.`;
+    return;
+  }
 
   document.getElementById("rwEquipTitle").textContent = wl.equipName;
   document.getElementById("rwBranchSub").textContent = `${wl.headName} · ${wl.branchName} | 실시간 수위 계측정보 (${wl.nowDate} 기준)`;
@@ -472,7 +493,8 @@ function renderWeatherBanner(w) {
     wlSubEl.style.color = wl.trendBadgeColor;
   } else {
     wlValEl.textContent = `수위 미지원`;
-    wlSubEl.textContent = `일반 하천/보 구간`;
+    wlSubEl.textContent = `다목적댐 (수자원공사 관할)`;
+    wlSubEl.style.color = "var(--text-muted)";
   }
 
   document.getElementById("mWind").textContent = `${w.windSpeedMs} m/s`;
@@ -514,7 +536,7 @@ function renderWeatherBanner(w) {
         ${wl ? `
         <div class="pattern-item" style="border-left-color:${wl.trendBadgeColor};">
           <div class="p-head">
-            <span>🌊 농어촌공사(RAWRIS) 실시간 수위 & 배수기/오름수위 판별 (${wl.equipName})</span>
+            <span>🌊 농어촌공사 실시간 수위 & 배수기/오름수위 판별 (${wl.equipName})</span>
             <span class="p-range">금일 ${wl.nowRate}% (${wl.nowWlvl} EL.m) / 전일 ${wl.ydayRate}% (${wl.ydayWlvl} EL.m)</span>
           </div>
           <div class="p-desc">${wl.waterTactic}</div>
@@ -661,7 +683,7 @@ function renderCatchLogs() {
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">
           <span style="font-weight:800; color:#4ade80; font-size:0.95rem;">🐟 ${item.sizeCm}cm 히트!</span>
           <span style="font-weight:700; color:#f8fafc;">${item.lure}</span>
-          <span class="mini-tag tag-bfs">${item.spot}</span>
+          <span class="mini-tag tag-spot">${item.spot}</span>
         </div>
         <div style="font-size:0.78rem; color:var(--text-muted);">
           📅 ${item.date} | 🌡️ 기온 ${item.airTemp}°C (수온 ${item.waterTemp}°C) | 🌊 ${item.waterLevelText || "평수위"} | 🧭 ${item.pressure}hPa
@@ -945,7 +967,7 @@ function drawScene() {
     case "metal_liftfall": {
       const saw = Math.abs(Math.sin(animTick * 4.5));
       lureY = (localBottomY - 6) - saw * 34;
-      actionLabel = "바닥 리프트 앤 폴 (Lift & Fall)";
+      actionLabel = "바닥 리프트 앤 폴";
       break;
     }
     case "soft_fall":
@@ -1169,16 +1191,6 @@ function initEvents() {
   document.querySelectorAll("#catFilterGroup .btn-toggle").forEach(btn => {
     btn.addEventListener("click", () => {
       state.catFilter = btn.getAttribute("data-cat");
-      const top = getFilteredAndRankedLures()[0];
-      if (top) state.selectedLureId = top.id;
-      renderUI();
-    });
-  });
-
-  // BFS 필터
-  document.querySelectorAll("#tackleGroup .btn-toggle").forEach(btn => {
-    btn.addEventListener("click", () => {
-      state.tackleFilter = btn.getAttribute("data-tackle");
       const top = getFilteredAndRankedLures()[0];
       if (top) state.selectedLureId = top.id;
       renderUI();

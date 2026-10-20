@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="description" content="실시간 위치·날씨·기압·수온·농어촌공사(RAWRIS) 수위 연동 사계절 배스 루어 택티컬 시뮬레이터" />
+  <meta name="description" content="실시간 위치·날씨·기압·수온·농어촌공사 수위 연동 사계절 배스 루어 택티컬 시뮬레이터" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>🎣 배스 택티컬 프로 v3.5 — 실시간 기상·수위(RAWRIS) & 루어 시뮬레이터</title>
+  <title>🎣 배스 택티컬 프로 v3.5 — 실시간 기상·수위 & 루어 시뮬레이터</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/style.css?v=20261019_8" />
 </head>
@@ -17,7 +17,7 @@
     <header class="app-header">
       <div class="title-group">
         <h1>🎣 <span class="pc-only-inline">사계절 & 실시간 기상·수위 연동 </span>배스 택티컬 시뮬레이터 <small style="font-size:0.78em; opacity:0.85;">v3.5</small></h1>
-        <p class="header-sub-desc">실시간 날씨 · 기압 · 농어촌공사(RAWRIS) 수위(오름/배수) · 수온 · 물색 기반 19종 루어 완벽 매칭 & 수중 액션</p>
+        <p class="header-sub-desc">실시간 날씨 · 기압 · 농어촌공사 수위(오름/배수) · 수온 · 물색 기반 19종 루어 완벽 매칭 & 수중 액션</p>
       </div>
       <div class="badge-row">
         <span class="cat-badge cat-hard">● 하드베이트 (7종)</span>
@@ -31,7 +31,7 @@
       <div class="weather-top-bar">
         <div class="location-selector-group">
           <select id="spotSelect" class="spot-select" aria-label="배스 포인트 선택"></select>
-          <button type="button" class="btn-gps" id="btnGpsLocate">📍 내 현재 위치(GPS)</button>
+          <button type="button" class="btn-gps" id="btnGpsLocate">📍 내 현재 위치</button>
           <button type="button" class="btn-apply-live" id="btnApplyLive">⚡ 실시간 기상·수위 반영</button>
         </div>
         <div class="live-status-pill">
@@ -51,7 +51,7 @@
           <span class="m-val" id="mWaterTemp">--°C</span>
           <span class="m-sub" id="mWaterSub">열용량 보정</span>
         </div>
-        <div class="metric-card" style="border-color: rgba(56, 189, 248, 0.45); background: rgba(56, 189, 248, 0.06);">
+        <div class="metric-card">
           <span class="m-label">🌊 저수율 / 현수위</span>
           <span class="m-val" id="mWaterLevel">86.9% (2.05m)</span>
           <span class="m-sub" id="mWaterLevelSub" style="color:#22c55e;">아산호: 📈 오름수위 (+0.05m)</span>
@@ -88,7 +88,7 @@
     <!-- 3. PC 상단 네비게이션 탭 바 -->
     <nav class="nav-tabs-bar" aria-label="주요 기능 탭">
       <button type="button" class="tab-btn active" data-target="tab-simulator">🎯 루어 매칭 & 수중 시뮬레이터</button>
-      <button type="button" class="tab-btn" data-target="tab-waterlevel">🌊 실시간 수위 · 취수탑 계측정보 (RAWRIS)</button>
+      <button type="button" class="tab-btn" data-target="tab-waterlevel">🌊 실시간 수위 · 취수탑 계측정보</button>
       <button type="button" class="tab-btn" data-target="tab-guide">📘 물색별 컬러 · 싱커 환산 · 수온 사전</button>
       <button type="button" class="tab-btn" data-target="tab-weather">🌤️ 기압 · 월령 · 피딩타임 정밀 브리핑</button>
       <!-- [추후 재활성화 가능] <button type="button" class="tab-btn" data-target="tab-log">📓 나만의 현장 조행 기록장</button> -->
@@ -110,8 +110,8 @@
         <!-- 1. 계절 프리셋 -->
         <div class="control-box">
           <div class="control-label">
-            <span>1. 계절 (Season Preset)</span>
-            <span class="val-highlight" id="seasonLabel">가을 (Autumn)</span>
+            <span>1. 계절</span>
+            <span class="val-highlight" id="seasonLabel">가을</span>
           </div>
           <div class="btn-group" id="seasonGroup">
             <button type="button" class="btn-toggle" data-season="spring">🌸 봄</button>
@@ -124,20 +124,20 @@
         <!-- 2. 출조 시간대 -->
         <div class="control-box">
           <div class="control-label">
-            <span>2. 출조 시간대 (Time of Day)</span>
+            <span>2. 출조 시간대</span>
             <span class="val-highlight" id="timeLabel">새벽/해질녘 (피딩)</span>
           </div>
           <div class="btn-group" id="timeGroup">
             <button type="button" class="btn-toggle active" data-time="dawn_dusk">🌅 새벽/해질녘</button>
             <button type="button" class="btn-toggle" data-time="midday">☀️ 한낮(직사광)</button>
-            <button type="button" class="btn-toggle" data-time="night">🌙 야간(Night)</button>
+            <button type="button" class="btn-toggle" data-time="night">🌙 야간</button>
           </div>
         </div>
 
         <!-- 3. 수온 슬라이더 -->
         <div class="control-box">
           <div class="control-label">
-            <span>3. 현재 수온 (Water Temp)</span>
+            <span>3. 현재 수온</span>
             <span class="val-highlight" id="tempLabel">16°C</span>
           </div>
           <input type="range" id="tempSlider" min="4" max="30" step="1" value="16" aria-label="현재 수온 조절" />
@@ -153,7 +153,7 @@
         <!-- 4. 수위 변동 상태 (오름수위 / 안정 / 배수기) - NEW! -->
         <div class="control-box">
           <div class="control-label">
-            <span>4. 수위 변동 (RAWRIS 연동)</span>
+            <span>4. 수위 변동</span>
             <span class="val-highlight" id="waterTrendLabel">📈 오름수위 (연안 활성)</span>
           </div>
           <div class="btn-group" id="waterTrendGroup">
@@ -179,12 +179,12 @@
         <!-- 6. 물색 / 탁도 -->
         <div class="control-box">
           <div class="control-label">
-            <span>6. 물색 & 탁도 (Water Clarity)</span>
+            <span>6. 물색 & 탁도</span>
             <span class="val-highlight" id="clarityLabel">보통 (녹조/수초물)</span>
           </div>
           <div class="btn-group" id="clarityGroup">
-            <button type="button" class="btn-toggle" data-clarity="clear">💧 맑음(Clear)</button>
-            <button type="button" class="btn-toggle active" data-clarity="stained">🌿 보통(Stained)</button>
+            <button type="button" class="btn-toggle" data-clarity="clear">💧 맑음</button>
+            <button type="button" class="btn-toggle active" data-clarity="stained">🌿 보통</button>
             <button type="button" class="btn-toggle" data-clarity="muddy">🟤 탁수(흙탕물)</button>
           </div>
         </div>
@@ -203,21 +203,17 @@
           </div>
         </div>
 
-        <!-- 8. 카테고리 & BFS 필터 -->
+        <!-- 8. 카테고리 필터 -->
         <div class="control-box">
           <div class="control-label">
-            <span>8. 베이트 분류 & BFS 모드</span>
+            <span>8. 베이트 분류</span>
             <span class="val-highlight" id="tackleLabel">전체 (19종)</span>
           </div>
-          <div class="btn-group" id="catFilterGroup" style="margin-bottom: 6px;">
+          <div class="btn-group" id="catFilterGroup">
             <button type="button" class="btn-toggle active" data-cat="ALL">전체</button>
             <button type="button" class="btn-toggle" data-cat="HARD">하드</button>
             <button type="button" class="btn-toggle" data-cat="WIRE">와이어</button>
             <button type="button" class="btn-toggle" data-cat="SOFT">소프트(웜)</button>
-          </div>
-          <div class="btn-group" id="tackleGroup">
-            <button type="button" class="btn-toggle active" data-tackle="ALL">올라운드 태클</button>
-            <button type="button" class="btn-toggle" data-tackle="BFS">⚡ BFS 피네스 전용 필터</button>
           </div>
         </div>
       </div>
@@ -254,7 +250,7 @@
       <div class="rawris-widget-card">
         <div class="rawris-header-bar">
           <div class="rawris-title-left">
-            <h3 id="rwEquipTitle">아산호(평택호)</h3>
+            <h3 id="rwEquipTitle">아산호</h3>
             <span class="rawris-branch" id="rwBranchSub">경기 · 평택 | 담수호/저수지 실시간 계측정보</span>
           </div>
           <div class="rawris-header-right">
@@ -426,7 +422,7 @@
     <section id="tab-guide" class="tab-section">
       <div class="guide-grid">
         <div class="guide-card">
-          <h3>🎨 물색(Water Clarity)별 필승 루어/웜 컬러 가이드</h3>
+          <h3>🎨 물색별 필승 루어/웜 컬러 가이드</h3>
           <div id="dynamicColorGuideBox"></div>
         </div>
 
@@ -480,15 +476,15 @@
         </div>
 
         <div class="guide-card">
-          <h3>🪢 라인(Line) 선택 & 직관적 매듭 핵심 요약</h3>
+          <h3>🪢 라인 선택 & 직관적 매듭 핵심 요약</h3>
           <div class="pattern-list">
             <div class="pattern-item">
-              <div class="p-head"><span>카본 라인 (Fluorocarbon) — 침강성·고감도</span></div>
-              <div class="p-desc">비중(1.78)이 물보다 무거워 가라앉으며 쓸림에 강합니다. BFS(5~8lb), 바닥 채비(프리리그/다운샷/러버지그) 및 크랭크/바이브 등 대부분의 배스 루어 주력 라인입니다.</div>
+              <div class="p-head"><span>카본 라인 — 침강성·고감도</span></div>
+              <div class="p-desc">비중(1.78)이 물보다 무거워 가라앉으며 쓸림에 강합니다. 바닥 채비(프리리그/다운샷/러버지그) 및 크랭크/바이브 등 대부분의 배스 루어 주력 라인입니다.</div>
             </div>
             <div class="pattern-item">
-              <div class="p-head"><span>합사 (PE Braided) & 나일론 (Mono) — 부력·탑워터</span></div>
-              <div class="p-desc">물에 뜨는 성질이 있어 포퍼·펜슬베이트·버즈베이트·프로그 등 수면(Topwater) 루어 액션을 살리는 데 필수입니다. 헤비 커버 프로그는 합사 3~4호 직결을 권장합니다.</div>
+              <div class="p-head"><span>합사 & 나일론 — 부력·탑워터</span></div>
+              <div class="p-desc">물에 뜨는 성질이 있어 포퍼·펜슬베이트·버즈베이트·프로그 등 수면 루어 액션을 살리는 데 필수입니다. 헤비 커버 프로그는 합사 3~4호 직결을 권장합니다.</div>
             </div>
           </div>
         </div>

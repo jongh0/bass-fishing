@@ -126,7 +126,7 @@ const WeatherEngine = {
         bestSpot = s;
       }
     }
-    return bestSpot || KOREA_SPOTS[1]; // 기본 아산호
+    return bestSpot || KOREA_SPOTS.find(s => s.id === "asan") || KOREA_SPOTS[1]; // 기본 아산호
   },
 
   // 한국농어촌공사(RAWRIS) 수위 데이터 로드 및 오름/내림수위 전술 분석
@@ -224,10 +224,10 @@ const WeatherEngine = {
 
     return {
       equipNo,
-      equipName: raw.equip_name,
+      equipName: String(raw.equip_name || "").replace(/\s*\(.*?\)/g, "").trim(),
       headName: raw.buseo_head_name,
       branchName: raw.buseo_branch_name,
-      address: `${raw.equip_addr1 || ""} ${raw.equip_addr2 || ""}`.trim(),
+      address: `${raw.equip_addr1 || ""} ${raw.equip_addr2 || ""}`.replace("전남광주통합특별시", "전라남도").trim(),
       nowDate: raw.now_date,
       ydayDate: raw.yday_date,
       nowRate,
@@ -309,16 +309,16 @@ const WeatherEngine = {
     score += waterLevelBonus;
 
     const finalScore = Math.max(20, Math.min(98, Math.round(score)));
-    let grade = "보통 (Standard)";
+    let grade = "보통";
     let color = "#38bdf8";
     if (finalScore >= 82) {
-      grade = "🔥 폭발적 입질 (Golden Bite!)";
+      grade = "🔥 폭발적 입질";
       color = "#22c55e";
     } else if (finalScore >= 68) {
-      grade = "👍 활성도 좋음 (Active)";
+      grade = "👍 활성도 좋음";
       color = "#4ade80";
     } else if (finalScore < 48) {
-      grade = "🛡️ 저활성 터프 (Finesse 필수)";
+      grade = "🛡️ 저활성 터프";
       color = "#f59e0b";
     }
 

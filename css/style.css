@@ -551,17 +551,6 @@ canvas#waterCanvas {
   display: flex;
   flex-direction: column;
   gap: 9px;
-  max-height: 760px;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-
-.lure-list::-webkit-scrollbar {
-  width: 6px;
-}
-.lure-list::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
 }
 
 .lure-item {
@@ -634,7 +623,7 @@ canvas#waterCanvas {
 .tag-hard { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
 .tag-wire { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
 .tag-soft { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-.tag-bfs { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+.tag-spot { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
 
 .score-bar-wrap {
   display: flex;

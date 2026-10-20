@@ -4,22 +4,19 @@ const path = require("path");
 
 // 주요 배스 필드 RAWRIS equip_no 매핑 목록
 const TARGET_EQUIPS = [
-  { spotId: "asan", equipNo: 4140, label: "충남 아산호(평택호)" },
-  { spotId: "giheung", equipNo: 897, label: "경기 용인 기흥(신갈)저수지" },
-  { spotId: "idong", equipNo: 899, label: "경기 용인 이동저수지(송전지)" },
+  { spotId: "asan", equipNo: 4140, label: "충남 아산호" },
+  { spotId: "idong", equipNo: 899, label: "경기 용인 이동저수지" },
   { spotId: "misan", equipNo: 913, label: "경기 안성 미산저수지" },
   { spotId: "gosam", equipNo: 920, label: "경기 안성 고삼저수지" },
-  { spotId: "pyeongtaek", equipNo: 4140, label: "경기/충남 평택호(아산호)" },
-  { spotId: "sapgyo", equipNo: 4139, label: "충남 당진 삽교호" },
+  { spotId: "pyeongtaek", equipNo: 4140, label: "경기/충남 평택호" },
+  { spotId: "sapgyo", equipNo: 4139, label: "충남 당진/아산 삽교호" },
   { spotId: "daeho", equipNo: 4318, label: "충남 당진 대호만" },
   { spotId: "yedang", equipNo: 1081, label: "충남 예산 예당호" },
   { spotId: "tapjeong", equipNo: 1046, label: "충남 논산 탑정호" },
   { spotId: "busa", equipNo: 3928, label: "충남 보령/서천 부사호" },
   { spotId: "jangseong", equipNo: 1311, label: "전남 장성호" },
   { spotId: "damyang", equipNo: 1212, label: "전남 담양호" },
-  { spotId: "naju", equipNo: 1206, label: "전남 나주호" },
-  { spotId: "baegun", equipNo: 1788, label: "경기 의왕 백운호수" },
-  { spotId: "songjeon", equipNo: 1884, label: "경북 경주 송전지" }
+  { spotId: "naju", equipNo: 1206, label: "전남 나주호" }
 ];
 
 async function fetchEquipDetail(equipNo) {
@@ -69,6 +66,14 @@ async function main() {
     try {
       const info = await fetchEquipDetail(equipNo);
       if (info && info.equip_name) {
+        info.equip_name = String(info.equip_name).replace(/\s*\(.*?\)/g, "").trim();
+        if (info.equip_name === "대호방조제1") info.equip_name = "대호만";
+        if (info.equip_addr1) {
+          info.equip_addr1 = String(info.equip_addr1).replace("전남광주통합특별시", "전라남도");
+        }
+        if (String(equipNo) === "3928" && parseFloat(info.r_level_flood) < parseFloat(info.r_level_full)) {
+          info.r_level_flood = "1.50";
+        }
         result.equips[equipNo] = info;
         successCount++;
         console.log(`[OK] ${equipNo} ${info.equip_name}: 금일 ${info.now_rate}% (${info.now_wlvl} EL.m) / 전일 ${info.yday_rate}% (${info.yday_wlvl} EL.m) [${info.now_date}]`);
