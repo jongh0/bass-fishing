@@ -555,7 +555,7 @@ const LURES = [
   },
   {
     id: "swimbait_shad",
-    name: "섀드웜 스위밍 (지그헤드 / 밸리후크)",
+    name: "섀드웜 스위밍 (지그헤드 / 웨이티드 훅)",
     category: "SOFT",
     catLabel: "소프트베이트",
     depthRange: [0.6, 2.5],
@@ -570,7 +570,7 @@ const LURES = [
     snagRes: 75,
     speed: "일정한 릴링",
     stdSpec: "4~5인치 섀드웜 + 웨이티드 오프셋 훅(#3/0~#5/0, 3.5~7g) (M~MH 로드)",
-    hookGuide: "오픈워터: 지그헤드 1/16~1/8oz | 수초/커버: 밸리웨이티드 오프셋 훅 #2/0~#5/0",
+    hookGuide: "오픈워터: 지그헤드 1/16~1/8oz | 수초/커버: 웨이티드 오프셋 훅 #2/0~#5/0",
     colorGuide: {
       clear: "아유(은어), 스모크 샤드, 워터멜론 시드",
       stained: "펄 화이트, 일렉트릭 샤드, 그린펌킨 차트",
