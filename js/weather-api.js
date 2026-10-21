@@ -277,6 +277,8 @@ const WeatherEngine = {
       dischargeYday,
       diffWlvl,
       diffRate,
+      diffNorRate,
+      isSevereLowWater,
       trend,
       trendLabel,
       trendBadgeColor,
@@ -411,7 +413,7 @@ const WeatherEngine = {
 
   // Open-Meteo 실시간 날씨·기압·일출일몰 API + 농어촌공사(RAWRIS) 실시간 수위 통합 조회
   async fetchLiveWeather(lat, lon, customSpotName = null, equipNo = null) {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&hourly=surface_pressure&daily=sunrise,sunset&timezone=Asia%2FSeoul&forecast_days=1`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&hourly=surface_pressure,temperature_2m&daily=sunrise,sunset&timezone=Asia%2FSeoul&past_days=1&forecast_days=1`;
 
     const [res, waterLevel] = await Promise.all([
       fetch(url),
@@ -427,16 +429,22 @@ const WeatherEngine = {
     const windDir = this.getWindDirText(cur.wind_direction_10m);
     const pressure = cur.surface_pressure;
 
-    const nowHourIndex = new Date().getHours();
+    // past_days=1 이므로 hourly 배열은 [어제 0~23시, 오늘 0~23시] 구조 → 오늘 현재 시각 인덱스 = 24 + 시
+    const nowHourIndex = 24 + new Date().getHours();
     let pressureDiff3h = 0;
-    if (data.hourly && data.hourly.surface_pressure && nowHourIndex >= 3) {
-      const pNow = data.hourly.surface_pressure[nowHourIndex] || pressure;
-      const p3hAgo = data.hourly.surface_pressure[nowHourIndex - 3] || pressure;
-      pressureDiff3h = Math.round((pNow - p3hAgo) * 10) / 10;
+    let tempDiff24h = 0;
+    const hp = data.hourly?.surface_pressure;
+    const ht = data.hourly?.temperature_2m;
+    if (hp && hp[nowHourIndex] != null && hp[nowHourIndex - 3] != null) {
+      pressureDiff3h = Math.round((hp[nowHourIndex] - hp[nowHourIndex - 3]) * 10) / 10;
+    }
+    // 전일 동시간 대비 기온 변화 (한파·냉각전선 / 급격한 온난화 판별)
+    if (ht && ht[nowHourIndex] != null && ht[nowHourIndex - 24] != null) {
+      tempDiff24h = Math.round((ht[nowHourIndex] - ht[nowHourIndex - 24]) * 10) / 10;
     }
 
-    const sunriseRaw = data.daily?.sunrise?.[0] || null;
-    const sunsetRaw = data.daily?.sunset?.[0] || null;
+    const sunriseRaw = data.daily?.sunrise?.[1] || data.daily?.sunrise?.[0] || null;
+    const sunsetRaw = data.daily?.sunset?.[1] || data.daily?.sunset?.[0] || null;
     const formatTime = (iso) => {
       if (!iso) return "--:--";
       const d = new Date(iso);
@@ -477,6 +485,8 @@ const WeatherEngine = {
       windState,
       pressure: Math.round(pressure * 10) / 10,
       pressureDiff3h,
+      tempDiff24h,
+      cloudFactor: weatherDesc.cloudFactor,
       weatherCode: cur.weather_code,
       weatherText: weatherDesc.text,
       weatherIcon: weatherDesc.icon,

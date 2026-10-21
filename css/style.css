@@ -484,6 +484,97 @@ header.app-header {
   gap: 10px;
 }
 
+/* === 통합 전술 브리핑 (기압·기온·수온·수위 합성) === */
+.tactic-unified {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.tactic-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+
+.tactic-head strong {
+  font-size: 0.95rem;
+}
+
+.tactic-axis {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.tactic-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.tactic-chip {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.tactic-chip.pos { background: rgba(34, 197, 94, 0.13); color: #4ade80; border-color: rgba(34, 197, 94, 0.3); }
+.tactic-chip.neg { background: rgba(245, 158, 11, 0.13); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3); }
+.tactic-chip.neu { background: rgba(148, 163, 184, 0.12); color: #cbd5e1; border-color: rgba(148, 163, 184, 0.25); }
+
+.tactic-detail-pc {
+  font-size: 0.82rem;
+  color: #e2e8f0;
+  line-height: 1.5;
+}
+
+.tactic-conflict {
+  margin-top: 4px;
+  color: #93c5fd;
+  font-size: 0.79rem;
+}
+
+.tactic-lures {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.12);
+}
+
+.tactic-lures-label {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #facc15;
+  margin-right: 2px;
+}
+
+.tactic-lure-btn {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #e0f2fe;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tactic-lure-btn:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+}
+
+.tag-fit { background: rgba(250, 204, 21, 0.16); color: #facc15; }
+
 /* === Navigation Tabs (PC & Mobile) === */
 .nav-tabs-bar {
   display: flex;
@@ -1582,6 +1673,28 @@ canvas#waterCanvas {
 
   .tactic-detail-pc {
     display: none;
+  }
+
+  .tactic-head strong {
+    font-size: 0.84rem;
+  }
+
+  .tactic-axis {
+    font-size: 0.68rem;
+  }
+
+  .tactic-chip {
+    font-size: 0.64rem;
+    padding: 1px 6px;
+  }
+
+  .tactic-lure-btn {
+    font-size: 0.68rem;
+    padding: 2px 7px;
+  }
+
+  .tactic-lures-label {
+    font-size: 0.68rem;
   }
 
   /* 4. 네비게이션 탭 & 필터 컨트롤 모바일 최적화 */

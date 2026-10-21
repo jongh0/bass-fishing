@@ -53,13 +53,12 @@ const structLabels = {
   deep_open: "오픈워터 / 딥채널"
 };
 
-// 오름수위 vs 내림수위(배수기) 강점 루어 분류
-const RISING_WATER_LURES = ["hollow_frog", "buzzbait", "spinnerbait", "chatterbait", "shallow_crank", "no_sinker", "top_popper_pencil", "rubber_jig"];
-const FALLING_WATER_LURES = ["downshot_rig", "neko_rig", "free_rig", "mid_strolling", "deep_crank", "metal_vibe", "suspending_shad", "kaizer_rig"];
+// 통합 전술 (기압·기온·수온·수위·광량·시간대·바람 합성) — 랭킹 계산 시마다 갱신
+let currentTactic = null;
 
-// === 1. 루어 매칭 스코어 계산 엔진 (수온 + 계절 + 시간대 + 수위변동 + 지형 + 바람 + 물색) ===
+// === 1. 루어 매칭 스코어 계산 엔진 (수온 + 계절 + 시간대 + 지형 + 바람 + 물색 + 통합 전술) ===
 function computeScore(lure) {
-  let score = 45;
+  let score = 40;
 
   // 1) 수온 매칭
   const [minT, maxT] = lure.tempRange;
@@ -112,24 +111,21 @@ function computeScore(lure) {
     score -= 4;
   }
 
-  // 7) 수위 변동(오름수위 vs 배수기) 매칭 (NEW!)
-  if (state.waterTrend === "rising") {
-    if (RISING_WATER_LURES.includes(lure.id)) score += 7;
-    else if (lure.depthRange[0] >= 2.0) score -= 4;
-  } else if (state.waterTrend === "falling") {
-    if (FALLING_WATER_LURES.includes(lure.id)) score += 8;
-    else if (lure.depthRange[1] <= 0.3) score -= 8; // 배수기에는 수면 탑워터 효율 급감
-  } else {
-    score += 3;
-  }
+  // 7) 통합 전술 적합도 (기압·수위·수온 등을 합성한 배스 위치 × 공략 템포와 루어 프로필 비교)
+  const fit = TacticEngine.lureFit(lure, currentTactic);
+  score += fit.bonus;
+
+  // 상위권 점수 포화(99점 동점) 방지: 80점 초과분은 완만하게 압축해 순위 변별력 유지
+  if (score > 80) score = 80 + (score - 80) * 0.4;
 
   return Math.max(15, Math.min(99, Math.round(score)));
 }
 
 function getFilteredAndRankedLures() {
+  currentTactic = TacticEngine.synthesize(state, WeatherEngine.currentData || null);
   return LURES
     .filter(l => state.catFilter === "ALL" || l.category === state.catFilter)
-    .map(l => ({ ...l, score: computeScore(l) }))
+    .map(l => ({ ...l, score: computeScore(l), tacticFit: TacticEngine.lureFit(l, currentTactic).fit }))
     .sort((a, b) => b.score - a.score);
 }
 
@@ -203,6 +199,7 @@ function renderUI() {
           <span class="rank-num">${idx + 1}</span>
           <span class="lure-title">${lure.name}</span>
           <span class="mini-tag ${catTagClass}">${lure.catLabel}</span>
+          ${lure.tacticFit === "best" ? '<span class="mini-tag tag-fit">🧭 전술 적합</span>' : ""}
         </div>
       </div>
       <div class="score-bar-wrap">
@@ -229,14 +226,15 @@ function renderUI() {
     const currentTimeTip = activeLure.timeTip[state.time];
     const currentColorRec = activeLure.colorGuide ? activeLure.colorGuide[state.clarity] : "내추럴 컬러";
 
-    let waterTrendAdvice = "";
-    if (state.waterTrend === "rising") {
-      waterTrendAdvice = "📈 [오름수위 전술] 수위가 상승하여 연안 육초·수초대가 잠긴 상태입니다. 브레이크라인보다 과감히 얕은 연안 커버 바짝 붙여서 캐스팅하세요.";
-    } else if (state.waterTrend === "falling") {
-      waterTrendAdvice = "📉 [배수기/내림수위 전술] 배수로 인해 배스가 쉘로우를 버리고 1차 브레이크라인 턱이나 본류 깊은 물골(채널)로 내려갔습니다. 캐스팅 거리를 늘리고 템포를 늦추세요.";
-    } else {
-      waterTrendAdvice = "⚖️ [평수위 안정 전술] 수위 변동이 안정적이므로 시간대별 베이트피쉬 회유 루트와 그늘(쉐이드) 스트럭처를 정석대로 공략하세요.";
-    }
+    const t = currentTactic;
+    const fitText = activeLure.tacticFit === "best"
+      ? "✅ 현재 통합 전술에 가장 잘 맞는 루어입니다."
+      : activeLure.tacticFit === "good"
+        ? "👍 전술에 부합하는 보조 선택지입니다."
+        : `⚠️ 현재 전술과 결이 다릅니다. 추천: ${ranked.filter(l => l.tacticFit === "best").slice(0, 3).map(l => l.name).join(" · ") || "랭킹 상위 루어"}`;
+    const waterTrendAdvice = t
+      ? `🧭 [통합 전술: ${t.zoneLabel} × ${t.speedLabel}] ${fitText}`
+      : "";
 
     detailEl.innerHTML = `
       <div class="detail-top">
@@ -285,7 +283,69 @@ function renderUI() {
     }
   }
 
+  renderTacticStrip(currentTactic, ranked);
   renderGuideTabDynamic();
+}
+
+// === 3-1. 통합 전술 브리핑 스트립 (상단 배너) & 기압 탭 분석 박스 ===
+function renderTacticStrip(t, ranked) {
+  const el = document.getElementById("livePressureTactic");
+  if (!el || !t) return;
+
+  const chips = t.factors
+    .filter(f => f.effect !== 0 || f.text.startsWith("강풍"))
+    .map(f => {
+      const cls = f.effect > 0 ? "pos" : f.effect < 0 ? "neg" : "neu";
+      return `<span class="tactic-chip ${cls}">${f.icon} ${f.text}</span>`;
+    }).join("");
+
+  // 추천 루어: 전술 적합(best/good) 루어 중 랭킹 상위 3개 (부족하면 랭킹 순으로 보충)
+  const fitFirst = ranked.filter(l => l.tacticFit !== "poor");
+  const pickList = [...fitFirst, ...ranked.filter(l => l.tacticFit === "poor")].slice(0, 3);
+  const picks = pickList.map((l, i) =>
+    `<button type="button" class="tactic-lure-btn" data-lure-id="${l.id}">${i + 1}. ${l.name}</button>`
+  ).join("");
+
+  el.innerHTML = `
+    <div class="tactic-unified">
+      <div class="tactic-head">
+        <strong style="color:${t.actColor};">${t.title}</strong>
+        <span class="tactic-axis">${t.actLabel} · ${t.zoneLabel} · ${t.speedLabel}</span>
+      </div>
+      <div class="tactic-chips">${chips}</div>
+      <div class="tactic-detail-pc">
+        📍 ${t.zoneReason}. ${t.desc}
+        ${t.conflictNote ? `<div class="tactic-conflict">💡 ${t.conflictNote}</div>` : ""}
+      </div>
+      <div class="tactic-lures"><span class="tactic-lures-label">🎣 추천 루어</span>${picks}</div>
+    </div>
+  `;
+
+  el.querySelectorAll(".tactic-lure-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.selectedLureId = btn.getAttribute("data-lure-id");
+      renderUI();
+      document.getElementById("detailPanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  const tacticBox = document.getElementById("deepTacticSynthesisBox");
+  if (tacticBox) {
+    tacticBox.innerHTML = `
+      <div class="pattern-item" style="border-left-color:${t.actColor};">
+        <div class="p-head">
+          <span>🧭 통합 전술: ${t.title}</span>
+          <span class="p-range">${t.actLabel} · ${t.zoneLabel} · ${t.speedLabel}</span>
+        </div>
+        <div class="p-desc">
+          <div class="tactic-chips" style="margin:4px 0 6px;">${chips}</div>
+          📍 ${t.zoneReason}. ${t.desc}
+          ${t.conflictNote ? `<br/>💡 ${t.conflictNote}` : ""}
+          <br/>🎣 추천 루어: <strong>${pickList.map(l => l.name).join(" · ")}</strong>
+        </div>
+      </div>
+    `;
+  }
 }
 
 // === 4. 실시간 날씨 & 농어촌공사(RAWRIS) 수위 조회 및 자동 동기화 ===
@@ -512,27 +572,13 @@ function renderWeatherBanner(w) {
   biteEl.style.color = w.biteAnalysis.color;
   document.getElementById("mBiteSub").textContent = w.biteAnalysis.grade;
 
-  const waterBrief = wl
-    ? `<div class="tactic-water-row" style="margin-top:4px; padding-top:4px; border-top:1px dashed rgba(255,255,255,0.12);">
-         <strong style="color:${wl.trendBadgeColor}; margin-right:6px;">🌊 [${wl.equipName} ${wl.trendLabel}]</strong>
-         <span class="tactic-detail-pc">${wl.waterTactic}</span>
-       </div>`
-    : "";
-
-  document.getElementById("livePressureTactic").innerHTML = `
-    <div style="width:100%;">
-      <div class="tactic-pressure-row">
-        <strong style="color:${w.biteAnalysis.color}; margin-right:6px;">${w.biteAnalysis.pressureStatus}</strong>
-        <span class="tactic-detail-pc">${w.biteAnalysis.pressureTactic}</span>
-      </div>
-      ${waterBrief}
-    </div>
-  `;
+  // 상단 통합 전술 스트립(#livePressureTactic)은 renderUI → renderTacticStrip 에서 기압·수위·수온을 합성해 렌더링
 
   const deepWeatherBox = document.getElementById("deepWeatherAnalysisBox");
   if (deepWeatherBox) {
     deepWeatherBox.innerHTML = `
       <div class="pattern-list">
+        <div id="deepTacticSynthesisBox"></div>
         ${wl ? `
         <div class="pattern-item" style="border-left-color:${wl.trendBadgeColor};">
           <div class="p-head">
@@ -544,7 +590,7 @@ function renderWeatherBanner(w) {
         <div class="pattern-item" style="border-left-color:${w.biteAnalysis.color};">
           <div class="p-head">
             <span>📊 현재 기압 & 부레 활성도 브리핑</span>
-            <span class="p-range">${w.pressure} hPa (${diffSign} hPa/3h)</span>
+            <span class="p-range">${w.pressure} hPa (${diffSign} hPa/3h) · 기온 전일비 ${w.tempDiff24h >= 0 ? "+" : ""}${w.tempDiff24h}°C</span>
           </div>
           <div class="p-desc">${w.biteAnalysis.pressureTactic}</div>
         </div>
