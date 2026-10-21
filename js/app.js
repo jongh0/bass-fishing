@@ -1058,19 +1058,122 @@ function drawScene() {
 }
 
 // === 8. 이벤트 바인딩 & 초기화 ===
-function initEvents() {
+function renderCustomSpotPicker() {
+  const triggerTextEl = document.getElementById("spotTriggerText");
+  const listEl = document.getElementById("spotDropdownList");
   const spotSelect = document.getElementById("spotSelect");
+
+  const currentSpot = KOREA_SPOTS.find(s => s.id === state.selectedSpotId) || KOREA_SPOTS[5];
+  if (triggerTextEl && currentSpot) {
+    triggerTextEl.textContent = currentSpot.name;
+  }
   if (spotSelect) {
     spotSelect.innerHTML = KOREA_SPOTS.map(s => `<option value="${s.id}" ${s.id === state.selectedSpotId ? "selected" : ""}>${s.name}</option>`).join("");
-    spotSelect.addEventListener("change", (e) => {
-      state.selectedSpotId = e.target.value;
-      loadWeatherForSpot(state.selectedSpotId, true);
-    });
   }
+  if (!listEl) return;
+
+  const equips = window.RAWRIS_WATER_LEVELS?.equips || {};
+  listEl.innerHTML = KOREA_SPOTS.map(s => {
+    const isSelected = s.id === state.selectedSpotId;
+    let rightBadge = "";
+    if (s.id === "gps") {
+      rightBadge = `<span class="spot-opt-badge badge-gps">자동 탐색</span>`;
+    } else if (s.equipNo && equips[s.equipNo]) {
+      const eq = equips[s.equipNo];
+      const rate = parseFloat(eq.now_rate || 0).toFixed(1);
+      const nor = parseFloat(eq.nor_rate || 0);
+      const yday = parseFloat(eq.yday_rate || 0);
+      const diffR = parseFloat(eq.now_rate || 0) - yday;
+      const diffNor = nor > 0 ? parseFloat(eq.now_rate || 0) - nor : 0;
+      const isLow = parseFloat(eq.now_rate || 0) <= 45 || (nor > 0 && diffNor <= -15);
+      let badgeCls = "badge-stable";
+      if (!isLow && parseFloat(eq.now_rate || 0) >= 55 && diffR >= 0.5) badgeCls = "badge-rising";
+      else if (diffR <= -0.4 || isLow) badgeCls = "badge-falling";
+      rightBadge = `<span class="spot-opt-badge ${badgeCls}">저수율 ${rate}%</span>`;
+    } else {
+      rightBadge = `<span class="spot-opt-badge badge-dam">다목적댐</span>`;
+    }
+
+    return `
+      <button type="button" class="spot-option-item ${isSelected ? "selected" : ""}" data-spot-id="${s.id}" role="option" aria-selected="${isSelected}">
+        <div class="spot-opt-main">
+          <span class="spot-opt-name">${s.name}</span>
+          <span class="spot-opt-region">${s.region || ""}</span>
+        </div>
+        <div class="spot-opt-right">
+          ${rightBadge}
+          ${isSelected ? '<span class="spot-opt-check">✓</span>' : ''}
+        </div>
+      </button>
+    `;
+  }).join("");
+
+  listEl.querySelectorAll(".spot-option-item").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const nextId = btn.getAttribute("data-spot-id");
+      state.selectedSpotId = nextId;
+      closeSpotDropdown();
+      renderCustomSpotPicker();
+      loadWeatherForSpot(nextId, true);
+    });
+  });
+}
+
+function openSpotDropdown() {
+  const picker = document.getElementById("customSpotPicker");
+  const triggerBtn = document.getElementById("spotTriggerBtn");
+  const listEl = document.getElementById("spotDropdownList");
+  if (!picker) return;
+  renderCustomSpotPicker();
+  picker.classList.add("open");
+  if (triggerBtn) triggerBtn.setAttribute("aria-expanded", "true");
+  const selectedEl = picker.querySelector(".spot-option-item.selected");
+  if (selectedEl && listEl) {
+    setTimeout(() => {
+      const targetTop = Math.max(0, selectedEl.offsetTop - listEl.clientHeight / 2 + selectedEl.clientHeight / 2);
+      listEl.scrollTop = targetTop;
+    }, 20);
+  }
+}
+
+function closeSpotDropdown() {
+  const picker = document.getElementById("customSpotPicker");
+  const triggerBtn = document.getElementById("spotTriggerBtn");
+  if (!picker) return;
+  picker.classList.remove("open");
+  if (triggerBtn) triggerBtn.setAttribute("aria-expanded", "false");
+}
+
+function initEvents() {
+  renderCustomSpotPicker();
+
+  const triggerBtn = document.getElementById("spotTriggerBtn");
+  const backdrop = document.getElementById("spotDropdownBackdrop");
+  const closeBtn = document.getElementById("spotDropdownClose");
+  const picker = document.getElementById("customSpotPicker");
+
+  triggerBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (picker?.classList.contains("open")) closeSpotDropdown();
+    else openSpotDropdown();
+  });
+
+  backdrop?.addEventListener("click", closeSpotDropdown);
+  closeBtn?.addEventListener("click", closeSpotDropdown);
+
+  document.addEventListener("click", (e) => {
+    if (picker && picker.classList.contains("open") && !picker.contains(e.target)) {
+      closeSpotDropdown();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeSpotDropdown();
+  });
 
   document.getElementById("btnGpsLocate")?.addEventListener("click", () => {
     state.selectedSpotId = "gps";
-    if (spotSelect) spotSelect.value = "gps";
+    renderCustomSpotPicker();
     loadWeatherForSpot("gps", true);
   });
 

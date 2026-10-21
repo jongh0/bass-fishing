@@ -107,7 +107,13 @@ header.app-header {
   margin-bottom: 16px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
+  z-index: 50;
+}
+
+.live-weather-banner:has(.custom-spot-picker.open) {
+  z-index: 2100;
 }
 
 .weather-top-bar {
@@ -131,21 +137,246 @@ header.app-header {
   max-width: 100%;
 }
 
-.spot-select {
-  background: #09101d;
+.custom-spot-picker {
+  position: relative;
+  min-width: 240px;
+}
+
+.spot-trigger-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #0d1729 0%, #09101d 100%);
   color: #f8fafc;
-  border: 1px solid var(--accent);
-  padding: 8px 12px;
+  border: 1px solid rgba(56, 189, 248, 0.55);
+  box-shadow: 0 2px 10px rgba(56, 189, 248, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  padding: 8px 13px;
   border-radius: 10px;
   font-size: 0.86rem;
   font-weight: 700;
   cursor: pointer;
-  outline: none;
-  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.18s ease;
+}
+
+.spot-trigger-btn:hover {
+  border-color: #38bdf8;
+  background: linear-gradient(135deg, #13213a 0%, #0c1526 100%);
+}
+
+.spot-trigger-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   min-width: 0;
-  text-overflow: ellipsis;
+}
+
+.spot-trigger-badge {
+  background: rgba(56, 189, 248, 0.18);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.spot-trigger-text {
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spot-trigger-arrow {
+  color: #38bdf8;
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.custom-spot-picker.open .spot-trigger-arrow {
+  transform: rotate(180deg);
+}
+
+.spot-dropdown-backdrop {
+  display: none;
+}
+
+.spot-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 360px;
+  max-height: 420px;
+  background: #0d1627;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  border-radius: 14px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.8);
+  z-index: 1200;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.custom-spot-picker.open .spot-dropdown-menu {
+  display: flex;
+}
+
+.spot-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  background: #131f35;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #93c5fd;
+  flex-shrink: 0;
+}
+
+.spot-dropdown-close {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #cbd5e1;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spot-dropdown-close:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.spot-dropdown-list {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.spot-dropdown-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.spot-dropdown-list::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+.spot-option-item {
+  width: 100%;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 9px 11px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: all 0.14s ease;
+  color: #e2e8f0;
+}
+
+.spot-option-item:hover {
+  background: rgba(56, 189, 248, 0.09);
+  border-color: rgba(56, 189, 248, 0.25);
+}
+
+.spot-option-item.selected {
+  background: rgba(56, 189, 248, 0.16);
+  border-color: rgba(56, 189, 248, 0.55);
+}
+
+.spot-opt-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.spot-opt-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spot-option-item.selected .spot-opt-name {
+  color: #38bdf8;
+}
+
+.spot-opt-region {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spot-opt-right {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+.spot-opt-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.spot-opt-badge.badge-rising {
+  background: rgba(34, 197, 94, 0.16);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.spot-opt-badge.badge-stable {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.spot-opt-badge.badge-falling {
+  background: rgba(245, 158, 11, 0.16);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.spot-opt-badge.badge-dam {
+  background: rgba(148, 163, 184, 0.14);
+  color: #94a3b8;
+}
+
+.spot-opt-badge.badge-gps {
+  background: rgba(168, 85, 247, 0.18);
+  color: #c084fc;
+}
+
+.spot-opt-check {
+  color: #38bdf8;
+  font-weight: 900;
+  font-size: 0.88rem;
 }
 
 .btn-gps, .btn-apply-live {
@@ -857,7 +1088,7 @@ canvas#waterCanvas {
 
 @media (max-width: 1080px) {
   .main-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1165,7 +1396,7 @@ canvas#waterCanvas {
 
 @media (max-width: 900px) {
   .rawris-body-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1218,17 +1449,57 @@ canvas#waterCanvas {
 
   .location-selector-group {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6px;
     width: 100%;
   }
 
-  .spot-select {
+  .custom-spot-picker {
     grid-column: 1 / -1;
     width: 100%;
-    max-width: 100%;
-    font-size: 0.82rem;
-    padding: 8px 10px;
+    min-width: 0;
+  }
+
+  .spot-trigger-btn {
+    padding: 8px 11px;
+    font-size: 0.83rem;
+  }
+
+  .custom-spot-picker.open .spot-dropdown-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.72);
+    backdrop-filter: blur(3px);
+    z-index: 2000;
+  }
+
+  .spot-dropdown-menu {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 75vh;
+    border-radius: 18px 18px 0 0;
+    border-bottom: none;
+    z-index: 2001;
+    padding-bottom: env(safe-area-inset-bottom, 12px);
+    box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.75);
+  }
+
+  .spot-dropdown-header {
+    padding: 13px 16px;
+    font-size: 0.84rem;
+  }
+
+  .spot-dropdown-list {
+    padding: 8px 10px 14px 10px;
+  }
+
+  .spot-option-item {
+    padding: 10px 12px;
   }
 
   .btn-gps, .btn-apply-live {
@@ -1270,7 +1541,8 @@ canvas#waterCanvas {
   }
 
   .metric-card .m-val {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
+    letter-spacing: -0.3px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1354,7 +1626,7 @@ canvas#waterCanvas {
   }
 
   .controls-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     padding: 10px;
     gap: 8px;
     margin-bottom: 10px;
@@ -1420,7 +1692,7 @@ canvas#waterCanvas {
   }
 
   .detail-specs {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 8px;
   }
 
@@ -1471,7 +1743,7 @@ canvas#waterCanvas {
 
   .rawris-header-right {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6px;
     width: 100%;
   }
@@ -1531,7 +1803,7 @@ canvas#waterCanvas {
 
   /* 7. 가이드·기압·조행일지 탭 모바일 최적화 */
   .guide-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 12px;
   }
 

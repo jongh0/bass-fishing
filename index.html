@@ -7,9 +7,10 @@
   <meta name="description" content="실시간 위치·날씨·기압·수온·농어촌공사 수위 연동 사계절 배스 루어 택티컬 시뮬레이터" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>🎣 배스 택티컬 프로 v3.5 — 실시간 기상·수위 & 루어 시뮬레이터</title>
+  <meta name="apple-mobile-web-app-title" content="🎣 배스 택티컬 시뮬레이터" />
+  <title>🎣 배스 택티컬 시뮬레이터</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="css/style.css?v=20261019_8" />
+  <link rel="stylesheet" href="css/style.css?v=20261021_2" />
 </head>
 <body>
   <div class="container">
@@ -30,7 +31,24 @@
     <section class="live-weather-banner">
       <div class="weather-top-bar">
         <div class="location-selector-group">
-          <select id="spotSelect" class="spot-select" aria-label="배스 포인트 선택"></select>
+          <div class="custom-spot-picker" id="customSpotPicker">
+            <button type="button" class="spot-trigger-btn" id="spotTriggerBtn" aria-haspopup="listbox" aria-expanded="false">
+              <span class="spot-trigger-left">
+                <span class="spot-trigger-badge">필드</span>
+                <span class="spot-trigger-text" id="spotTriggerText">충남 아산호</span>
+              </span>
+              <span class="spot-trigger-arrow">▾</span>
+            </button>
+            <div class="spot-dropdown-backdrop" id="spotDropdownBackdrop"></div>
+            <div class="spot-dropdown-menu" id="spotDropdownMenu" role="listbox" aria-label="배스 포인트 선택">
+              <div class="spot-dropdown-header">
+                <span>📍 출조 포인트 선택 (수원 광교 거리순)</span>
+                <button type="button" class="spot-dropdown-close" id="spotDropdownClose" aria-label="닫기">✕</button>
+              </div>
+              <div class="spot-dropdown-list" id="spotDropdownList"></div>
+            </div>
+            <select id="spotSelect" class="spot-select-hidden" aria-label="배스 포인트 선택" style="display:none;"></select>
+          </div>
           <button type="button" class="btn-gps" id="btnGpsLocate">📍 내 현재 위치</button>
           <button type="button" class="btn-apply-live" id="btnApplyLive">⚡ 실시간 기상·수위 반영</button>
         </div>
@@ -550,9 +568,9 @@
     -->
   </nav>
 
-  <script src="js/water-levels-data.js?v=20261019_8"></script>
-  <script src="js/lures-data.js?v=20261019_8"></script>
-  <script src="js/weather-api.js?v=20261019_8"></script>
-  <script src="js/app.js?v=20261019_8"></script>
+  <script src="js/water-levels-data.js?v=20261021_2"></script>
+  <script src="js/lures-data.js?v=20261021_2"></script>
+  <script src="js/weather-api.js?v=20261021_2"></script>
+  <script src="js/app.js?v=20261021_2"></script>
 </body>
 </html>

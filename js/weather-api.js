@@ -189,6 +189,7 @@ const WeatherEngine = {
 
     const diffWlvl = Math.round((nowWlvl - ydayWlvl) * 100) / 100;
     const diffRate = Math.round((nowRate - ydayRate) * 10) / 10;
+    const diffNorRate = norRate > 0 ? Math.round((nowRate - norRate) * 10) / 10 : 0;
 
     let trend = "stable"; // rising | stable | falling
     let trendLabel = "⚖️ 평수위 / 수위 안정";
@@ -196,27 +197,55 @@ const WeatherEngine = {
     let waterTactic = "";
     let biteBonus = 0;
 
-    if (diffWlvl >= 0.02 || diffRate >= 0.4) {
+    // 오름수위/내림수위 판별 기준 (전일 대비 변화 + 평년 저수율 대비 상태 종합)
+    // - 극심한 갈수기(저수율 45% 이하 또는 평년 대비 -15%p 이하): 전일 대비 소폭 상승해도 연안 육초가 잠기지 않으므로 오름수위 제외
+    const isSevereLowWater = nowRate <= 45 || (norRate > 0 && diffNorRate <= -15);
+    // - 오름수위 조건: 갈수기가 아니면서(최소 저수율 55% 이상 & 평년 대비 -10%p 이상),
+    //   (1) 전일 대비 수위 +0.03m 또는 저수율 +0.5% 이상 상승했거나
+    //   (2) 평년 대비 +3.0%p 이상 높은 풍수위이면서 수위가 유지/상승(>= 0) 중일 때
+    const isRisingCondition =
+      !isSevereLowWater &&
+      nowRate >= 55 &&
+      (norRate === 0 || diffNorRate >= -10) &&
+      (diffWlvl >= 0.03 || diffRate >= 0.5 || (norRate > 0 && diffNorRate >= 3.0 && diffWlvl >= 0));
+
+    // - 내림수위/배수 조건:
+    //   (1) 전일 대비 수위 -0.02m 이하 또는 저수율 -0.4% 이하 하락, 또는 방류 중이거나
+    //   (2) 평년 대비 -12.0%p 이하(또는 절대 저수율 45% 이하)이면서 전일 대비 유의미한 반등(+1.5% 이상)이 없는 갈수·배수 상태
+    const isFallingCondition =
+      diffWlvl <= -0.02 ||
+      diffRate <= -0.4 ||
+      dischargeNow > 0 ||
+      (isSevereLowWater && diffRate < 1.5);
+
+    if (isRisingCondition) {
       trend = "rising";
-      trendLabel = `📈 오름수위 (+${diffWlvl.toFixed(2)}m / +${diffRate.toFixed(1)}%)`;
+      trendLabel = `📈 오름수위 (${diffWlvl >= 0 ? "+" : ""}${diffWlvl.toFixed(2)}m)`;
       trendBadgeColor = "#22c55e";
-      biteBonus = 9;
-      waterTactic = "전일 대비 수위가 오르는 '오름수위' 찬스입니다! 새롭게 물에 잠긴 연안 육초대·갈대·수초 엣지로 베이트피쉬와 빅배스가 대거 올라붙습니다. 쉘로우 무빙 루어(스피너베이트, 채터베이트, 쉘로우 크랭크)와 프로그/노싱커로 연안을 적극 공략하세요!";
-    } else if (diffWlvl <= -0.02 || diffRate <= -0.4 || dischargeNow > 0) {
+      biteBonus = 7;
+      waterTactic = "적정 저수율을 유지하며 수위가 오르는 '오름수위' 찬스입니다! 새롭게 물에 잠긴 연안 육초대·갈대·수초 엣지로 베이트피쉬와 빅배스가 대거 올라붙습니다. 쉘로우 무빙 루어(스피너베이트, 채터베이트, 쉘로우 크랭크)와 프로그/노싱커로 연안을 적극 공략하세요!";
+    } else if (isFallingCondition) {
       trend = "falling";
-      trendLabel = `📉 내림수위/배수 (${diffWlvl.toFixed(2)}m / ${diffRate.toFixed(1)}%)`;
-      trendBadgeColor = "#f59e0b";
-      biteBonus = -9;
-      waterTactic = "전일 대비 수위가 빠지는 '배수(내림수위)' 진행 중입니다. 배스가 수위 저하에 경계심을 느끼고 얕은 연안에서 빠져나와 1차 브레이크라인 턱, 수몰나무 깊은 그늘, 본류 물골(채널)로 후퇴합니다. 다운샷·네꼬리그·프리리그 등 슬로우 피네스 채비나 새물유입구(인렛) 위주로 공략하세요.";
+      if (isSevereLowWater && diffWlvl > -0.02 && diffRate > -0.4) {
+        trendLabel = `📉 갈수기 저수위 (평년비 ${diffNorRate.toFixed(1)}%p)`;
+        trendBadgeColor = "#f59e0b";
+        biteBonus = -6;
+        waterTactic = `전일 대비 소폭 수위 유입(${diffWlvl >= 0 ? "+" : ""}${diffWlvl.toFixed(2)}m)이 있으나, 현재 저수율 ${nowRate.toFixed(1)}%(평년 ${norRate.toFixed(1)}%)로 연안 커버가 육상에 드러난 갈수기 저수위 상태입니다. 얕은 연안 오름수위 패턴 대신 본류권 물골(채널), 급심 브레이크라인, 새물유입구(인렛)를 프리리그·메탈바이브·다운샷으로 공략하세요.`;
+      } else {
+        trendLabel = `📉 내림수위 (${diffWlvl.toFixed(2)}m)`;
+        trendBadgeColor = "#f59e0b";
+        biteBonus = -8;
+        waterTactic = "전일 대비 수위가 빠지는 '배수(내림수위)' 진행 중입니다. 배스가 수위 저하에 경계심을 느끼고 얕은 연안에서 빠져나와 1차 브레이크라인 턱, 수몰나무 깊은 그늘, 본류 물골(채널)로 후퇴합니다. 다운샷·네꼬리그·프리리그 등 슬로우 피네스 채비나 새물유입구(인렛) 위주로 공략하세요.";
+      }
     } else {
       trend = "stable";
-      trendLabel = `⚖️ 수위 안정 (저수율 ${nowRate.toFixed(1)}%)`;
+      trendLabel = `⚖️ 평수위 (${diffWlvl >= 0 ? "+" : ""}${diffWlvl.toFixed(2)}m)`;
       trendBadgeColor = "#38bdf8";
-      biteBonus = 3;
-      if (nowRate <= 55) {
-        waterTactic = `현재 저수율 ${nowRate.toFixed(1)}%로 갈수기(저수위) 상태입니다. 평소 물속에 잠겨 있던 바닥 석축과 브레이크라인이 드러나 배스들이 좁은 본류권 깊은 물골에 밀집해 있으므로 프리리그·메탈바이브·딥크랭크 장타가 유리합니다.`;
+      biteBonus = 0;
+      if (nowRate <= 58 || (norRate > 0 && diffNorRate <= -8)) {
+        waterTactic = `현재 저수율 ${nowRate.toFixed(1)}%(평년 ${norRate.toFixed(1)}%)로 다소 낮은 수위에서 소폭 오르내리며 안정화 중입니다. 연안 수초대보다는 1차 브레이크라인 경계석과 물골 주변을 프리리그·섀드웜·크랭크로 탐색하세요.`;
       } else if (nowRate >= 85) {
-        waterTactic = `현재 저수율 ${nowRate.toFixed(1)}%로 풍부한 만수위권입니다. 연안 수초와 수몰나무 커버까지 물이 차 있어 커버 피칭(러버지그, 프리리그)과 연안 패러럴 캐스팅이 모두 위력적입니다.`;
+        waterTactic = `현재 저수율 ${nowRate.toFixed(1)}%로 풍부한 만수위권 안정세입니다. 연안 수초와 수몰나무 커버까지 물이 차 있어 커버 피칭(러버지그, 프리리그)과 연안 패러럴 캐스팅이 모두 위력적입니다.`;
       } else {
         waterTactic = `수위 변동 없이 안정적인 컨디션(${nowRate.toFixed(1)}%)입니다. 시간대별 정석 패턴(아침/저녁 연안 피딩, 한낮 브레이크라인/쉐이드)으로 접근하세요.`;
       }
@@ -258,63 +287,96 @@ const WeatherEngine = {
 
   // 기압(hPa) 및 최근 3시간 기압 변화량 + 날씨 + 수온 + 시간대 + 수위변동을 종합한 배스 활성도 지수(Bite Index)
   analyzeBiteIndex({ pressure, pressureDiff3h, weatherCode, windSpeedMs, waterTemp, timeOfDay, moonBonus, waterLevelBonus = 0 }) {
-    let score = 55;
+    // 기본 중립 점수를 48점으로 설정하여 평범한 날에는 50~65점(보통), 악조건에는 30~45점(터프), 호조건이 겹칠 때만 70~85점+가 나오도록 변별력 강화
+    let score = 48;
     let pressureStatus = "";
     let pressureTactic = "";
 
+    // 1. 기압 및 3시간 기압 변화 추이 (-14 ~ +12점)
     if (pressureDiff3h <= -1.5) {
-      score += 16;
+      score += 12;
       pressureStatus = `📉 기압 하락세 (${pressureDiff3h.toFixed(1)}hPa / 3h) — 피딩 최고조!`;
       pressureTactic = "저기압 접근으로 배스의 부레 압력이 편안해져 쉘로우와 중층으로 떠올라 적극 사냥합니다. 스피너베이트·채터베이트·크랭크 등 빠른 무빙 루어로 넓게 훑으세요!";
-    } else if (pressureDiff3h < -0.4) {
-      score += 10;
+    } else if (pressureDiff3h < -0.5) {
+      score += 7;
       pressureStatus = `↘️ 완만한 기압 하강 (${pressureDiff3h.toFixed(1)}hPa / 3h) — 입질 활발`;
       pressureTactic = "기압이 서서히 낮아지며 경계심이 풀리는 좋은 흐름입니다. 연안 브레이크라인과 수초 엣지에서 무빙과 소프트 스위밍 모두 잘 먹힙니다.";
-    } else if (pressureDiff3h >= 1.8) {
+    } else if (pressureDiff3h >= 1.5) {
       score -= 14;
       pressureStatus = `📈 급격한 고기압 상승 (+${pressureDiff3h.toFixed(1)}hPa / 3h) — 터프 컨디션`;
       pressureTactic = "기압이 빠르게 치솟아 배스가 부레 팽창감을 느끼고 수몰나무·바위 틈새 깊숙이 박혀 입을 닫습니다. 네꼬리그·다운샷·러버지그로 스트럭처 내부를 아주 천천히 노리세요.";
-    } else if (pressure > 1022) {
+    } else if (pressureDiff3h >= 0.6) {
       score -= 6;
+      pressureStatus = `↗️ 기압 상승세 (+${pressureDiff3h.toFixed(1)}hPa / 3h) — 경계심 증가`;
+      pressureTactic = "기압이 오르며 배스가 중층 회유를 줄이고 스트럭처 그늘이나 바닥 가까이 붙기 시작합니다. 리트리브 속도를 늦추고 스테이 시간을 늘리세요.";
+    } else if (pressure > 1020) {
+      score -= 7;
       pressureStatus = `☀️ 높은 고기압권 (${Math.round(pressure)}hPa) — 쉐이드/바닥 밀착`;
       pressureTactic = "전형적인 맑은 고기압 패턴입니다. 오픈워터 회유보다 그늘(쉐이드)과 바닥 돌 틈에 붙어 있으므로 피네스 낚시나 바텀 태핑 리액션을 유도하세요.";
     } else {
-      score += 4;
+      score += 0;
       pressureStatus = `⚖️ 기압 안정세 (${Math.round(pressure)}hPa, ${pressureDiff3h >= 0 ? "+" : ""}${pressureDiff3h.toFixed(1)}hPa)`;
       pressureTactic = "기압 변동이 적어 배스가 표준적인 시간대별 회유 루트를 따릅니다. 피딩 타임에는 연안, 한낮에는 브레이크라인을 공략하세요.";
     }
 
+    // 2. 일조량 및 날씨 조건 (-15 ~ +8점)
     const wInfo = this.getWeatherDesc(weatherCode);
     if (wInfo.cloudFactor === "overcast" || wInfo.cloudFactor === "rain") {
-      score += 10;
+      score += 8; // 로우라이트 호조건
+    } else if (wInfo.cloudFactor === "clear" && timeOfDay === "midday") {
+      score -= 7; // 맑은 날 한낮 직사광선은 배스 경계심 상승
+    } else if (wInfo.cloudFactor === "snow") {
+      score -= 10;
     } else if (wInfo.cloudFactor === "storm") {
       score -= 15;
     }
 
-    if (waterTemp >= 15 && waterTemp <= 24) {
-      score += 12;
-    } else if (waterTemp >= 11 && waterTemp <= 27) {
-      score += 5;
-    } else if (waterTemp <= 8) {
-      score -= 12;
+    // 3. 수온 활성 구간 (-16 ~ +10점)
+    if (waterTemp >= 16 && waterTemp <= 23) {
+      score += 10; // 최적 수온
+    } else if ((waterTemp >= 13 && waterTemp < 16) || (waterTemp > 23 && waterTemp <= 26)) {
+      score += 4;
+    } else if ((waterTemp >= 10 && waterTemp < 13) || (waterTemp > 26 && waterTemp <= 28)) {
+      score -= 3;
+    } else if (waterTemp < 10) {
+      score -= 14; // 저수온기 활성 저하
+    } else if (waterTemp > 28) {
+      score -= 10; // 고수온기 용존산소 부족
     }
 
-    if (timeOfDay === "dawn_dusk") score += 10;
-    else if (timeOfDay === "night") score += 3;
+    // 4. 출조 시간대 (-5 ~ +9점)
+    if (timeOfDay === "dawn_dusk") {
+      score += 9; // 일출·일몰 피딩 골든타임
+    } else if (timeOfDay === "midday") {
+      score -= 5; // 한낮 소강상태
+    } else if (timeOfDay === "night") {
+      score += 1;
+    }
 
-    if (windSpeedMs >= 1.8 && windSpeedMs <= 4.5) score += 6;
-    else if (windSpeedMs > 7.0) score -= 10;
+    // 5. 바람 및 수면 파도 (-10 ~ +4점)
+    if (windSpeedMs >= 1.8 && windSpeedMs <= 4.2) {
+      score += 4; // 적당한 잔파도는 경계심 완화 및 플랑크톤 활성화
+    } else if (windSpeedMs < 0.8 && timeOfDay === "midday") {
+      score -= 3; // 한낮 완전 장판은 프레셔 증가
+    } else if (windSpeedMs > 5.5 && windSpeedMs <= 7.0) {
+      score -= 4;
+    } else if (windSpeedMs > 7.0) {
+      score -= 10;
+    }
 
-    score += Math.round((moonBonus || 4) * 0.5);
+    // 6. 월령(물때) 및 수위 변동 보너스 합산
+    // 사리(삭/그믐/보름)에만 +3~4점, 평일은 0점
+    const moonAdj = (moonBonus || 4) >= 8 ? 4 : 0;
+    score += moonAdj;
     score += waterLevelBonus;
 
-    const finalScore = Math.max(20, Math.min(98, Math.round(score)));
+    const finalScore = Math.max(20, Math.min(96, Math.round(score)));
     let grade = "보통";
     let color = "#38bdf8";
-    if (finalScore >= 82) {
+    if (finalScore >= 78) {
       grade = "🔥 폭발적 입질";
       color = "#22c55e";
-    } else if (finalScore >= 68) {
+    } else if (finalScore >= 64) {
       grade = "👍 활성도 좋음";
       color = "#4ade80";
     } else if (finalScore < 48) {
