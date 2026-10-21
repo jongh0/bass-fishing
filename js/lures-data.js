@@ -586,7 +586,7 @@ const LURES = [
   },
   {
     id: "rubber_jig",
-    name: "러버지그 / 스몰 러버지그 (스모러버)",
+    name: "러버지그 / 스몰 러버지그",
     category: "SOFT",
     catLabel: "소프트베이트",
     depthRange: [1.0, 3.8],
@@ -655,7 +655,7 @@ const COLOR_PALETTE_GUIDE = {
 const SINKER_CHART = [
   { oz: "1/32 oz", gram: "0.9 g", use: "카이젤리그, 네꼬리그, 호버/미드스트롤링" },
   { oz: "1/20 oz", gram: "1.4 g", use: "네꼬리그 표준, 미드스트롤링 지그헤드" },
-  { oz: "1/16 oz", gram: "1.8 g", use: "지그헤드 스위밍, 경량 카이젤, 스모러버" },
+  { oz: "1/16 oz", gram: "1.8 g", use: "지그헤드 스위밍, 경량 카이젤, 스몰 러버지그" },
   { oz: "3/32 oz", gram: "2.7 g", use: "다운샷, 스몰 러버지그, 경량 프리리그" },
   { oz: "1/8 oz", gram: "3.5 g", use: "경량 프리리그, 스피닝 다운샷 표준" },
   { oz: "3/16 oz", gram: "5.3 g", use: "올라운드 프리리그 & 다운샷" },
