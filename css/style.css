@@ -1476,17 +1476,18 @@ canvas#waterCanvas {
 
   .spot-dropdown-menu {
     position: fixed;
-    top: auto;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-height: 75vh;
-    border-radius: 18px 18px 0 0;
-    border-bottom: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    bottom: auto;
+    right: auto;
+    width: min(92vw, 380px);
+    max-height: 58vh;
+    border-radius: 16px;
+    border: 1px solid rgba(56, 189, 248, 0.45);
     z-index: 2001;
-    padding-bottom: env(safe-area-inset-bottom, 12px);
-    box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.75);
+    padding-bottom: 6px;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85);
   }
 
   .spot-dropdown-header {
