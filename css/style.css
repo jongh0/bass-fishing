@@ -420,15 +420,19 @@ header.app-header {
   color: var(--text-muted);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
+  min-width: 0;
+  padding: 2px 2px;
 }
 
 .pulse-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #22c55e;
-  box-shadow: 0 0 8px #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+  flex-shrink: 0;
+  margin-left: 2px;
   animation: pulseAnim 1.8s infinite;
 }
 
@@ -1606,9 +1610,16 @@ canvas#waterCanvas {
   .live-status-pill {
     font-size: 0.68rem;
     line-height: 1.2;
+    padding: 2px 3px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .live-status-pill #liveStatusText {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
   }
 
   /* 3. 기상 지표 3열 × 2행 컴팩트 그리드 + 하단 1줄 활성도 바 */
