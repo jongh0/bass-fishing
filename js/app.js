@@ -536,7 +536,7 @@ function renderRawrisWidget(wl, fallbackSpotName = "선택한 필드") {
 function renderWeatherBanner(w) {
   const wl = w.waterLevel;
   const wlStatusText = wl ? ` · 수위계측(${wl.equipName} ${wl.nowDate})` : "";
-  document.getElementById("liveStatusText").textContent = `${w.locationName} (${w.updatedAt} 기상청${wlStatusText} 실시간 연동)`;
+  document.getElementById("liveStatusText").textContent = `${w.locationName} (${w.updatedAt} 기상청${wlStatusText})`;
 
   document.getElementById("mAirTemp").textContent = `${w.airTemp}°C`;
   document.getElementById("mAirSub").textContent = `체감 ${w.apparentTemp}°C · ${w.weatherIcon} ${w.weatherText}`;
