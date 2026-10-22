@@ -61,7 +61,14 @@ async function main() {
   };
 
   let successCount = 0;
-  const uniqueEquipNos = [...new Set(TARGET_EQUIPS.map(t => t.equipNo))];
+  // 프리셋 + 내 위치 최근접 탐색용 전체 주요 저수지 목록(data/reservoirs.json)의 equip_no 모두 수집
+  let reservoirNos = [];
+  try {
+    reservoirNos = JSON.parse(fs.readFileSync(path.join(outDir, "reservoirs.json"), "utf8")).map(r => r.equipNo);
+  } catch (e) {
+    // reservoirs.json 없으면 프리셋만 사용
+  }
+  const uniqueEquipNos = [...new Set([...TARGET_EQUIPS.map(t => t.equipNo), ...reservoirNos])];
   for (const equipNo of uniqueEquipNos) {
     try {
       const info = await fetchEquipDetail(equipNo);
@@ -84,8 +91,8 @@ async function main() {
   }
 
   if (Object.keys(result.equips).length > 0) {
-    fs.writeFileSync(outPath, JSON.stringify(result, null, 2), "utf8");
-    const jsContent = `// 한국농어촌공사(RAWRIS) 실시간 수위 스냅샷 데이터 (네트워크/CORS 무관 즉시 로드 보장)\nwindow.RAWRIS_WATER_LEVELS = ${JSON.stringify(result, null, 2)};\n`;
+    fs.writeFileSync(outPath, JSON.stringify(result), "utf8");
+    const jsContent = `// 한국농어촌공사(RAWRIS) 실시간 수위 스냅샷 데이터 (네트워크/CORS 무관 즉시 로드 보장)\nwindow.RAWRIS_WATER_LEVELS = ${JSON.stringify(result)};\n`;
     fs.writeFileSync(jsOutPath, jsContent, "utf8");
     console.log(`Saved ${Object.keys(result.equips).length} reservoir records (freshly fetched: ${successCount}) to ${outPath} and ${jsOutPath}`);
   } else {

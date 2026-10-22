@@ -129,6 +129,31 @@ const WeatherEngine = {
     return bestSpot || KOREA_SPOTS.find(s => s.id === "asan") || KOREA_SPOTS[1]; // 기본 아산호
   },
 
+  // 두 좌표 사이의 대원거리(km)
+  haversineKm(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const rad = d => (d * Math.PI) / 180;
+    const dLat = rad(lat2 - lat1);
+    const dLon = rad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(a));
+  },
+
+  // GPS 위경도 기준 RAWRIS 수위 제공 전체 주요 저수지(window.RAWRIS_RESERVOIRS) 중 최근접 탐색 (거리 km 포함)
+  findNearestReservoir(lat, lon) {
+    const list = (typeof window !== "undefined" && window.RAWRIS_RESERVOIRS) || [];
+    let best = null;
+    let min = Infinity;
+    for (const r of list) {
+      const d = this.haversineKm(lat, lon, r.lat, r.lon);
+      if (d < min) {
+        min = d;
+        best = r;
+      }
+    }
+    return best ? { ...best, distanceKm: min } : null;
+  },
+
   // 한국농어촌공사(RAWRIS) 수위 데이터 로드 및 오름/내림수위 전술 분석
   async fetchWaterLevelData(equipNo) {
     if (!equipNo) return null;

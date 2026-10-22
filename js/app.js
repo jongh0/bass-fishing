@@ -359,6 +359,8 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
   const initialEquipNo = spotId !== "gps" ? initialSpot.equipNo : defaultSpot.equipNo;
 
   try {
+    // GPS 선택 시에는 위치 확인 전까지 엉뚱한 수위(아산호)를 보여주지 않고 대기 상태 표시
+    if (spotId === "gps") throw new Error("gps-pending");
     const quickWl = await WeatherEngine.fetchWaterLevelData(initialEquipNo);
     renderRawrisWidget(quickWl, initialSpot.name);
     const wlValEl = document.getElementById("mWaterLevel");
@@ -375,11 +377,20 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
       }
     }
   } catch (e) {
-    // ignore quick render error
+    if (spotId === "gps") {
+      const t = document.getElementById("rwEquipTitle");
+      const sub = document.getElementById("rwBranchSub");
+      if (t) t.textContent = "위치 확인 중...";
+      if (sub) sub.textContent = "내 위치에서 가장 가까운 농어촌공사 수위 관측 저수지를 찾는 중입니다.";
+      const wlValEl = document.getElementById("mWaterLevel");
+      const wlSubEl = document.getElementById("mWaterLevelSub");
+      if (wlValEl) wlValEl.textContent = "확인 중";
+      if (wlSubEl) { wlSubEl.textContent = "가까운 저수지 탐색"; wlSubEl.style.color = "var(--text-muted)"; }
+    }
   }
 
   try {
-    let lat, lon, customName = null, equipNo = null;
+    let lat, lon, customName = null, equipNo = null, distanceNote = "";
     if (spotId === "gps") {
       const pos = await new Promise((resolve, reject) => {
         if (!navigator.geolocation) reject(new Error("브라우저가 GPS를 지원하지 않습니다."));
@@ -390,8 +401,16 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
       });
       lat = pos.coords.latitude;
       lon = pos.coords.longitude;
-      const nearestSpot = WeatherEngine.findNearestEquipSpot(lat, lon);
-      equipNo = nearestSpot ? nearestSpot.equipNo : 4140;
+      // RAWRIS 수위 제공 전체 주요 저수지 중 최근접 선택 (목록이 없으면 프리셋 기준 폴백)
+      const nearest = WeatherEngine.findNearestReservoir(lat, lon);
+      if (nearest) {
+        equipNo = nearest.equipNo;
+        const km = nearest.distanceKm;
+        distanceNote = ` | 📍 내 위치에서 ${km.toFixed(1)}km` + (km > 50 ? " ⚠️ 가까운 수위 관측소가 멀리 있습니다(참고용)" : "");
+      } else {
+        const nearestSpot = WeatherEngine.findNearestEquipSpot(lat, lon);
+        equipNo = nearestSpot ? nearestSpot.equipNo : 4140;
+      }
     } else {
       const spot = KOREA_SPOTS.find(s => s.id === spotId) || defaultSpot;
       lat = spot.lat;
@@ -402,7 +421,7 @@ async function loadWeatherForSpot(spotId, autoSyncSimulator = true) {
 
     const w = await WeatherEngine.fetchLiveWeather(lat, lon, customName, equipNo);
     renderWeatherBanner(w);
-    renderRawrisWidget(w.waterLevel, customName || w.locationName);
+    renderRawrisWidget(w.waterLevel, customName || w.locationName, distanceNote);
 
     if (autoSyncSimulator) {
       applyLiveWeatherToSimulator(false);
@@ -431,7 +450,7 @@ function formatComma(num) {
 }
 
 // 첨부 이미지와 동일한 RAWRIS 수위·취수탑 대시보드 렌더링
-function renderRawrisWidget(wl, fallbackSpotName = "선택한 필드") {
+function renderRawrisWidget(wl, fallbackSpotName = "선택한 필드", distanceNote = "") {
   if (!wl) {
     document.getElementById("rwEquipTitle").textContent = fallbackSpotName;
     document.getElementById("rwBranchSub").textContent = "한국수자원공사 관할 다목적댐 (농어촌공사 계측 대상 외)";
@@ -466,7 +485,7 @@ function renderRawrisWidget(wl, fallbackSpotName = "선택한 필드") {
   }
 
   document.getElementById("rwEquipTitle").textContent = wl.equipName;
-  document.getElementById("rwBranchSub").textContent = `${wl.headName} · ${wl.branchName} | 실시간 수위 계측정보 (${wl.nowDate} 기준)`;
+  document.getElementById("rwBranchSub").textContent = `${wl.headName} · ${wl.branchName} | 실시간 수위 계측정보 (${wl.nowDate} 기준)${distanceNote}`;
 
   document.getElementById("rwNorRate").textContent = wl.norRate ? wl.norRate.toFixed(1) : "-";
   document.getElementById("rwYdayRate").textContent = wl.ydayRate.toFixed(1);
