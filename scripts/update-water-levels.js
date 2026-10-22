@@ -19,13 +19,14 @@ const TARGET_EQUIPS = [
   { spotId: "naju", equipNo: 1206, label: "전남 나주호" }
 ];
 
-async function fetchEquipDetail(equipNo) {
+async function fetchEquipDetail(equipNo, timeoutMs = 3000) {
   const url = `https://rawris-am.ekr.or.kr/wrms/query/json?qid=rawris.wrms.gis.popup.view_info_reservoir&db_type=undefined&equip_no=${equipNo}`;
   const res = await fetch(url, {
     method: "GET",
     headers: {
       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-    }
+    },
+    signal: AbortSignal.timeout(timeoutMs)
   });
   if (!res.ok) {
     throw new Error(`HTTP ${res.status} for equip_no=${equipNo}`);
@@ -55,12 +56,20 @@ async function main() {
     }
   }
 
+  // 1. 한국농어촌공사(RAWRIS) 서버 사전 핑 점검 (해외 GitHub Actions 러너 방화벽 차단 시 즉시 안전 스킵)
+  try {
+    await fetchEquipDetail(899, 2500);
+  } catch (err) {
+    console.warn(`[SKIP] RAWRIS 서버에 접근할 수 없습니다 (${err.message}).`);
+    console.warn(`해외 GitHub Actions 러너 방화벽 차단 환경이므로, 기존 저장된 스냅샷(${Object.keys(existingEquips).length}개 저수지)을 그대로 유지하고 배포를 진행합니다.`);
+    process.exit(0);
+  }
+
   const result = {
     updatedAt: new Date().toISOString(),
     equips: { ...existingEquips }
   };
 
-  let successCount = 0;
   // 프리셋 + 내 위치 최근접 탐색용 전체 주요 저수지 목록(data/reservoirs.json)의 equip_no 모두 수집
   let reservoirNos = [];
   try {
@@ -69,34 +78,44 @@ async function main() {
     // reservoirs.json 없으면 프리셋만 사용
   }
   const uniqueEquipNos = [...new Set([...TARGET_EQUIPS.map(t => t.equipNo), ...reservoirNos])];
-  for (const equipNo of uniqueEquipNos) {
-    try {
-      const info = await fetchEquipDetail(equipNo);
-      if (info && info.equip_name) {
-        info.equip_name = String(info.equip_name).replace(/\s*\(.*?\)/g, "").trim();
-        if (info.equip_name === "대호방조제1") info.equip_name = "대호만";
-        if (info.equip_addr1) {
-          info.equip_addr1 = String(info.equip_addr1).replace("전남광주통합특별시", "전라남도");
+
+  let successCount = 0;
+  // 병렬 풀(동시 8개)로 고속 수집
+  const concurrency = 8;
+  let cursor = 0;
+
+  async function worker() {
+    while (cursor < uniqueEquipNos.length) {
+      const idx = cursor++;
+      const equipNo = uniqueEquipNos[idx];
+      try {
+        const info = await fetchEquipDetail(equipNo, 4000);
+        if (info && info.equip_name) {
+          info.equip_name = String(info.equip_name).replace(/\s*\(.*?\)/g, "").trim();
+          if (info.equip_name === "대호방조제1") info.equip_name = "대호만";
+          if (info.equip_addr1) {
+            info.equip_addr1 = String(info.equip_addr1).replace("전남광주통합특별시", "전라남도");
+          }
+          if (String(equipNo) === "3928" && parseFloat(info.r_level_flood) < parseFloat(info.r_level_full)) {
+            info.r_level_flood = "1.50";
+          }
+          result.equips[equipNo] = info;
+          successCount++;
         }
-        if (String(equipNo) === "3928" && parseFloat(info.r_level_flood) < parseFloat(info.r_level_full)) {
-          info.r_level_flood = "1.50";
-        }
-        result.equips[equipNo] = info;
-        successCount++;
-        console.log(`[OK] ${equipNo} ${info.equip_name}: 금일 ${info.now_rate}% (${info.now_wlvl} EL.m) / 전일 ${info.yday_rate}% (${info.yday_wlvl} EL.m) [${info.now_date}]`);
+      } catch (err) {
+        // 개별 저수지 실패 시 기존 스냅샷 보존
       }
-    } catch (err) {
-      console.error(`[WARN] Failed to fetch equip_no=${equipNo}:`, err.message);
     }
   }
+
+  await Promise.all(Array.from({ length: concurrency }, worker));
+  console.log(`[RAWRIS] 수집 완료: 총 ${uniqueEquipNos.length}개 중 ${successCount}개 갱신 (누적 ${Object.keys(result.equips).length}개 보존)`);
 
   if (Object.keys(result.equips).length > 0) {
     fs.writeFileSync(outPath, JSON.stringify(result), "utf8");
     const jsContent = `// 한국농어촌공사(RAWRIS) 실시간 수위 스냅샷 데이터 (네트워크/CORS 무관 즉시 로드 보장)\nwindow.RAWRIS_WATER_LEVELS = ${JSON.stringify(result)};\n`;
     fs.writeFileSync(jsOutPath, jsContent, "utf8");
-    console.log(`Saved ${Object.keys(result.equips).length} reservoir records (freshly fetched: ${successCount}) to ${outPath} and ${jsOutPath}`);
-  } else {
-    console.warn("[SKIP] No reservoir records available to write; keeping existing files.");
+    console.log(`Saved ${Object.keys(result.equips).length} reservoir records to ${outPath} and ${jsOutPath}`);
   }
 }
 
