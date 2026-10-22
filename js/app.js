@@ -1,5 +1,27 @@
 // === 메인 애플리케이션 컨트롤러 (스코어링 엔진 · 2D 캔버스 · 실시간 날씨/RAWRIS 수위 동기화 · 조행일지) ===
 
+const SPOT_STORAGE_KEY = "bass_selected_spot_id";
+
+function getInitialSpotId() {
+  try {
+    const saved = localStorage.getItem(SPOT_STORAGE_KEY);
+    if (saved && (saved === "gps" || (typeof KOREA_SPOTS !== "undefined" && KOREA_SPOTS.some(s => s.id === saved)))) {
+      return saved;
+    }
+  } catch (e) {
+    // localStorage 접근 제한 환경 대비
+  }
+  return "gps"; // 저장된 설정이 없을 때 기본: 📍 내 현재 위치
+}
+
+function saveSelectedSpotId(spotId) {
+  try {
+    localStorage.setItem(SPOT_STORAGE_KEY, spotId);
+  } catch (e) {
+    // ignore
+  }
+}
+
 let state = {
   season: "autumn",
   time: "dawn_dusk",
@@ -10,7 +32,7 @@ let state = {
   struct: "rock_slope",
   catFilter: "ALL",
   selectedLureId: "chatterbait",
-  selectedSpotId: "asan", // 기본값: 충남 아산호
+  selectedSpotId: getInitialSpotId(), // 최근 선택 기억 (기억된 게 없으면 'gps')
   activeTab: "tab-simulator",
   mobileControlsOpen: false
 };
@@ -1128,7 +1150,7 @@ function renderCustomSpotPicker() {
   const listEl = document.getElementById("spotDropdownList");
   const spotSelect = document.getElementById("spotSelect");
 
-  const currentSpot = KOREA_SPOTS.find(s => s.id === state.selectedSpotId) || KOREA_SPOTS[5];
+  const currentSpot = KOREA_SPOTS.find(s => s.id === state.selectedSpotId) || KOREA_SPOTS[0];
   if (triggerTextEl && currentSpot) {
     triggerTextEl.textContent = currentSpot.name;
   }
@@ -1177,6 +1199,7 @@ function renderCustomSpotPicker() {
     btn.addEventListener("click", () => {
       const nextId = btn.getAttribute("data-spot-id");
       state.selectedSpotId = nextId;
+      saveSelectedSpotId(nextId);
       closeSpotDropdown();
       renderCustomSpotPicker();
       loadWeatherForSpot(nextId, true);
@@ -1238,6 +1261,7 @@ function initEvents() {
 
   document.getElementById("btnGpsLocate")?.addEventListener("click", () => {
     state.selectedSpotId = "gps";
+    saveSelectedSpotId("gps");
     renderCustomSpotPicker();
     loadWeatherForSpot("gps", true);
   });
