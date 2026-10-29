@@ -4,11 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta name="theme-color" content="#070c17" />
-  <meta name="description" content="실시간 위치·날씨·기압·수온·농어촌공사 수위 연동 사계절 배스 루어 택티컬 시뮬레이터" />
+  <meta name="description" content="실시간 위치·날씨·기압·수온·농어촌공사 수위 연동 사계절 배스 루어 택티컬 시뮬레이터 & 레이더" />
+  <meta name="application-name" content="배스레이더" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="🎣 배스 택티컬 시뮬레이터" />
-  <title>🎣 배스 택티컬 시뮬레이터</title>
+  <meta name="apple-mobile-web-app-title" content="배스레이더" />
+  <title>🎣 배스레이더 - 실시간 배스 낚시 & 루어 전술</title>
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+  <link rel="alternate icon" type="image/png" href="icons/favicon-32.png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/style.css?v=20261021_8" />
 </head>
@@ -17,7 +21,7 @@
     <!-- 1. 상단 타이틀 헤더 -->
     <header class="app-header">
       <div class="title-group">
-        <h1>🎣 배스 택티컬 시뮬레이터</h1>
+        <h1>🎣 배스레이더</h1>
         <p class="header-sub-desc">실시간 날씨 · 기압 · 농어촌공사 수위(오름/배수) · 수온 · 물색 기반 19종 루어 완벽 매칭 & 수중 액션</p>
       </div>
       <div class="badge-row">
@@ -574,5 +578,14 @@
   <script src="js/weather-api.js?v=20261021_8"></script>
   <script src="js/tactic-engine.js?v=20261021_8"></script>
   <script src="js/app.js?v=20261021_8"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => console.log('BassRadar PWA SW registered:', reg.scope))
+          .catch((err) => console.error('BassRadar PWA SW registration failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>

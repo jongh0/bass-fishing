@@ -1,8 +1,10 @@
-# 🎣 배스 택티컬 시뮬레이터
+# 🎣 배스레이더 (BassRadar) - 실시간 배스 낚시 & 루어 전술
 
 🌐 **웹 애플리케이션 바로가기**: [https://jongh0.github.io/bass-fishing/](https://jongh0.github.io/bass-fishing/)
 
-스마트폰(모바일)과 PC 어디서나 **실시간 GPS 위치 · 기상청 기상 · 기압 · 한국농어촌공사(RAWRIS) 실시간 저수지 수위**를 연동하여 오늘의 배스 움직임을 예측하고, 상황별 최적의 배스 루어(19종)와 수중 운용 액션을 시뮬레이션할 수 있는 올인원 배스 낚시 웹앱입니다.
+스마트폰(모바일)과 PC 어디서나 **실시간 GPS 위치 · 기상청 기상 · 기압 · 한국농어촌공사(RAWRIS) 실시간 저수지 수위**를 연동하여 오늘의 배스 움직임을 예측하고, 상황별 최적의 배스 루어(19종)와 수중 운용 액션을 시뮬레이션할 수 있는 올인원 배스 낚시 PWA(Progressive Web App)입니다.
+
+📱 **PWA(앱 설치) 지원**: 모바일 브라우저(Safari, Chrome 등)에서 "홈 화면에 추가" 또는 "앱 설치"를 누르면 네이티브 앱처럼 전체화면으로 빠르게 구동되며 오프라인 캐싱을 지원합니다.
 
 ---
 
@@ -46,4 +48,4 @@
   - [Open-Meteo API](https://open-meteo.com/): 실시간 기온, 기압, 풍향/풍속, 일출·일몰 데이터
   - 한국농어촌공사 [RAWRIS WRMS](https://rawris-am.ekr.or.kr/): 전국 주요 503개 저수지 실시간 수위, 저수율, 평년 저수율, 방류량
 - **Automation & Deployment**: GitHub Actions (주기적 수위 스냅샷 동기화 및 Pages 자동 배포)
-- **PWA**: Web App Manifest 지원 (스마트폰 홈 화면 바로가기 추가 지원)
+- **PWA (Progressive Web App)**: Web App Manifest, Service Worker (`sw.js`) 오프라인 캐싱, 192/512px 앱 아이콘 및 모바일 전체화면(Standalone) 설치 지원
