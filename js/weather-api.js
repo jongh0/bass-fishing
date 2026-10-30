@@ -436,9 +436,9 @@ const WeatherEngine = {
     }
   },
 
-  // Open-Meteo 실시간 날씨·기압·일출일몰 API + 농어촌공사(RAWRIS) 실시간 수위 통합 조회
+  // Open-Meteo 실시간 날씨·기압·일출일몰·최근 3일 강수량 API + 농어촌공사(RAWRIS) 실시간 수위 통합 조회
   async fetchLiveWeather(lat, lon, customSpotName = null, equipNo = null) {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&hourly=surface_pressure,temperature_2m&daily=sunrise,sunset&timezone=Asia%2FSeoul&past_days=1&forecast_days=1`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&hourly=surface_pressure,temperature_2m&daily=sunrise,sunset,precipitation_sum&timezone=Asia%2FSeoul&past_days=3&forecast_days=1`;
 
     const [res, waterLevel] = await Promise.all([
       fetch(url),
@@ -454,12 +454,14 @@ const WeatherEngine = {
     const windDir = this.getWindDirText(cur.wind_direction_10m);
     const pressure = cur.surface_pressure;
 
-    // past_days=1 이므로 hourly 배열은 [어제 0~23시, 오늘 0~23시] 구조 → 오늘 현재 시각 인덱스 = 24 + 시
-    const nowHourIndex = 24 + new Date().getHours();
-    let pressureDiff3h = 0;
-    let tempDiff24h = 0;
+    // past_days=3, forecast_days=1 이므로 마지막 24개 슬롯이 오늘 0~23시
     const hp = data.hourly?.surface_pressure;
     const ht = data.hourly?.temperature_2m;
+    const totalHours = hp ? hp.length : 96;
+    const todayBaseIdx = Math.max(24, totalHours - 24);
+    const nowHourIndex = todayBaseIdx + new Date().getHours();
+    let pressureDiff3h = 0;
+    let tempDiff24h = 0;
     if (hp && hp[nowHourIndex] != null && hp[nowHourIndex - 3] != null) {
       pressureDiff3h = Math.round((hp[nowHourIndex] - hp[nowHourIndex - 3]) * 10) / 10;
     }
@@ -468,8 +470,14 @@ const WeatherEngine = {
       tempDiff24h = Math.round((ht[nowHourIndex] - ht[nowHourIndex - 24]) * 10) / 10;
     }
 
-    const sunriseRaw = data.daily?.sunrise?.[1] || data.daily?.sunrise?.[0] || null;
-    const sunsetRaw = data.daily?.sunset?.[1] || data.daily?.sunset?.[0] || null;
+    // 최근 72시간 누적 강수량 (신규 탁수 유입 freshMud 판별용)
+    const precipArr = data.daily?.precipitation_sum || [];
+    const precip72h = Math.round(precipArr.reduce((acc, v) => acc + (Number(v) || 0), 0) * 10) / 10;
+
+    const srList = data.daily?.sunrise || [];
+    const ssList = data.daily?.sunset || [];
+    const sunriseRaw = srList[srList.length - 1] || srList[0] || null;
+    const sunsetRaw = ssList[ssList.length - 1] || ssList[0] || null;
     const formatTime = (iso) => {
       if (!iso) return "--:--";
       const d = new Date(iso);
@@ -516,6 +524,7 @@ const WeatherEngine = {
       weatherText: weatherDesc.text,
       weatherIcon: weatherDesc.icon,
       precipitation: cur.precipitation,
+      precip72h,
       sunrise: formatTime(sunriseRaw),
       sunset: formatTime(sunsetRaw),
       season,

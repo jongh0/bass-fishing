@@ -77,8 +77,10 @@ const structLabels = {
 
 // 통합 전술 (기압·기온·수온·수위·광량·시간대·바람 합성) — 랭킹 계산 시마다 갱신
 let currentTactic = null;
+// 고수 노하우 규칙 매칭 결과 (Expert Rule Layer) — 랭킹 계산 시마다 갱신
+let currentExpert = null;
 
-// === 1. 루어 매칭 스코어 계산 엔진 (수온 + 계절 + 시간대 + 지형 + 바람 + 물색 + 통합 전술) ===
+// === 1. 루어 매칭 스코어 계산 엔진 (수온 + 계절 + 시간대 + 지형 + 바람 + 물색 + 통합 전술 + 고수 노하우) ===
 function computeScore(lure) {
   let score = 40;
 
@@ -137,6 +139,11 @@ function computeScore(lure) {
   const fit = TacticEngine.lureFit(lure, currentTactic);
   score += fit.bonus;
 
+  // 8) 고수 노하우 규칙 매칭 보정 (2개 이상 독립 권위 출처로 교차 검증된 조건 규칙만 점수 반영)
+  if (typeof ExpertEngine !== "undefined" && currentExpert) {
+    score += ExpertEngine.lureBonus(lure.id, currentExpert);
+  }
+
   // 상위권 점수 포화(99점 동점) 방지: 80점 초과분은 완만하게 압축해 순위 변별력 유지
   if (score > 80) score = 80 + (score - 80) * 0.4;
 
@@ -144,10 +151,17 @@ function computeScore(lure) {
 }
 
 function getFilteredAndRankedLures() {
-  currentTactic = TacticEngine.synthesize(state, WeatherEngine.currentData || null);
+  const live = WeatherEngine.currentData || null;
+  currentTactic = TacticEngine.synthesize(state, live);
+  currentExpert = typeof ExpertEngine !== "undefined" ? ExpertEngine.evaluate(state, live) : null;
   return LURES
     .filter(l => state.catFilter === "ALL" || l.category === state.catFilter)
-    .map(l => ({ ...l, score: computeScore(l), tacticFit: TacticEngine.lureFit(l, currentTactic).fit }))
+    .map(l => ({
+      ...l,
+      score: computeScore(l),
+      tacticFit: TacticEngine.lureFit(l, currentTactic).fit,
+      expertAdvice: currentExpert ? ExpertEngine.adviceFor(l.id, currentExpert) : null
+    }))
     .sort((a, b) => b.score - a.score);
 }
 
@@ -215,6 +229,13 @@ function renderUI() {
       }
     };
 
+    const expAdv = lure.expertAdvice;
+    const expBadgeHtml = expAdv && expAdv.primary
+      ? (expAdv.bonus > 0
+          ? `<span class="mini-tag tag-expert">🧠 고수노하우 +${expAdv.bonus}</span>`
+          : `<span class="mini-tag tag-expert-ref">🧠 참고노하우</span>`)
+      : "";
+
     item.innerHTML = `
       <div class="lure-row-top">
         <div class="lure-name-wrap">
@@ -222,6 +243,7 @@ function renderUI() {
           <span class="lure-title">${lure.name}</span>
           <span class="mini-tag ${catTagClass}">${lure.catLabel}</span>
           ${lure.tacticFit === "best" ? '<span class="mini-tag tag-fit">🧭 전술 적합</span>' : ""}
+          ${expBadgeHtml}
         </div>
       </div>
       <div class="score-bar-wrap">
@@ -248,6 +270,71 @@ function renderUI() {
     const currentTimeTip = activeLure.timeTip[state.time];
     const currentColorRec = activeLure.colorGuide ? activeLure.colorGuide[state.clarity] : "내추럴 컬러";
 
+    const expAdv = activeLure.expertAdvice;
+    const primaryRule = expAdv?.primary || null;
+    const otherRules = expAdv?.others || [];
+
+    // 조건별 동적 컬러 표시 (고수 규칙 매칭 시 최우선 노출 + 하드베이트 표면 마감 원칙 병기)
+    const expColors = primaryRule?.advice?.colors?.length ? primaryRule.advice.colors.join(" / ") : null;
+    const finishTip = activeLure.category === "HARD" && expAdv?.finishPrinciple
+      ? `<div class="spec-sub-note">✨ 마감 공식: <strong>${expAdv.finishPrinciple.code}</strong> (${expAdv.finishPrinciple.useWhen})</div>`
+      : "";
+    const colorValueHtml = expColors
+      ? `<span class="expert-inline-badge">고수 추천</span> ${expColors}<div class="spec-sub-note">기본 가이드: ${currentColorRec}</div>${finishTip}`
+      : `${currentColorRec}${finishTip}`;
+
+    // 조건별 동적 무게·트레일러 표시
+    const expWeight = primaryRule?.advice?.weight || null;
+    const expTrailer = primaryRule?.advice?.trailer || null;
+    const dynWeightPrinciple = expAdv?.weightPrinciple || null;
+    const weightSpecHtml = expWeight
+      ? `<div class="spec-item" style="border-left-color:#38bdf8;">
+          <span class="label">⚖️ 현재 조건 맞춤 무게 & 트레일러</span>
+          <div class="value"><span class="expert-inline-badge">고수 세팅</span> ${expWeight}</div>
+          ${expTrailer ? `<div class="spec-sub-note">트레일러/웜: ${expTrailer}</div>` : ""}
+        </div>`
+      : (dynWeightPrinciple && activeLure.category !== "HARD"
+          ? `<div class="spec-item" style="border-left-color:#38bdf8;">
+              <span class="label">⚖️ 현재 환경 권장 싱커 무게 공식</span>
+              <div class="value">${dynWeightPrinciple.spec}</div>
+              <div class="spec-sub-note">${dynWeightPrinciple.reason}</div>
+            </div>`
+          : "");
+
+    // 고수 실전 노하우 & 출처 박스
+    let expertBoxHtml = "";
+    if (primaryRule) {
+      const verifyBadge = primaryRule.sourceCount >= 2
+        ? `<span class="expert-verify-pill verified">교차검증 ${primaryRule.sourceCount}개 출처 · +${expAdv.bonus}점 반영</span>`
+        : `<span class="expert-verify-pill single">참고 노하우 (단일 출처 · 점수 미반영)</span>`;
+
+      const sourcesHtml = (primaryRule.sources || [])
+        .map(s => `<a href="${s.url}" target="_blank" rel="noopener noreferrer" class="source-chip" title="${(s.quote || "").replace(/"/g, "&quot;")}">🔗 ${s.authority} ↗</a>`)
+        .join("");
+
+      const othersHtml = otherRules.length > 0
+        ? `<div class="expert-others">
+            ${otherRules.map(r => `<div class="expert-other-item">➕ <strong>${r.title}</strong>: ${r.advice?.action || r.reason}</div>`).join("")}
+          </div>`
+        : "";
+
+      expertBoxHtml = `
+        <div class="tactical-box expert-box">
+          <div class="expert-box-head">
+            <strong>🧠 프로/고수 실전 노하우 — ${primaryRule.title}</strong>
+            ${verifyBadge}
+          </div>
+          ${primaryRule.advice?.action ? `<div class="expert-action-line">🎯 <strong>핵심 운용법:</strong> ${primaryRule.advice.action}</div>` : ""}
+          <div class="expert-reason-line">🔬 <strong>생태·물리적 근거:</strong> ${primaryRule.reason}</div>
+          ${othersHtml}
+          <div class="expert-sources-wrap">
+            <span class="sources-label">출처 검증:</span>
+            ${sourcesHtml}
+          </div>
+        </div>
+      `;
+    }
+
     const t = currentTactic;
     const fitText = activeLure.tacticFit === "best"
       ? "✅ 현재 통합 전술에 가장 잘 맞는 루어입니다."
@@ -263,6 +350,7 @@ function renderUI() {
         <div>
           <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
             <span class="cat-badge ${catBadgeClass}" style="padding:3px 10px; font-size:0.74rem;">${activeLure.catLabel}</span>
+            ${primaryRule ? `<span class="mini-tag tag-expert">🧠 고수 규칙 매칭 (${(expAdv.others?.length || 0) + 1}건)</span>` : ""}
           </div>
           <div class="detail-title">${activeLure.name}</div>
           <div class="detail-sub">공략 수심층: ${activeLure.depthText} | 권장 리트리브 템포: ${activeLure.speed}</div>
@@ -283,9 +371,12 @@ function renderUI() {
         </div>
         <div class="spec-item" style="border-left-color:#f59e0b;">
           <span class="label">🎨 현재 물색(${clarityLabels[state.clarity]}) 베스트 컬러</span>
-          <div class="value">${currentColorRec}</div>
+          <div class="value">${colorValueHtml}</div>
         </div>
+        ${weightSpecHtml}
       </div>
+
+      ${expertBoxHtml}
 
       <div class="tactical-box" style="border-color:rgba(250, 204, 21, 0.35); background:rgba(250, 204, 21, 0.07);">
         <strong style="color:#facc15;">🕒 [${timeLabels[state.time]}] & [${waterTrendLabels[state.waterTrend]}] 공략 포인트</strong>

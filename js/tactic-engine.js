@@ -15,7 +15,7 @@ const TacticEngine = {
     suspending_shad:   { speeds: ["medium", "slow"], zones: ["breakline"] },
     lipless_vib:       { speeds: ["fast"], zones: ["breakline", "shallow"] },
     metal_vibe:        { speeds: ["slow", "medium"], zones: ["deep"] },
-    spinnerbait:       { speeds: ["fast", "medium"], zones: ["shallow"] },
+    spinnerbait:       { speeds: ["fast", "medium"], zones: ["shallow", "breakline"] },
     chatterbait:       { speeds: ["fast", "medium"], zones: ["shallow", "breakline"] },
     buzzbait:          { speeds: ["fast"], zones: ["shallow"] },
     hollow_frog:       { speeds: ["slow", "medium"], zones: ["shallow"] },
@@ -144,6 +144,14 @@ const TacticEngine = {
     else if (state.waterTrend === "rising") add("📈", "오름수위", 0.5);
     else if (state.waterTrend === "falling") add("📉", "내림수위 배수", -1);
 
+    // 8. 물색 (탁수 시 수온·유입 조건에 따른 활성 및 연안 집결 보정)
+    const freshMud = !!(live && (live.precip72h || 0) >= 20 && state.clarity === "muddy");
+    if (state.clarity === "muddy" && freshMud && wt < 12) {
+      add("🟤", "차가운 신규 탁수 유입", -1);
+    } else if (state.clarity === "muddy" && state.waterTrend !== "falling" && wt >= 11) {
+      add("🟤", "안정/오름 탁수 → 얕은 커버 집결", 0);
+    }
+
     // === 활성도 → 템포 ===
     let activity = "neutral";
     if (mood >= 2) activity = "aggressive";
@@ -162,15 +170,28 @@ const TacticEngine = {
     } else if (state.waterTrend === "rising") {
       zone = "shallow";
       zoneReason = "오름수위로 새로 잠긴 연안 육초·커버로 진입";
+    } else if (state.clarity === "muddy" && state.waterTrend === "stable" && !(freshMud && wt < 12)) {
+      zone = "shallow";
+      zoneReason = "안정된 탁수로 시야가 줄어 수심 1~5ft(0.3~1.5m) 연안 커버에 밀착";
     } else if (state.waterTrend === "falling") {
       zone = activity === "negative" ? "deep" : "breakline";
-      zoneReason = activity === "negative" ? "배수 + 저활성으로 깊은 물골까지 후퇴" : "배수로 연안을 버리고 브레이크라인으로 후퇴";
+      zoneReason = activity === "negative"
+        ? "배수 + 저활성으로 깊은 물골·직벽 중하층까지 후퇴"
+        : "배수로 수면적이 줄어 깊은 물 인접 잔여 커버·1차 브레이크라인으로 집결";
     } else if (state.time === "dawn_dusk" || state.time === "night") {
       zone = "shallow";
       zoneReason = state.time === "night" ? "야간 연안 회유" : "피딩 시간대 연안 회유";
-    } else if (wt >= 26) {
-      zone = "shallow";
-      zoneReason = "한낮 고수온 → 연안 헤비커버 그늘에 은신";
+    } else if (wt >= 25) {
+      if (state.struct === "deep_open") {
+        zone = "deep";
+        zoneReason = "한낮 고수온 → 수온약층(3~6m)이 형성된 본류 딥 렛지·험프에 대형 개체 집결";
+      } else if (state.struct === "rock_slope") {
+        zone = "breakline";
+        zoneReason = "한낮 고수온 → 용존산소와 수온이 안정된 1차 브레이크라인·그늘에 대기";
+      } else {
+        zone = "shallow";
+        zoneReason = "한낮 고수온 → 연안 수초 매트·헤비커버 짙은 그늘에 은신";
+      }
     } else if (activity === "aggressive") {
       zone = "shallow";
       zoneReason = "높은 활성으로 한낮에도 연안 사냥";

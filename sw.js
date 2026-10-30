@@ -1,5 +1,5 @@
 // 배스 전략 (Bass Tactics) Service Worker
-const CACHE_NAME = 'basstactics-v1.0.1';
+const CACHE_NAME = 'basstactics-v1.1.0';
 
 const STATIC_ASSETS = [
   './',
@@ -11,6 +11,8 @@ const STATIC_ASSETS = [
   './js/reservoirs-data.js',
   './js/weather-api.js',
   './js/tactic-engine.js',
+  './js/expert-rules-data.js',
+  './js/expert-engine.js',
   './js/app.js',
   './data/reservoirs.json',
   './data/water-levels.json',

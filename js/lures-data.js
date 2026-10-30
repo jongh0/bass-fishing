@@ -260,9 +260,9 @@ const LURES = [
     stdSpec: "3/8oz(10.5g) ~ 1/2oz(14g) (M~MH 로드 + 카본 12~16lb)",
     hookGuide: "숏바이트(꼬리만 무는 입질) 빈발 시 트레일러 훅(#1~#1/0) 추가 장착 권장",
     colorGuide: {
-      clear: "화이트/실버 윌로우 블레이드, 은어/빙어 스커트",
-      stained: "화이트 차트루즈 + 골드&실버 탠덤 블레이드",
-      muddy: "차트루즈/옐로우 스커트 + 더블 콜로라도 골드 블레이드"
+      clear: "화이트/실버 윌로우 블레이드, 은어/빙어 내추럴 스커트",
+      stained: "차트루즈 & 화이트 + 골드&실버 탠덤 블레이드",
+      muddy: "차트루즈/화이트 페인티드 블레이드, 싱글/더블 콜로라도 + 레드 키커 블레이드"
     },
     actionType: "wire_roll",
     timeTip: {
@@ -281,7 +281,7 @@ const LURES = [
     depthText: "0.5~2.0m",
     tempRange: [14, 26],
     bestSeasons: ["autumn", "spring", "summer"],
-    bestStruct: ["shallow_weed", "rock_slope"],
+    bestStruct: ["shallow_weed", "rock_slope", "heavy_cover"],
     bestWind: ["moderate", "strong"],
     bestTime: ["dawn_dusk", "night", "midday"],
     bestClarity: ["stained", "muddy", "clear"],
@@ -292,8 +292,8 @@ const LURES = [
     hookGuide: "트레일러 웜은 물 저항이 적은 핀테일(자코, 플루크 계열)을 끼워야 불규칙 다팅 액션이 살아남",
     colorGuide: {
       clear: "그린펌킨 샤드, 화이트 클리어, 스모크 실버",
-      stained: "그린펌킨 차트, 화이트&차트루즈, 블루길",
-      muddy: "블랙&블루(탁수·야간 최강), 파이어 크로우"
+      stained: "그린펌킨 차트, 화이트 & 차트루즈, 블루길",
+      muddy: "파이어 크로우(형광 레드/오렌지), 차트루즈 & 화이트, 블랙 & 블루"
     },
     actionType: "chatter_dart",
     timeTip: {
@@ -605,7 +605,7 @@ const LURES = [
     colorGuide: {
       clear: "그린펌킨, 브라운/퍼플(가재색), 모스 그린",
       stained: "그린펌킨 블루, 오렌지 크로우, 시나몬",
-      muddy: "블랙&블루(런커 선별 최강 컬러), 블랙&레드"
+      muddy: "블랙 & 블루(런커 선별 1티어), 헤마토마(Hematoma), 블랙 & 레드"
     },
     actionType: "soft_jig",
     timeTip: {
@@ -651,17 +651,18 @@ const COLOR_PALETTE_GUIDE = {
   }
 };
 
-// === 4. 현장 즉시 참고용 싱커 무게 & 훅 & 수온 치트시트 ===
+// === 4. 현장 즉시 참고용 싱커 무게 & 훅 & 수온 치트시트 (폴링속도·수심·커버·강풍 4대 원리 반영) ===
 const SINKER_CHART = [
-  { oz: "1/32 oz", gram: "0.9 g", use: "카이젤리그, 네꼬리그, 호버/미드스트롤링" },
-  { oz: "1/20 oz", gram: "1.4 g", use: "네꼬리그 표준, 미드스트롤링 지그헤드" },
-  { oz: "1/16 oz", gram: "1.8 g", use: "지그헤드 스위밍, 경량 카이젤, 스몰 러버지그" },
-  { oz: "3/32 oz", gram: "2.7 g", use: "다운샷, 스몰 러버지그, 경량 프리리그" },
-  { oz: "1/8 oz", gram: "3.5 g", use: "경량 프리리그, 스피닝 다운샷 표준" },
-  { oz: "3/16 oz", gram: "5.3 g", use: "올라운드 프리리그 & 다운샷" },
-  { oz: "1/4 oz", gram: "7.0 g", use: "표준 프리리그, 텍사스리그, 소형 스피너베이트" },
-  { oz: "3/8 oz", gram: "10.5 g", use: "장타 프리리그, 스피너/채터/러버지그 국민 무게" },
-  { oz: "1/2 oz", gram: "14.0 g", use: "급심·강풍 프리리그, 헤비 커버 펀칭, 딥크랭크" }
+  { oz: "1/32 oz", gram: "0.9 g", use: "카이젤리그, 호버스트롤링(네일싱커), 수심 1.5m 이하 수평 폴링" },
+  { oz: "1/20 oz", gram: "1.4 g", use: "네꼬리그 표준(5인치 스틱웜), 미드스트롤링 경량 지그헤드" },
+  { oz: "1/16 oz", gram: "1.8 g", use: "하이프레셔·저수온 극피네스 다운샷, 지그헤드 스위밍, 스몰 러버지그" },
+  { oz: "3/32 oz", gram: "2.7 g", use: "직벽·콜드프런트 딥 네꼬리그, 경량 다운샷, 스몰 러버지그" },
+  { oz: "1/8 oz", gram: "3.5 g", use: "수심 1.5m(5ft) 이하 섈로우 프리리그, 겨울철 표준 다운샷" },
+  { oz: "3/16 oz", gram: "5.3 g", use: "복잡한 수중 장애물 돌파용 프리리그 & 배수기 서스펜드 다운샷" },
+  { oz: "1/4 oz", gram: "7.0 g", use: "표준 브레이크라인 프리리그/텍사스리그, 슬로우 롤링 스피너베이트" },
+  { oz: "3/8 oz", gram: "10.5 g", use: "수심 6m(20ft) 탐색 프리리그, 강풍 대응, 스피너/채터/러버지그 표준" },
+  { oz: "1/2 oz", gram: "14.0 g", use: "급심·강풍·배수 유속 프리리그, 탁수 부유물 관통 플리핑 지그/스피너베이트" },
+  { oz: "3/4 ~ 1.5 oz", gram: "21 ~ 42 g", use: "딥 하드바텀 리액션 스트로킹(3/4oz), 여름·콜드프런트 수초 매트 펀칭(1~1.5oz)" }
 ];
 
 const WATER_TEMP_PATTERNS = [

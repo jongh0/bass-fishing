@@ -1,0 +1,112 @@
+[
+  {
+    "source_url": "https://www.bassmaster.com/how-to/news/prespawn-power-fishing-with-jigs/",
+    "source_authority": "Bassmaster (Kevin VanDam)",
+    "environment_condition": {
+      "season": "봄 (초봄 프리스폰)",
+      "water_temp_c": "원문 미기재 (저수온 vs 수온 상승기 구분)",
+      "water_clarity": "Stained | Muddy",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "맑고 바람 없는 날(바닥 커버 밀착) 또는 흐린 날",
+      "structure": "수몰나무·헤비 커버, 포인트 측면, 채널 스윙"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "러버지그 (래틀 장착 벌키 지그)",
+      "bait_shape_and_size": "볼륨 큰 지그 + 큰 트레일러 (저수온: 느리게 폴링하는 트레일러 / 수온 상승기: 빠르게 폴링하는 트레일러)",
+      "recommended_colors": ["Crawfish 계열 (원문: 가재·블루길·섀드 모방)"],
+      "weight_spec": "수온·폴링 속도에 맞춰 조절 (저수온일수록 슬로우 폴링)",
+      "retrieve_and_action": "맑고 무풍일 때는 스트라이크존이 좁아 수직(버티컬) 피칭이 유리. 저수온엔 느린 폴링·드래깅, 수온 상승기엔 빠른 폴링과 불규칙한 액션"
+    },
+    "technical_reasoning": "프리스폰 주 먹이는 가재다. 탁수·헤비커버에서는 물을 밀어내는 벌키 지그와 래틀이 유리하고, 수온이 낮을수록 트레일러 볼륨을 키워 폴링 속도를 늦춰야 저활성 빅배스가 반응한다.",
+    "source_evidence": "\"If the water is more stained and I’m fishing thick cover, I use a bulkier jig-and-trailer with a rattle. ... If the water is cold, I want it falling slower; if warming, I want a faster falling and more erratic jig, which is determined by the size and type of trailer.\""
+  },
+  {
+    "source_url": "https://www.bassmaster.com/how-to/news/prespawn-power-fishing-with-jigs/",
+    "source_authority": "Bassmaster (Kevin VanDam)",
+    "environment_condition": {
+      "season": "봄 (프리스폰)",
+      "water_temp_c": "원문 미기재",
+      "water_clarity": "Clear",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "High(고기압)",
+      "wind_and_weather": "맑은 날, 무풍 (bright conditions and not much wind)",
+      "structure": "바닥 커버에 바짝 붙은 포인트·채널 스윙"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "컴팩트 러버지그 / 스몰 러버지그",
+      "bait_shape_and_size": "스커트를 다듬은 컴팩트 지그 + 소형 트레일러",
+      "recommended_colors": ["Natural colors", "Bluegill (수온 상승기 스윔지그)"],
+      "weight_spec": "평소보다 무거운 헤드 (빠른 폴링 유도)",
+      "retrieve_and_action": "커버에 바짝 붙여 수직으로 빠르게 바닥까지 떨어뜨림. 수온이 오르는 맑은 오후 산란 플랫에서는 블루길 컬러 스윔지그+그럽 트레일러를 스피너베이트처럼 스위밍"
+    },
+    "technical_reasoning": "맑은 물에서 배스가 커버에 밀착해 있을 때는 오히려 무겁고 컴팩트한 지그로 빠르게 바닥까지 내려야 폴링 중 배스가 가짜임을 간파할 틈을 주지 않고 리액션을 유도할 수 있다.",
+    "source_evidence": "\"Now if the water is clear and the bass tight to cover, I’ll go to a compact jig that’s heavier because it gets down to the bottom quicker and fish don’t get a good look at it during the descent. I trim the skirt, use a smaller trailer and use natural colors.\""
+  },
+  {
+    "source_url": "https://www.tacticalbassin.com/blog/spring-jerkbait-fishing-beginner-and-advanced-tips",
+    "source_authority": "TacticalBassin (Matt Allen)",
+    "environment_condition": {
+      "season": "봄 (프리스폰 ~ 포스트스폰)",
+      "water_temp_c": "원문 미기재 (저수온~상승기)",
+      "water_clarity": "Clear | Stained",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "원문 미기재",
+      "structure": "포인트, 브레이크라인, 스테이징 구간"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "서스펜딩 미노우 / 저크베이트",
+      "bait_shape_and_size": "90~130mm 서스펜딩 저크베이트 (Megabass Vision 110, Jackall Rerange 110/130, Lucky Craft Staysee 90)",
+      "recommended_colors": ["GP Pro Blue", "Tennessee Shad", "M Shad"],
+      "weight_spec": "10~12lb 플루오로카본 라인 + 세단 트레블 훅 (#4~#6)",
+      "retrieve_and_action": "느린 당김(pull)이 아니라 절도 있고 날카로운 스냅(crisp snaps) 후 스테이"
+    },
+    "technical_reasoning": "봄철 저크베이트는 배스의 식욕과 무관하게 본능적인 공격 반사(core instinctual feeding response)를 촉발한다. 느리게 당기지 않고 짧고 강하게 끊어 쳐야 리액션 바이트가 일어난다.",
+    "source_evidence": "\"The jerk bait draws on a bass' core response. It can trigger an instinctual feeding response from a fish, regardless of their desire to bite. ... work the baits with crisp snaps rather than slow pulls.\""
+  },
+  {
+    "source_url": "https://www.tacticalbassin.com/blog/jerkbait-and-fluke-fishing-tricks-for-spring-bass-fishing",
+    "source_authority": "TacticalBassin (Matt Allen)",
+    "environment_condition": {
+      "season": "봄 (산란기 · 포스트스폰)",
+      "water_temp_c": "원문 미기재",
+      "water_clarity": "Clear | Stained",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "원문 미기재",
+      "structure": "섈로우 커버, 수초, 산란장 주변"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "노싱커 소프트 저크베이트 (플루크)",
+      "bait_shape_and_size": "Zoom Super Fluke (5인치)",
+      "recommended_colors": ["Albino", "Smokin Shad", "Pro Blue Red Pearl"],
+      "weight_spec": "노즈훅: 1/0 Finesse Wide Gap (스피닝 8lb 리더) / 커버 직공: 4/0 EWG 오프셋 노싱커 (베이트 MH)",
+      "retrieve_and_action": "트레블 훅 하드 저크베이트를 넣기 힘든 커버·수초 위나 예민한 스폰/포스트스폰 개체에게 트위칭 & 글라이딩 폴링"
+    },
+    "technical_reasoning": "봄철 하드 저크베이트에 반응하던 배스가 커버 속으로 들어가거나 트레블 훅에 경계심을 보일 때, 노싱커 플루크는 걸림 없이 동일한 다팅(darting) 리액션을 연출한다.",
+    "source_evidence": "\"Soft Jerkbait... Zoom Super Fluke Colors: Albino, Smokin Shad, Pro Blue Red Pearl ... Nose Hook- Gamakatsu Finesse Wide Gap (1/0) ... Texas Rig- Gamakatsu Superline EWG (4/0)\""
+  },
+  {
+    "source_url": "https://www.bassmaster.com/slideshow/jason-christies-postspawn-baits-and-tactics/",
+    "source_authority": "Bassmaster (Elite Series - Jason Christie)",
+    "environment_condition": {
+      "season": "봄 (포스트스폰 · 산란 직후 회복기)",
+      "water_temp_c": "원문 미기재 (늦봄~초여름 전환기)",
+      "water_clarity": "Clear | Stained | Muddy",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "원문 미기재",
+      "structure": "산란장 밖 회유로(포인트, 2차 포인트, 크릭 채널), 고립된 나무·바위, 수초·연밭"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "펜슬베이트 (톱워터) / 스피너베이트 / 미드·딥 크랭크베이트",
+      "bait_shape_and_size": "Heddon One Knocker Spook, BOOYAH Covert Spinnerbait, Norman Speed N / Bomber Fat Free BD7",
+      "recommended_colors": ["White (섀드 스폰 매칭)", "Shad patterns"],
+      "weight_spec": "원문 미기재",
+      "retrieve_and_action": "펜슬베이트로 산란 후 빠져나가는 회유로 상층 탐색, 섀드 산란 시간대엔 흰색 스피너베이트 고속 리트리브(burning), 수심 2m~딥 오프쇼어 이동 개체는 크랭크베이트로 바닥 바위·나무 타격 후 멈출 때 바이트 유도"
+    },
+    "technical_reasoning": "산란을 마친 배스는 얕은 곳에서 여름철 깊은 포인트로 빠져나가는 길목(포인트·채널)에 머물며 산란 중인 섀드를 집중 포식한다. 크랭크 반응이 식으면 같은 자리를 지그헤드/네꼬 등 바닥 웜 채비로 훑어(clean-up) 스쿨링을 다시 깨운다.",
+    "source_evidence": "\"Target postspawn migration routes and transition areas ... For postpawners feeding during a shad spawn. Use white to match live shad. ... Christie stresses using a fast, burning retrieve. ... When the crankbait bite goes cold, I switch over to this [worm/jighead] bait and give them something different.\""
+  }
+]

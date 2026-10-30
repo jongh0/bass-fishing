@@ -1,0 +1,90 @@
+[
+  {
+    "source_url": "https://www.bassmaster.com/go-fish/news/catching-fish-in-cold-front-conditions-takes-strategy/",
+    "source_authority": "Bassmaster (David A. Brown / Elite Series - Bill Lowen & John Crews)",
+    "environment_condition": {
+      "season": "가을 ~ 초봄 (콜드프런트 통과 후)",
+      "water_temp_c": "전일 대비 수온 2~4.5°C (3~8°F) 급강하",
+      "water_clarity": "Clear | Stained",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "Cold_Front(기온급강하) | High(고기압) - 30.2 inHg (1022.7 hPa) 초과 블루버드 스카이",
+      "wind_and_weather": "콜드프런트 통과 직후 구름 한 점 없는 맑은 하늘과 무풍 (bluebird skies, zero wind)",
+      "structure": "1) 빽빽한 수초 매트·연밭·좌대 밑 그늘 깊숙한 곳(열기 보존), 또는 2) 수초가 없는 깊은 호수에서는 수직 암반 직벽(bluffs)·깊은 계류장 슬립"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "다운샷 리그 / 스몰(피네스) 러버지그 / 네꼬·와키리그 / 서스펜딩 저크베이트 / (수초 매트 시) 헤비 커버 펀칭",
+      "bait_shape_and_size": "다운샷 4~6인치 스트레이트 웜, 소형 피네스 지그 + 절제된 트레일러, 와키/네꼬 스틱웜, 서스펜딩 저크베이트",
+      "recommended_colors": ["원문 미기재"],
+      "weight_spec": "와키 스틱웜에 깊은 수심 도달용 네일싱커 추가(네꼬리그), 수초 매트 직공 시 헤비 싱커",
+      "retrieve_and_action": "바닥 채비는 호핑 대신 한 자리에 가만히 세워두고 제자리에서만 흔드는 데드스틱킹(deadsticking)으로 극도로 느리게 운용. 직벽 중하층으로 내려간 개체는 서스펜딩 저크베이트나 네꼬리그 자유 폴링으로 공략"
+    },
+    "technical_reasoning": "배스는 눈꺼풀이 없어 콜드프런트 직후의 강한 직사광선과 고기압(1022.7hPa+)이 겹치면 수온이 1.5~2°C 더 따뜻한 수초 매트 밑으로 파고들거나 직벽 깊은 수심으로 내려가 입을 닫는다. 따라서 루어 크기와 움직임을 최소화하고 데드스틱킹으로 눈앞에 오래 머물게 해야 한다.",
+    "source_evidence": "\"once it breaches the 'high-pressure' threshold — over 30.2 inHg — opportunity declines. ... Bass have no eyelids, so their only defense against that intense sunlight is overhead cover. ... 'That matted vegetation holds a lot of heat. Three or four degrees makes a huge difference' ... vertical rock walls, aka 'bluffs,' are popular cold-season targets ... Sinking or suspending jerkbaits are a popular option ... free-falling a wacky-rigged stickworm (add a nail weight to the head if you need to reach the fish faster) ... Drop shots with 4- to 6-inch worms, Ned rigs, minute finesse jigs ... 'The other thing I like to do is deadstick the bait'\""
+  },
+  {
+    "source_url": "https://www.bassmaster.com/go-fish/news/catching-fish-in-cold-front-conditions-takes-strategy/",
+    "source_authority": "Bassmaster (Elite Series - Bill Lowen)",
+    "environment_condition": {
+      "season": "봄 · 가을 · 겨울 (전선 접근 중)",
+      "water_temp_c": "원문 미기재",
+      "water_clarity": "Clear | Stained",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "Low(저기압) - 한랭전선 도달 직전 기압 하강 구간",
+      "wind_and_weather": "전선 접근에 따른 흐린 하늘, 돌풍, 비 (cloudy, windy conditions and falling barometric pressure)",
+      "structure": "수초, 그루터기(stumps), 바위 등 먹이사냥을 위해 배스가 붙는 섈로우 커버"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "채터베이트 (블레이드 지그) / 플랫 사이드 섈로우 크랭크베이트 / 스피너베이트",
+      "bait_shape_and_size": "Strike King Thunder Cricket 채터베이트, 플랫 사이드 크랭크, 스피너베이트",
+      "recommended_colors": ["원문 미기재"],
+      "weight_spec": "원문 미기재",
+      "retrieve_and_action": "악천후가 닥치기 전 배스가 배를 채우기 위해 돌아다니므로, 무빙 베이트로 연안 커버 주변을 중속으로 넓게 탐색"
+    },
+    "technical_reasoning": "전선이 접근하며 기압이 떨어지고 구름·바람이 일면, 배스는 곧 닥칠 추위와 고기압을 본능적으로 감지해 전선 통과 직전과 새벽 로우라이트 시간대에 공격적으로 먹이를 사냥한다.",
+    "source_evidence": "\"When approaching fronts bring cloudy, windy conditions and falling barometric pressure, bass are most likely to roam and search for food. ... 'On the front side (of the weather system), when I feel like they’re going to be a little more aggressive, I’m going to use a moving bait where I can cover water. That could be a Strike King Thunder Cricket (bladed jig), a flat-sided crankbait or a spinnerbait.'\""
+  },
+  {
+    "source_url": "https://www.bassmaster.com/column/luke-palmer/fishing-nasty-rainy-days-in-the-fall/",
+    "source_authority": "Bassmaster (Elite Series - Luke Palmer)",
+    "environment_condition": {
+      "season": "가을",
+      "water_temp_c": "비로 인해 수온이 3~5.5°C (6~10°F) 내려간 가을 전환기",
+      "water_clarity": "Stained | Muddy",
+      "water_level": "Stable(안정) | Rising(오름수위)",
+      "barometric_pressure": "Low(저기압)",
+      "wind_and_weather": "비 내리는 궂은 가을날 (nasty, rainy days)",
+      "structure": "본류 연안의 고립된 커버 (그루터기, 말뚝, 큰 바위 하나 등 주변과 다른 지형물) 및 크릭 회유로"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "버즈베이트 / 스피너베이트 / 러버지그",
+      "bait_shape_and_size": "BOOYAH Counterstrike 더블 버즈베이트, War Eagle 스피너베이트, 러버지그",
+      "recommended_colors": ["원문 미기재"],
+      "weight_spec": "원문 미기재",
+      "retrieve_and_action": "비 오는 날 낮아진 경계심을 활용해 버즈베이트와 스피너베이트로 고립된 연안 장애물을 빠르게 훑으며 커버 워터"
+    },
+    "technical_reasoning": "가을비는 표층 수온을 식혀 배스를 깊은 여름 은신처에서 얕은 연안의 고립된 매복 지점으로 끌어올린다. 비와 흐린 날씨가 겹치면 수면 경계심이 사라져 버즈베이트·스피너베이트 같은 빠른 탐색 루어에 폭발적으로 반응한다.",
+    "source_evidence": "\"What it [rain] did do was cool the water temperature probably 6 to 10 degrees ... I’ll look for any isolated item. It can even be a cinder block, a stump, a fence post ... Whether that’s a buzzbait, spinnerbait or jig, just pick up your confidence bait, cover water and normally you can generate some bites. This time of year, I like a BOOYAH Counterstrike double buzzbait, or the old reliable War Eagle Screaming Eagle spinnerbait.\""
+  },
+  {
+    "source_url": "https://www.bassmaster.com/news/working-out-windy-conditions/",
+    "source_authority": "Bassmaster (Elite Series - Jason Christie)",
+    "environment_condition": {
+      "season": "봄 · 가을 · 겨울 (전 계절 강풍일)",
+      "water_temp_c": "원문 미기재 (겨울 찬 바람 포함 전 수온대)",
+      "water_clarity": "Clear | Stained",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "풍속 20~30 mph (9~13 m/s) 강풍",
+      "structure": "1) 바람이 정면 90°로 때리는 연안 및 45° 연안에서 90°로 꺾이는 포인트, 2) 강풍이 1~2일 이상 지속된 뒤에는 바람맞이 연안 바로 안쪽 첫 번째 홈통·크릭 코너(wrap-around)"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "스피너베이트 / 섈로우 스퀘어빌 크랭크베이트 / 크랭크베이트",
+      "bait_shape_and_size": "스피너베이트, 스퀘어빌 크랭크베이트",
+      "recommended_colors": ["원문 미기재"],
+      "weight_spec": "원문 미기재",
+      "retrieve_and_action": "강풍 시 바닥 채비는 감도와 보트 컨트롤이 무너지므로 배제하고, 바람이 90°로 부딪히는 포인트와 와류 경계(slack water)에 스피너베이트·스퀘어빌을 투척해 빠르게 리트리브"
+    },
+    "technical_reasoning": "바람은 베이트피시를 바람맞이 연안(90° 충돌 지점)으로 몰아넣고 파도가 루어를 위장(camouflage)해 배스의 경계심을 낮춘다. 강풍 속에서는 바닥 웜 채비 운용이 비효율적이므로 스피너베이트와 크랭크베이트가 압도적으로 유리하다.",
+    "source_evidence": "\"Even in the wintertime, a cold wind gets everything moving, and it kind of camouflages your bait. ... The biggest thing is that it’s hard to fish a bottom bait. On windy days, you’re usually fishing moving baits like spinnerbaits, squarebills and other crankbaits because you’re more efficient doing that. ... I want to fish banks where the wind is hitting the bank at 90 degrees.\""
+  }
+]

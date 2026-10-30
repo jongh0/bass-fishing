@@ -842,6 +842,27 @@ canvas#waterCanvas {
   margin-top: 3px;
 }
 
+.spec-sub-note {
+  font-size: 0.74rem;
+  color: #94a3b8;
+  font-weight: 500;
+  margin-top: 3px;
+  line-height: 1.35;
+}
+
+.expert-inline-badge {
+  display: inline-block;
+  font-size: 0.67rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: rgba(168, 85, 247, 0.24);
+  border: 1px solid rgba(192, 132, 252, 0.45);
+  color: #e9d5ff;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
 .tactical-box {
   background: rgba(56, 189, 248, 0.08);
   border: 1px solid rgba(56, 189, 248, 0.25);
@@ -861,6 +882,107 @@ canvas#waterCanvas {
   display: block;
   margin-bottom: 4px;
   font-size: 0.88rem;
+}
+
+.tactical-box.expert-box {
+  background: rgba(168, 85, 247, 0.09);
+  border-color: rgba(192, 132, 252, 0.38);
+}
+
+.expert-box-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.tactical-box.expert-box .expert-box-head strong {
+  color: #d8b4fe;
+  margin-bottom: 0;
+}
+
+.expert-verify-pill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.expert-verify-pill.verified {
+  background: rgba(34, 197, 94, 0.16);
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  color: #4ade80;
+}
+
+.expert-verify-pill.single {
+  background: rgba(148, 163, 184, 0.16);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: #cbd5e1;
+}
+
+.expert-action-line,
+.expert-reason-line {
+  font-size: 0.83rem;
+  line-height: 1.48;
+  margin-top: 4px;
+}
+
+.tactical-box.expert-box .expert-action-line strong,
+.tactical-box.expert-box .expert-reason-line strong,
+.tactical-box.expert-box .expert-other-item strong {
+  display: inline;
+  color: #f3e8ff;
+  font-size: 0.83rem;
+}
+
+.expert-others {
+  margin-top: 7px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(192, 132, 252, 0.25);
+  font-size: 0.79rem;
+  color: #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.expert-sources-wrap {
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(192, 132, 252, 0.2);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sources-label {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  color: #93c5fd;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.source-chip:hover {
+  background: rgba(56, 189, 248, 0.16);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #e0f2fe;
 }
 
 /* === Ranking List === */
@@ -950,6 +1072,8 @@ canvas#waterCanvas {
 .tag-wire { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
 .tag-soft { background: rgba(16, 185, 129, 0.2); color: #34d399; }
 .tag-spot { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+.tag-expert { background: rgba(236, 72, 153, 0.2); border: 1px solid rgba(244, 114, 182, 0.35); color: #f472b6; }
+.tag-expert-ref { background: rgba(148, 163, 184, 0.18); border: 1px solid rgba(148, 163, 184, 0.3); color: #cbd5e1; }
 
 .score-bar-wrap {
   display: flex;
