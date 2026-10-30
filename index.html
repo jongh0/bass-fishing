@@ -21,13 +21,7 @@
     <!-- 1. 상단 타이틀 헤더 -->
     <header class="app-header">
       <div class="title-group">
-        <div class="title-main-row">
-          <h1>🎣 배스 전략</h1>
-          <button type="button" class="btn-pwa-install" id="pwaInstallBtn" aria-label="앱으로 설치하기">
-            <span class="pwa-icon">📲</span>
-            <span class="pwa-text">앱 설치</span>
-          </button>
-        </div>
+        <h1>🎣 배스 전략</h1>
         <p class="header-sub-desc">실시간 날씨 · 기압 · 농어촌공사 수위(오름/배수) · 수온 · 물색 기반 19종 루어 완벽 매칭 & 수중 액션</p>
       </div>
       <div class="badge-row">
@@ -587,132 +581,13 @@
   <script src="js/expert-engine.js?v=20261030_1"></script>
   <script src="js/app.js?v=20261030_1"></script>
 
-  <!-- PWA 홈 화면 추가 가이드 모달 -->
-  <div class="pwa-modal-backdrop" id="pwaGuideModal" role="dialog" aria-modal="true" aria-labelledby="pwaModalTitle">
-    <div class="pwa-modal-card">
-      <div class="pwa-modal-header">
-        <h3 class="pwa-modal-title" id="pwaModalTitle">📲 배스 전략 앱 설치 가이드</h3>
-        <button type="button" class="pwa-modal-close" id="pwaModalClose" aria-label="닫기">✕</button>
-      </div>
-      <div id="pwaModalBody"></div>
-      <button type="button" class="pwa-modal-btn-confirm" id="pwaModalConfirm">확인</button>
-    </div>
-  </div>
-
   <script>
-    // 1. 서비스 워커 등록
+    // 서비스 워커 등록 (PWA 오프라인 캐시 및 앱 설치 지원)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
           .then((reg) => console.log('BassTactic PWA SW registered:', reg.scope))
           .catch((err) => console.error('BassTactic PWA SW registration failed:', err));
-      });
-    }
-
-    // 2. PWA 설치 버튼 및 모달 제어
-    let deferredPrompt = null;
-    const pwaBtn = document.getElementById('pwaInstallBtn');
-    const pwaModal = document.getElementById('pwaGuideModal');
-    const pwaModalBody = document.getElementById('pwaModalBody');
-    const pwaModalClose = document.getElementById('pwaModalClose');
-    const pwaModalConfirm = document.getElementById('pwaModalConfirm');
-
-    // 이미 설치된 Standalone 모드인지 확인 (모바일 홈 화면 앱 / PC 설치 앱)
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
-                         window.navigator.standalone === true ||
-                         document.referrer.includes('android-app://');
-
-    // 설치된 앱 상태에서 실행 시 설치 버튼 숨김(삭제)
-    if (isStandalone && pwaBtn) {
-      pwaBtn.style.display = 'none';
-      pwaBtn.remove();
-    }
-
-    // Chrome / Android 계열 PWA 설치 이벤트 캐치
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      if (pwaBtn && !isStandalone) {
-        pwaBtn.classList.add('ready');
-      }
-    });
-
-    window.addEventListener('appinstalled', () => {
-      deferredPrompt = null;
-      if (pwaBtn) {
-        pwaBtn.style.display = 'none';
-        pwaBtn.remove();
-      }
-    });
-
-    function openPwaGuide(htmlContent) {
-      if (pwaModalBody) pwaModalBody.innerHTML = htmlContent;
-      if (pwaModal) pwaModal.classList.add('active');
-    }
-
-    function closePwaGuide() {
-      if (pwaModal) pwaModal.classList.remove('active');
-    }
-
-    if (pwaModalClose) pwaModalClose.addEventListener('click', closePwaGuide);
-    if (pwaModalConfirm) pwaModalConfirm.addEventListener('click', closePwaGuide);
-    if (pwaModal) {
-      pwaModal.addEventListener('click', (e) => {
-        if (e.target === pwaModal) closePwaGuide();
-      });
-    }
-
-    if (pwaBtn && !isStandalone) {
-      pwaBtn.addEventListener('click', async () => {
-        // 브라우저 네이티브 설치 프롬프트가 대기 중인 경우
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          const { outcome } = await deferredPrompt.userChoice;
-          if (outcome === 'accepted') {
-            deferredPrompt = null;
-            if (pwaBtn) {
-              pwaBtn.style.display = 'none';
-              pwaBtn.remove();
-            }
-          }
-          return;
-        }
-
-        // 기기 환경 체크 (iOS Safari 여부)
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        if (isIOS) {
-          openPwaGuide(`
-            <div style="font-size:0.88rem; color:#94a3b8; margin-bottom:12px;">아이폰(Safari)은 아래 3단계로 1초 만에 앱 설치가 가능합니다:</div>
-            <div class="pwa-modal-step-list">
-              <div class="pwa-modal-step">
-                <span class="pwa-modal-step-num">1</span>
-                <div>사파리 브라우저 화면 맨 하단 중앙의 <strong>공유 버튼(<span class="pwa-modal-highlight">□↑</span>)</strong>을 터치합니다.</div>
-              </div>
-              <div class="pwa-modal-step">
-                <span class="pwa-modal-step-num">2</span>
-                <div>메뉴를 조금 아래로 내려 <strong><span class="pwa-modal-highlight">[홈 화면에 추가]</span></strong>를 선택합니다.</div>
-              </div>
-              <div class="pwa-modal-step">
-                <span class="pwa-modal-step-num">3</span>
-                <div>우측 상단의 <strong>[추가]</strong>를 누르면 홈 화면에 배스 전략 앱이 생성됩니다!</div>
-              </div>
-            </div>
-          `);
-        } else {
-          // PC 또는 Android에서 프롬프트가 아직 안 뜬 경우
-          openPwaGuide(`
-            <div class="pwa-modal-step-list">
-              <div class="pwa-modal-step">
-                <span class="pwa-modal-step-num">💻</span>
-                <div><strong>PC 크롬/엣지</strong>: 브라우저 상단 주소창(URL) 맨 우측 끝의 <strong>[앱 설치(⬇️)]</strong> 버튼을 클릭하세요.</div>
-              </div>
-              <div class="pwa-modal-step">
-                <span class="pwa-modal-step-num">🤖</span>
-                <div><strong>모바일 안드로이드</strong>: 브라우저 우측 상단 메뉴(<strong>⋮</strong>) ➡️ <strong>[앱 설치]</strong> 또는 <strong>[홈 화면에 추가]</strong>를 누르세요.</div>
-              </div>
-            </div>
-          `);
-        }
       });
     }
   </script>
