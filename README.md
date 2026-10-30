@@ -1,4 +1,4 @@
-# 🎣 배스레이더 (BassRadar) - 실시간 배스 낚시 & 루어 전술
+# 🎣 배스 전략 - 실시간 배스 낚시 & 루어 전술
 
 🌐 **웹 애플리케이션 바로가기**: [https://jongh0.github.io/bass-fishing/](https://jongh0.github.io/bass-fishing/)
 

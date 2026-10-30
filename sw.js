@@ -1,5 +1,5 @@
-// 배스레이더 (BassRadar) Service Worker
-const CACHE_NAME = 'bassradar-v1.0.0';
+// 배스 전략 (Bass Tactics) Service Worker
+const CACHE_NAME = 'basstactics-v1.0.1';
 
 const STATIC_ASSETS = [
   './',

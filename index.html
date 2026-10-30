@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta name="theme-color" content="#070c17" />
   <meta name="description" content="실시간 위치·날씨·기압·수온·농어촌공사 수위 연동 사계절 배스 루어 택티컬 시뮬레이터 & 레이더" />
-  <meta name="application-name" content="배스레이더" />
+  <meta name="application-name" content="배스 전략" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="배스레이더" />
-  <title>🎣 배스레이더 - 실시간 배스 낚시 & 루어 전술</title>
+  <meta name="apple-mobile-web-app-title" content="배스 전략" />
+  <title>🎣 배스 전략 - 실시간 배스 낚시 & 루어 전술</title>
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
   <link rel="alternate icon" type="image/png" href="icons/favicon-32.png" />
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
@@ -22,7 +22,7 @@
     <header class="app-header">
       <div class="title-group">
         <div class="title-main-row">
-          <h1>🎣 배스레이더</h1>
+          <h1>🎣 배스 전략</h1>
           <button type="button" class="btn-pwa-install" id="pwaInstallBtn" aria-label="앱으로 설치하기">
             <span class="pwa-icon">📲</span>
             <span class="pwa-text">앱 설치</span>
@@ -589,7 +589,7 @@
   <div class="pwa-modal-backdrop" id="pwaGuideModal" role="dialog" aria-modal="true" aria-labelledby="pwaModalTitle">
     <div class="pwa-modal-card">
       <div class="pwa-modal-header">
-        <h3 class="pwa-modal-title" id="pwaModalTitle">📲 배스레이더 앱 설치 가이드</h3>
+        <h3 class="pwa-modal-title" id="pwaModalTitle">📲 배스 전략 앱 설치 가이드</h3>
         <button type="button" class="pwa-modal-close" id="pwaModalClose" aria-label="닫기">✕</button>
       </div>
       <div id="pwaModalBody"></div>
@@ -602,8 +602,8 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-          .then((reg) => console.log('BassRadar PWA SW registered:', reg.scope))
-          .catch((err) => console.error('BassRadar PWA SW registration failed:', err));
+          .then((reg) => console.log('BassTactic PWA SW registered:', reg.scope))
+          .catch((err) => console.error('BassTactic PWA SW registration failed:', err));
       });
     }
 
@@ -615,11 +615,15 @@
     const pwaModalClose = document.getElementById('pwaModalClose');
     const pwaModalConfirm = document.getElementById('pwaModalConfirm');
 
-    // 이미 설치된 Standalone 모드인지 확인
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    // 이미 설치된 Standalone 모드인지 확인 (모바일 홈 화면 앱 / PC 설치 앱)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                         window.navigator.standalone === true ||
+                         document.referrer.includes('android-app://');
+
+    // 설치된 앱 상태에서 실행 시 설치 버튼 숨김(삭제)
     if (isStandalone && pwaBtn) {
-      pwaBtn.classList.add('installed');
-      pwaBtn.innerHTML = '<span class="pwa-icon">✓</span><span class="pwa-text">앱 실행 중</span>';
+      pwaBtn.style.display = 'none';
+      pwaBtn.remove();
     }
 
     // Chrome / Android 계열 PWA 설치 이벤트 캐치
@@ -634,8 +638,8 @@
     window.addEventListener('appinstalled', () => {
       deferredPrompt = null;
       if (pwaBtn) {
-        pwaBtn.classList.add('installed');
-        pwaBtn.innerHTML = '<span class="pwa-icon">✓</span><span class="pwa-text">설치 완료</span>';
+        pwaBtn.style.display = 'none';
+        pwaBtn.remove();
       }
     });
 
@@ -656,26 +660,18 @@
       });
     }
 
-    if (pwaBtn) {
+    if (pwaBtn && !isStandalone) {
       pwaBtn.addEventListener('click', async () => {
-        if (isStandalone) {
-          openPwaGuide(`
-            <div class="pwa-modal-step-list">
-              <div class="pwa-modal-step">
-                <span class="pwa-modal-step-num">✓</span>
-                <div>현재 <strong>배스레이더 전용 앱(PWA) 모드</strong>로 완벽하게 실행 중입니다.</div>
-              </div>
-            </div>
-          `);
-          return;
-        }
-
         // 브라우저 네이티브 설치 프롬프트가 대기 중인 경우
         if (deferredPrompt) {
           deferredPrompt.prompt();
           const { outcome } = await deferredPrompt.userChoice;
           if (outcome === 'accepted') {
             deferredPrompt = null;
+            if (pwaBtn) {
+              pwaBtn.style.display = 'none';
+              pwaBtn.remove();
+            }
           }
           return;
         }
@@ -696,7 +692,7 @@
               </div>
               <div class="pwa-modal-step">
                 <span class="pwa-modal-step-num">3</span>
-                <div>우측 상단의 <strong>[추가]</strong>를 누르면 홈 화면에 배스레이더 앱이 생성됩니다!</div>
+                <div>우측 상단의 <strong>[추가]</strong>를 누르면 홈 화면에 배스 전략 앱이 생성됩니다!</div>
               </div>
             </div>
           `);
