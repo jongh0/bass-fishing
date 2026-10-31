@@ -4,7 +4,7 @@
 
 ---
 
-## 1. 채택된 출처 (총 34개 고유 URL · 43개 원문 레코드)
+## 1. 채택된 출처 (총 65개 고유 URL · 71개 원문 레코드)
 
 ### A. `fall-drawdown-muddy.json` (T01: 가을 배수기 · 탁수 · 프리리그 기본)
 | # | 출처 매체 / 저자 | URL | 핵심 반영 내용 |
@@ -70,14 +70,45 @@
 | 43 | Bassmaster (Gettys Brannon / Trevor Fitzgerald) | https://www.bassmaster.com/bass-basics/news/the-texas-rig-part-4-variable-changes/ | 텅스텐 싱커 감도·관통력, 로우라이트 비드 추가 vs 하이프레셔 비드 제거, 커버 페깅 vs 오픈워터 언페깅(프리슬라이딩 나선 폴링) |
 | 44 | Megabass USA | https://megabassusa.com/selecting-jerkbait-colors/ | 하드베이트 3대 표면 마감 매트릭스: 맑음+무풍=GP(반투명), 맑음+햇빛+바람=GG(메탈릭 플래시), 흐림/탁수/콜드프런트 후=MAT(무광 실루엣) |
 
+### F. `t15-wired2fish-strategies.json` (T15: Wired2Fish 브라우저 수집 전략 10건)
+| # | 출처 매체 / 저자 | URL | 핵심 반영 내용 |
+|---|---|---|---|
+| 45 | Wired2Fish (David A. Brown / Terry Bolton & Casey Martin) | https://www.wired2fish.com/fall-fishing/how-to-fish-isolated-cover-on-drawdowns | 가을 배수기 고립된 잔여 커버(그루터기·수몰나무) 톱워터·스피너베이트·3/8~1/2oz 플리핑 지그 및 6~8ft 오프쇼어 쉘베드 스퀘어빌 공략 |
+| 46 | Wired2Fish (Jason Sealock) | https://www.wired2fish.com/bass-fishing/temperature-based-bass-lure-selector-chart | 수온(32°F~80°F+) × 물색(Clear/Muddy) 전 구간 루어 매트릭스: 극저수온 탁수 1/2oz 블레이드베이트 vs 맑은물 다운샷/저크베이트 |
+| 47 | Wired2Fish (Sam Hanggi) | https://www.wired2fish.com/bass-fishing/winter-bass-lures | 겨울 맑은 하늘 5/16~3/8oz 소형 피네스 지그, 흐린 날 중층 지그헤드 미노우(스롤링), 약탁수 8~10lb 플랫사이드 크랭크 |
+| 48 | Wired2Fish (Jason Sealock / Jamie Horton) | https://www.wired2fish.com/spring-fishing-tips/do-you-know-how-to-fish-laydowns-for-big-bass | 수몰나무(Laydown) 수심별 2단계 공략: 6ft 이하 섈로우는 스퀘어빌 외곽 탐색 후 1/2oz 지그 밑동 피칭 / 20ft+ 딥 직벽 나무는 수관 상단 가지 위로 피칭해 4~5ft만 폴링 |
+| 49 | Wired2Fish (Jason Sealock) | https://www.wired2fish.com/buyers-guides/best-fishing-weights-and-sinker-types | 텅스텐 고밀도 감도·소형 부피 원리, 맑은 수초 피네스 캐롤라이나 슬라이더, 네꼬 네일웨이트, 냉수기 하드베이트 복부 편납(Zappu Board Weight) 서스펜딩 튜닝 |
+| 50 | Wired2Fish (Shaye Baker) | https://www.wired2fish.com/fishing-tips/choosing-the-right-bladed-bait-for-muddy-water | 탁수 커버별 블레이드 루어 선택: 수몰 수초=채터베이트 100%, 수몰나무 가지=스피너베이트, 잔교 스키핑=채터베이트, 저수온 극탁수=3/8oz 더블 콜로라도(#5+#3), 강풍=더블 콜로라도 |
+| 51 | Wired2Fish (Shaye Baker) | https://www.wired2fish.com/tackle-tips/does-crankbait-color-really-matter-in-muddy-water | 시야 1ft 미만 극탁수에서 크랭크베이트는 컬러보다 수류 파동(displacement)과 석축 디플렉션이 핵심이며, 느린 지그·웜은 블랙/블루 실루엣이 결정적 |
+| 52 | Wired2Fish (David Appleton / Stephen Browning) | https://www.wired2fish.com/jerkbait-tips/jerkbait-fishing-ditches-for-early-prespawn-bass | 수온 7°C(40°F 중반) 이른 봄 프리스폰 수중 물골(ditch): 10lb 카본 + 7.5:1 고속 릴 + 110mm 서스펜딩 저크베이트 롱포즈 |
+| 53 | Wired2Fish (Walker Smith / Fred Roumbanis) | https://www.wired2fish.com/jerkbait-tips/unconventional-coldwater-jerkbait-tips | 저수온 맑은 물 저크베이트: 불투명 본 화이트(프로파일 확대) vs 반투명 고스트 미노우(프로파일 축소), 브론즈 #4 훅, 합사+10lb 카본 리더로 8~10인치 마이크로 트위칭 |
+| 54 | Wired2Fish (Kobie Koenig / Keith Combs) | https://www.wired2fish.com/fishing-videos/speed-fishing-deep-diving-crankbaits-for-summer-bass | 한여름 고수온 오프쇼어 프레셔 배스: 7'6" MH 글라스 로드 + 15lb 카본 + Strike King 6XD 초고속 릴링(burning) 바닥 디플렉션 |
+
+### G. `t16-korea-field-tactics.json` (T16: 한국 지형·환경 맞춤 실전 전략 14건)
+| # | 출처 매체 / 저자 | URL | 핵심 반영 내용 |
+|---|---|---|---|
+| 55 | 낚시춘추 (손혁 프로) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=3889 | 한국 워킹 저활성·미지의 포인트 파일럿 루어: 스피너베이트 대신 1/8oz(3.5g) 카이젤리그 바둑판식 20회 카운트다운으로 수심·험프 거리 측정 및 쉐이킹 회수 |
+| 56 | 낚시춘추 (손혁 프로) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=9480 | 평택호·부남호 등 국내 간척호 연안 석축 로테이션: 1/8oz 카이젤 탐색 → 석축 끝 뻘 경계 '행오프(Hang-off)' → 1/16oz 가재웜 '커브폴링(드래깅 금지)' → 1/32oz 데드워밍 |
+| 57 | 낚시춘추 (손혁 프로) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=4895 | 한국 수상좌대·청태 바닥·석축 네꼬리그 4대 비법: 사선 싱커 삽입으로 수상좌대 안쪽 사선 폴링, 웜이 바닥에 다 쓰러지기 1~1.5초 전 호핑으로 청태/밑걸림 원천 차단 |
+| 58 | 낚시춘추 (김진현 기자 & 최영교 프로) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=3708 | 영산강 등 국내 강계·저수지 초봄 3~4월 일교차 저활성 및 산란 직후 회복기: 1/8oz(3.5g) 이하 실리콘 스커트 스몰러버지그 |
+| 59 | 낚시춘추 (최영교 프로) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=8547 | 스몰러버지그 4대 액션: 20~30cm 2회 호핑+10초 스테이, 1/16oz+3~4인치 웜 60° 로드 미드스트롤링, 극저활성 50cm 드래깅+30초 스테이 |
+| 60 | 낚시춘추 (박기현 KSA 프로) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=16185 | 한국 4월 봄철 계곡형보다 시즌이 빠른 평지형·늪지형 저수지·간척호: MH 로드+12lb 카본 40m 장타 프리리그 & 스피닝 60~90mm(4~6g) 소형 숏빌 미노우 투트랙 |
+| 61 | 낚시춘추 (박기현 KSA 프로) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=13253 | 한국 5월 산란 전후 강계(보·어도·침식 석축, 바위-모래 지질 경계) 및 평지형지 수심 1~3m 수생식물 군락·소형 지류 야간 피딩 |
+| 62 | 낚시춘추 (최석민 프로) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=2783 | 대호만 등 봄 저수온(6~10°C) 수초대 대물 선별: 순정보다 한 치수 큰 블레이드로 양력(Lift)을 높인 스피너베이트 수초 30cm 이내 초슬로우 롤링 & 수초 포켓 프리폴링 |
+| 63 | 낚시춘추 (장성호 봄 크랭킹 특집) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=9846 | 한국 봄 2~4m 사면 스테이징 배스: 부력 강한 딥크랭크 복부에 편납(웨이트 씰)을 붙여 슬로우 플로팅/서스펜딩 튜닝 후 바닥 접촉 스테이 & 초저속/초고속 양극단 릴링 |
+| 64 | 낚시춘추 (손혁 프로) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=4355 | 용인 송전지·신갈지 등 국내 저수지 가을 턴오버 돌파법: 수중 물골(채널) 경사면 서스펜드 배스에 메탈지그·바이브레이션 12시 방향 롱저킹 후 수직 프리폴링 |
+| 65 | 낚시춘추 (이형근 KSA 프로) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=12621 | 한국 여름비 과학 분석: 적당한 비 = 표층 수온 하강 + 용존산소 증가 + 그늘 + 약탁수로 워킹 섈로우 톱워터/하드베이트 호조 vs 폭우 시 농경지 오염수·잠긴 육초 부패 주의 |
+| 66 | 낚시춘추 (박기현 KSA 프로) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=15638 | 맑고 바람 없는 하이프레셔 사이트피싱: UL 스피닝 + 4~5lb 카본 + L형 훅 + 1/96oz(0.3g) 텅스텐 네일싱커 + 3인치 중공 피시웜 수평 극슬로우 호버스트롤링 |
+| 67 | 낚시춘추 (박기현 KSA 프로) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=15852 | 한국 12월 동절기 간척호·수로 급경사 드롭오프: 호핑 시 포인트를 벗어나는 프리리그 대신 급경사 아래에 고정되고 단차 50cm~1m로 부상 배스를 노리는 다운샷리그 |
+| 68 | 낚시춘추 (이달의 채비) | https://m.fishingseasons.co.kr/news_Detail.asp?b_no=3599 | 해빙기 저수온 & 한여름 무풍 고수온 먹성 저하기: 봉돌 이물감이 전혀 없는 4~5인치 고비중 스틱웜 노싱커 수평 폴링 |
+
 ---
 
 ## 2. 스킵·제외된 URL 및 사유
 
 | 도메인 / URL | 스킵 사유 |
 |---|---|
-| `wired2fish.com/*` (3건) | 서버 측 봇 차단(HTTP 403 Forbidden)으로 본문 직접 검증 불가 → 계획서 지침에 따라 우회하지 않고 제외 |
-| `bassresource.com/*` (3건) | 서버 측 HTTP 403 Forbidden 반환 → 직접 본문 검증 불가로 제외 |
+| `bassresource.com/*` (`lure-colors-clarity.html`, `Choosing_Colors_selection.html`, `weight-texas-jig.html`) | 브라우저/페치 도구 접근 시에도 Cloudflare WAF 서버 측 HTTP 403 Forbidden 반환 → 보안·접근제어 준수 지침에 따라 우회하지 않고 제외 (동일 주제는 검증된 `wired2fish.com` 10건 및 `bassmaster.com` 원문으로 대체) |
 | `in-fisherman.com/*` (1건) | 서버 측 HTTP 403 Forbidden 반환 → 직접 본문 검증 불가로 제외 |
 | `m.maxlure.net/article/.../1002/10/` | 본문이 클라이언트 JS로 동적 렌더링되어 정적 페치 시 댓글창만 반환됨 (본문 부재로 제외) |
 | `fishingseasons.co.kr/fishplace/fishplace_view.asp?b_no=16019` (`t00`) | 겨울 얼음 구멍 배스 낚시(Ice fishing) 특수 조행기로, 일반 루어 캐스팅 환경 변수와 조건이 달라 규칙화에서 제외 |

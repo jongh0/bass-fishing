@@ -1,0 +1,222 @@
+[
+  {
+    "source_url": "https://www.wired2fish.com/fall-fishing/how-to-fish-isolated-cover-on-drawdowns",
+    "source_authority": "Wired2Fish (David A. Brown / FLW Pro Terry Bolton & Casey Martin)",
+    "environment_condition": {
+      "season": "가을 (드로다운 배수기)",
+      "water_temp_c": "수온 하강기 (원문: cooling temperatures)",
+      "water_clarity": "Clear | Stained",
+      "water_level": "Falling(배수)",
+      "barometric_pressure": "High(고기압 맑은 날) vs Low(흐린 날) 구분",
+      "wind_and_weather": "흐린 날(배스 회유) vs 맑고 바람·유속 없는 날(커버 밀착)",
+      "structure": "깊은 물(직벽·크릭 채널)과 인접한 고립된 그루터기 열(stump row)·쓰러진 나무(laydown), 석축(riprap), 수심 6~8ft(1.8~2.4m) 오프쇼어 패류/암반 군락"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "스퀘어빌 크랭크베이트 / 스피너베이트 / 채터베이트 → (맑고 무풍 고기압 시) 플리핑 지그 / (오프쇼어 6~8ft) 대형 톱워터·3/4oz 스피너베이트·DT10/14 크랭크",
+      "bait_shape_and_size": "Rat-L-Trap Echo 1.75 스퀘어빌, 1/2oz 더블 윌로우 스피너베이트, Rapala DT-4/DT-6, Storm Arashi Top Walker, DT-10/DT-14",
+      "recommended_colors": ["Gizzard/Threadfin Shad 매칭", "골드 블레이드 (War Eagle Gold Double Willow)"],
+      "weight_spec": "연안 탐색용 더블 윌로우 스피너베이트 1/2 oz (14.2g) / 오프쇼어 6~8ft 슬로우 롤링용 3/4 oz (21.3g)",
+      "retrieve_and_action": "흐린 날에는 스퀘어빌·스피너베이트·채터베이트로 고립된 잔여 커버와 석축을 빠르게 훑고, 햇빛이 강하고 바람·유속이 없는 맑은 날 입질이 막히면 플리핑으로 전환. 수심 6~8ft 오프쇼어 암반 군락에서는 소음이 큰 대형 워킹 톱워터로 6ft 아래 배스를 띄우거나 3/4oz 스피너베이트 슬로우 롤링"
+    },
+    "technical_reasoning": "가을 배수기에는 다른 얕은 커버가 물 밖으로 드러나기 때문에 깊은 물과 연결된 소수의 고립된 통나무·그루터기·석축에 여러 마리의 배스와 섀드 무리가 동시에 몰린다. 흐린 날엔 무빙 베이트로 무리(wolf packs)를 찾고, 직사광선 무풍일 때는 같은 나무를 다른 각도에서 정밀 플리핑해야 한다.",
+    "source_evidence": "\"Casey Martin’s partial to isolated cover in areas with quick access to deep water — bluffs, creek mouths and the like. ... 'I like using square bills, spinnerbaits and Chatterbaits to cover water and locate the fish,' he said. 'If the bite gets tough, I’ll switch to flipping, especially under high sunny conditions without much wind or current.' ... For these offshore spots [6-8 feet], Bolton suggests going big and bold with hefty topwaters like Storm’s Arashi Top Walker. ... 'I also like slow rolling a spinnerbait, generally something a little heavier, like a 3/4-ounce. For my third choice, I really like a DT 10 or a DT 14, especially if the water has a little more color to it.'\""
+  },
+  {
+    "source_url": "https://www.wired2fish.com/bass-fishing/temperature-based-bass-lure-selector-chart",
+    "source_authority": "Wired2Fish (Jason Sealock - 수온·물색별 루어 선택 매트릭스)",
+    "environment_condition": {
+      "season": "사계절 전 구간 (수온 0~27°C+ × 맑은물/탁수 매트릭스)",
+      "water_temp_c": "0~4.5°C (32~40°F) | 4.5~10°C (40~50°F) | 10~13°C (50~55°F) | 13~15.5°C (55~60°F) | 15.5~21°C (60~70°F) | 21~27°C+ (70~80°F+)",
+      "water_clarity": "Clear | Muddy",
+      "water_level": "원문 미기재 (단, 겨울 따뜻한 비 유입 시 30ft→2ft 급상승 언급)",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "원문 미기재",
+      "structure": "수온 안정층(극저수온·고수온 딥 vs 적정수온 18~27°C 수몰나무·수초·석축)"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "저수온(4.5~10°C) 맑은물: 메탈바이브(블레이드베이트)·저크베이트·스윔베이트 vs 저수온 탁수: 플랫크랭크·립리스·채터·스피너베이트·러버지그 / 활성기(18~27°C): 수몰나무=스피너베이트, 수초=프로그·펀칭, 석축=크랭크·톱워터, 맑은물=와키(카이젤)·포퍼",
+      "bait_shape_and_size": "수온·물색 매트릭스별 상이",
+      "recommended_colors": ["물색(Clear vs Muddy)에 따라 시각형 루어 vs 진동·실루엣형 루어 분리"],
+      "weight_spec": "원문 미기재",
+      "retrieve_and_action": "저수온기 깊은 탁수에서는 다운샷이 무력하므로 스피너베이트 슬로우 롤링이나 플랫크랭크·립리스를 쓰고, 반대로 저수온기 깊은 맑은 물에서는 블레이드베이트(메탈바이브)와 저크베이트처럼 순간 반짝인 뒤 제자리에 멈추는 루어로 공략"
+    },
+    "technical_reasoning": "변온동물인 배스는 저수온에서 신진대사가 급감해 루어를 길게 추격하지 않고 순간적으로 번쩍인 뒤 멈춰 있는 루어만 먹는다. 또한 깊은 탁수에서는 시각 의존형 다운샷의 효율이 급감하고, 깊은 맑은 찬물에서는 메탈바이브가 압도적으로 유리하다.",
+    "source_evidence": "\"Because a drop shot in deep muddy water is not going to be very effective. But a blade bait in deep clear water will be much more effective during the colder months. ... With cold water, fish metabolism slows down so fish are less active and eat more infrequently. ... Bass are most active from 65-80 degree water temps. ... Lots of laydowns? Pick up a spinnerbait. Lots of grass, try a frog or punching through with a Texas-rigged worm. Rocky banks? Try a crankbait or a topwater. Clear water? A wacky rigged Senko and a popper are good.\""
+  },
+  {
+    "source_url": "https://www.wired2fish.com/bass-fishing/winter-bass-lures",
+    "source_authority": "Wired2Fish (Sam Hanggi - 겨울 배스 루어 가이드)",
+    "environment_condition": {
+      "season": "겨울 (저수온기)",
+      "water_temp_c": "저수온기",
+      "water_clarity": "Clear | Stained | Muddy",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "High(고기압 맑고 무풍인 블루버드 데이) vs 흐린 날 구분",
+      "wind_and_weather": "맑고 바람 없는 고기압 한낮(피네스 지그) vs 맑은 물 흐린 날(지그헤드 미노우) vs 햇빛 받는 얕은 바위(플랫 크랭크)",
+      "structure": "수중 암반·브러시파일(피네스 지그), 햇빛 열기를 머금은 얕은 석축·채널 스윙(플랫 크랭크), 배수로·협소부 중층(지그헤드 미노우·저크베이트)"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "피네스 러버지그 / 플랫 사이드 크랭크베이트 / 지그헤드 미노우(미드스트롤링) / 저크베이트",
+      "bait_shape_and_size": "소형 피네스 지그, 얇은 립 플랫 사이드 크랭크베이트, 스트레이트테일 미노우 웜",
+      "recommended_colors": ["가재 패턴: Red, Brown, Green (겨울 플랫 크랭크 & 피네스 지그)"],
+      "weight_spec": "플랫 크랭크: 타이트한 워블링 유지를 위해 8~10lb 가는 라인 + 세단 트레블 훅으로 다운사이징 / 피네스 지그: 폴링 바이트 유도를 위해 낙하 속도에 맞춰 경량 조절",
+      "retrieve_and_action": "1) 맑고 바람 없는 블루버드 스카이(높은 태양)에는 배스가 커버에 바짝 붙어 저크베이트나 중층 미노우를 쫓지 않으므로 바닥에서 피네스 지그를 천천히 호핑·드래깅. 2) 겨울 탁수·약탁수의 햇빛 받는 얕은 바위(열기 보존)에서는 8~10lb 라인을 쓴 플랫 크랭크로 타이트한 파동 연출. 3) 저크베이트는 맑은 물에선 빠르고 불규칙하게, 탁수에선 배스가 추적할 시간을 주도록 느리게 운용"
+    },
+    "technical_reasoning": "겨울 맑고 바람 없는 날 강한 햇빛은 배스를 바닥 커버에 밀착시켜 무빙 루어 추격을 멈추게 하므로 폴링 속도를 늦춘 피네스 지그가 유일한 해법이 된다. 반대로 겨울 수온이 내려갈 때 얕은 바위(석축)는 태양열을 흡수·보존하므로 가재를 모방한 붉은/갈색 플랫 크랭크가 먹힌다.",
+    "source_evidence": "\"The finesse jig is an excellent choice on your clear, blue-bird days with little to no wind. ... High sun causes bass to hold tight to cover, often refusing to chase moving baits such as a jerkbait or jig and minnow. This is where slowly hopping a finesse jig on the bottom truly shines. ... Another great scenario for throwing a flat-sided crankbait is when bass are holding around shallow rock. As temperatures cool, rocks retain heat from the sun, ultimately heating up the surrounding area. ... Popular colors this time of year include reds, browns and greens ... typically using 8- to 10-pound line paired with light wire treble hooks.\""
+  },
+  {
+    "source_url": "https://www.wired2fish.com/spring-fishing-tips/do-you-know-how-to-fish-laydowns-for-big-bass",
+    "source_authority": "Wired2Fish (Jason Sealock / Bassmaster Elite Pro Jamie Horton)",
+    "environment_condition": {
+      "season": "사계절 (봄·초여름 섈로우 수몰나무 vs 한여름·한겨울 6m+ 급심 수몰나무)",
+      "water_temp_c": "전 수온대",
+      "water_clarity": "Clear | Stained",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "원문 미기재",
+      "structure": "수심 6ft(1.8m) 이하 얕은 쓰러진 나무(laydown) vs 수심 20ft+(6m+) 채널로 뻗은 깊은 수몰나무"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "섈로우 수몰나무 2단계(스퀘어빌 크랭크 → 러버지그) / 딥 수몰나무(1/2oz 러버지그·저크베이트·미드크랭크) / 초여름 잎 무성한 나무(화이트 더블윌로우 스피너베이트)",
+      "bait_shape_and_size": "스퀘어빌 크랭크, Dirty Tackle Jig + Netbait Kickin' B Chunk 트레일러, Strike King Series 4/5 크랭크, 서스펜딩 저크베이트, 화이트 더블윌로우 스피너베이트",
+      "recommended_colors": ["White (초여름 섀드 산란기 수몰나무 스피너베이트)"],
+      "weight_spec": "깊은 수몰나무 심장부 스위밍 및 가지 걸기용 러버지그 1/2 oz (14.2g)",
+      "retrieve_and_action": "1) 6ft 이하 섈로우 수몰나무: 먼저 스퀘어빌로 외곽과 측면을 쳐서 공격적인 개체를 빼낸 뒤, 러버지그를 나무 밑동(base) → 가지가 바닥에 닿는 접점 → 중앙 가지 순서로 피칭해 가지에 부딪히며 폴링. 2) 20ft+ 깊은 수몰나무: 배스가 바닥이 아니라 가지 바로 아래 중층에 떠 있으므로 지그를 가지 너머로 던져 4~5ft(1.2~1.5m)만 폴링시키고 가지에 걸어 흔들어(jiggling) 유인(그보다 깊게 떨어지면 무시함). 맑은 날 앙상한 나무는 외곽 저크베이트가 최고"
+    },
+    "technical_reasoning": "쓰러진 나무(수몰나무)는 2ft 얕은 밑동부터 20ft 깊은 수관까지 수심 이동 통로를 제공한다. 특히 여름·겨울 깊은 수몰나무의 대물은 바닥이 아니라 가지 아래에 서스펜드하므로 루어가 배스보다 아래(4~5ft 이하)로 가라앉으면 먹지 않으며, 가지에 직접 걸어 흔들 때 가장 큰 개체가 문다.",
+    "source_evidence": "\"If a laydown is located in 6 feet of water or less, Horton considers it shallow. In this situation, he relies on two primary baits—a squarebill crankbait and a Dirty Tackle Jig tipped with a Netbait Kickin' B Chunk. ... 'In deeper water, the biggest, nastiest laydowns often hold the biggest fish,' Horton said. 'I have a lot of success swimming a 1/2-ounce jig through the very heart of the laydown ... I also like to pitch a flip a jig to them, but I only let it fall about 4 to 5 feet because the bass won't eat it if it falls below them. I do everything I can to get hung on limbs so I can jiggle it around ... The big ones bite when the jig gets hung.'\""
+  },
+  {
+    "source_url": "https://www.wired2fish.com/buyers-guides/best-fishing-weights-and-sinker-types",
+    "source_authority": "Wired2Fish (Jason Sealock - 싱커 종류별 물리적 특성 가이드)",
+    "environment_condition": {
+      "season": "전 계절",
+      "water_temp_c": "전 수온대",
+      "water_clarity": "Clear | Stained | Muddy",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "원문 미기재",
+      "structure": "모래·자갈·암반 바닥 탐색, 맑은 물 수초대, 암반 드롭샷, 중층 호버스트롤링"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "텍사스/프리리그 / 캐롤라이나 리그 / 다운샷 리그 / 호버스트롤링 / 하드베이트 웨이트 튜닝",
+      "bait_shape_and_size": "텅스텐 총알형/배럴형/슬라이더형/실린더형/네일형 싱커, Zappu 보드 웨이트(편납)",
+      "recommended_colors": ["무광 코팅 텅스텐 (Never Chip)"],
+      "weight_spec": "용도별 텅스텐 싱커 & 하드베이트 배면 부착용 편납(Board Weight)",
+      "retrieve_and_action": "1) 텅스텐은 납보다 밀도와 경도가 훨씬 높아 부피를 줄이고 바닥 지질(모래·바위·자갈) 감도와 2D 어탐 반사율을 극대화함. 2) 맑은 물 수초대에서는 슬라이더 텅스텐 싱커 양쪽을 면사매듭(바버스탑)으로 고정해 피네스 캐롤라이나처럼 운용. 3) 다운샷은 점프 시 싱커가 날아가는 클립형 대신 라인을 직접 묶는 폐쇄형 실린더(원통형) 텅스텐을 써야 수초·돌 틈 걸림이 적음. 4) 하드베이트 배 밑에 보드 웨이트(편납)를 붙여 플로팅 루어를 완벽한 서스펜딩/싱킹으로 튜닝"
+    },
+    "technical_reasoning": "텅스텐의 높은 밀도는 작은 크기로도 빠른 폴링과 수초 관통력을 제공하며, 단단한 표면이 바닥 충격파를 손끝으로 그대로 전달한다. 원통형(실린더) 다운샷 싱커는 구형보다 바위 틈과 수초를 매끄럽게 빠져나온다.",
+    "source_evidence": "\"Tungsten weights will be a bit more expensive but they are much harder and denser than lead so they not only can be made much smaller, but they will not deform ... We can tell when we are in sand, rock, gravel and more with these weights ... I've fished these with two bobber stops and the Slider weight to make a quick simple finesse Carolina rig. I do this some when fishing in clear water, around grass ... Instead I like WOO! Tungstens Cylinder Closed Eye Drop Shot weight ... Zappu Board Weights: Stick it to the white underbelly of a hard plastic or wooden lure to make a slow floater neutrally buoyant.\""
+  },
+  {
+    "source_url": "https://www.wired2fish.com/fishing-tips/choosing-the-right-bladed-bait-for-muddy-water",
+    "source_authority": "Wired2Fish (Shaye Baker - 탁수 블레이드 루어 선택 공식)",
+    "environment_condition": {
+      "season": "전 계절 (특히 저수온 흙탕물 vs 수온 상승기 흙탕물 구분)",
+      "water_temp_c": "극저수온 탁수 vs 수온 상승기 탁수",
+      "water_clarity": "Muddy (초콜릿 밀크급 극탁수 vs 일반 탁수)",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "강풍 시 블레이드 교체 기준 포함",
+      "structure": "수중 수초(submerged vegetation) vs 수몰나무 가지(laydown limbs) vs 잔교·오버행 그늘(docks/bushes)"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "스피너베이트 (더블 콜로라도 vs 대형 6번 윌로우+콜로라도) vs 채터베이트 (블레이드 지그)",
+      "bait_shape_and_size": "극탁수+저수온: 3/8oz 더블 콜로라도(#5+#3) 스피너베이트 / 일반 탁수: #6 대형 윌로우 + #1 콜로라도 스피너베이트 / 수초·오버행 스키핑: 채터베이트",
+      "recommended_colors": ["극탁수+저수온: 화이트 스커트 + 화이트 트레일러 (최대 빛 반사)", "일반 탁수: 차트루즈 스커트 + 골드 블레이드"],
+      "weight_spec": "저수온 극탁수 슬로우 롤링: 3/8 oz (10.5g) 더블 콜로라도 / 고수온 빠른 템포: 1/2 oz (14.2g)로 증량",
+      "retrieve_and_action": "1) 커버별 선택: 수중 수초는 뜯어내기(rip free) 좋은 채터베이트, 나뭇가지가 복잡한 수몰나무는 바늘이 항상 수직으로 서서 안 걸리는 스피너베이트, 낮은 잔교·관목 밑은 스키핑이 쉬운 채터베이트 선택. 2) 극저수온+극탁수에서는 채터베이트의 진동이 너무 날카롭고 빠른 릴링이 강제되므로 피하고, 3/8oz 더블 콜로라도 스피너베이트를 커버 옆에서 수직 자세로 초슬로우 롤링. 3) 강풍 시에는 6번 대형 윌로우 블레이드가 바람 저항을 타서 캐스팅 정확도가 무너지므로 더블 콜로라도로 교체"
+    },
+    "technical_reasoning": "채터베이트는 좌우로 롤링하며 바늘 끝이 노출되어 나뭇가지에는 잘 걸리지만 수초는 쉽게 찢고 나오며 스키핑에 유리하다. 반대로 스피너베이트는 와이어 프레임 덕분에 바늘이 항상 위를 향해 나뭇가지를 가장 잘 넘는다. 극저수온 흙탕물에서는 둔탁한 파동(dull thump)을 느린 속도로 내는 대형 블레이드 스피너베이트가 날카로운 채터베이트보다 우월하다.",
+    "source_evidence": "\"I really like a vibrating jig in submerged vegetation because the bait rips free better than a spinnerbait typically will. ... The hook on a spinnerbait stays vertical nearly all the time ... This makes it much easier to worm a spinnerbait through a tree full of limbs than a vibrating jig ... A vibrating jig, however, is one of the easiest baits out there to skip. ... A simple 3/8-ounce double Colorado spinnerbait with something near a No. 5 for the bigger blade and a No. 3 for the smaller one works extremely well in really muddy situations, especially when the water is cold. ... I don’t like vibrating jigs for extremely cold water, either.\""
+  },
+  {
+    "source_url": "https://www.wired2fish.com/tackle-tips/does-crankbait-color-really-matter-in-muddy-water",
+    "source_authority": "Wired2Fish (Shaye Baker - 탁수 크랭크베이트 측선·파동 실험)",
+    "environment_condition": {
+      "season": "초봄 (2월 하순 수온 15°C 미만)",
+      "water_temp_c": "15.5°C 미만 (sub-60°F)",
+      "water_clarity": "Muddy (시야 30cm 미만)",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "원문 미기재",
+      "structure": "연안 석축 (riprap) 및 섈로우 커버"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "섈로우 스퀘어빌 크랭크베이트 vs 슬로우 지그·텍사스 리그",
+      "bait_shape_and_size": "Strike King KVD 1.5 사일런트 스퀘어빌 크랭크베이트",
+      "recommended_colors": ["스퀘어빌: 차트루즈 블랙백 (Chartreuse Black Back) 또는 투명(Nude - 파동 위주)", "슬로우 지그·웜: 다크 컬러 (Black/Blue 등 뚜렷한 실루엣)"],
+      "weight_spec": "3/8 ~ 1/2 oz 스탠다드 1.5 스퀘어빌",
+      "retrieve_and_action": "시야 1ft 미만의 흙탕물 석축에서는 컬러나 래틀음보다 몸체가 물을 밀어내는 수류 파동(water displacement)과 석축 돌에 부딪히는 충돌음(deflection)이 입질을 결정하므로 석축에 바짝 붙여 바닥을 때리며 리트리브. 반면 천천히 기어가는 지그나 웜은 배스가 가까이서 실루엣을 볼 수 있도록 어두운 색상을 사용"
+    },
+    "technical_reasoning": "시야 30cm 이하의 흙탕물에서 빠르게 지나가는 스퀘어빌·스피너베이트·립리스는 배스가 눈이 아닌 측선(수압 변화와 진동 감지 기관)과 장애물 충돌음으로 위치를 정확히 추적해 공격한다. 반면 물이 맑아질수록 무빙 베이트의 컬러 중요도가 급격히 높아진다.",
+    "source_evidence": "\"A chartreuse and black-back squarebill has always been my go to in muddy water. ... The lateral line of a bass is a system of sensory organs that are able to detect movement, vibration and pressure changes ... It was a KVD 1.5 silent squarebill. So the bass had no color or sound to work with, simply the water displacement of the wobbling bait and any minuscule sound the lure might have made colliding with the cover. ... It still likely helps to use dark, slow-moving baits like jigs and Texas-rigged worms in muddy water, so the bass may be able to see the silhouette ... But for baits that are on the move in the mud ... the amount of vibration they put off matters far more than the color.\""
+  },
+  {
+    "source_url": "https://www.wired2fish.com/jerkbait-tips/jerkbait-fishing-ditches-for-early-prespawn-bass",
+    "source_authority": "Wired2Fish (David Appleton / MLF Pro Stephen Browning)",
+    "environment_condition": {
+      "season": "겨울 ~ 초봄 프리스폰",
+      "water_temp_c": "7~9°C (mid-40°F)",
+      "water_clarity": "Clear | Stained",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "원문 미기재",
+      "structure": "겨울 깊은 은신처와 봄 산란 플랫을 연결하는 수중 도랑·물골(ditches / channels)"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "서스펜딩 저크베이트",
+      "bait_shape_and_size": "Jackall Rerange 110 Jerkbait",
+      "recommended_colors": ["Secret Shad 2 (내추럴 섀드 계열)"],
+      "weight_spec": "10lb 플루오로카본 라인 + 7.5:1 하이스피드 베이트릴 + 6'8\" 로드",
+      "retrieve_and_action": "굴곡이 적은 호수에서 겨울 딥 포인트와 산란장을 잇는 물골(ditch)을 찾아 110mm 저크베이트를 투입. 수온 7~9°C에서는 배스가 반드시 멈춤(pause) 구간에 먹으므로 수온과 활성에 맞춰 스테이 시간을 조절하고, 장타 입질 시 여윳줄을 빠르게 감아들이기 위해 7.5:1 고기어비 릴 사용"
+    },
+    "technical_reasoning": "수중 도랑(물골)은 초봄 산란을 앞둔 굵은 프리스폰 배스들이 깊은 겨울 은신처에서 얕은 산란 플랫으로 이동할 때 반드시 모여서 지나는 고속도로 역할을 한다. 10lb 플루오로카본을 써야 저크베이트의 잠행 수심과 다팅 액션이 가장 잘 살아난다.",
+    "source_evidence": "\"Ditches are to bass what highways are to people — a means of congregating and routing traffic. On otherwise featureless lakes, a ditch is a defined structural corridor that gathers and routes bass between wintering and spawning flats. ... JERKBAIT – Jackall Rerange 110 Jerkbait, color – Secret Shad 2 ... On this day, mid-40-degree water temps exposed a winter pattern, with bass eating on the pause. ... A casting reel in the 7.5:1 range supports quick line pickup, a must for getting tight on fish on long casts, and the light 10-pound fluorocarbon fostering the best jerkbait action.\""
+  },
+  {
+    "source_url": "https://www.wired2fish.com/jerkbait-tips/unconventional-coldwater-jerkbait-tips",
+    "source_authority": "Wired2Fish (Walker Smith / Bassmaster Elite Pro Fred Roumbanis)",
+    "environment_condition": {
+      "season": "겨울 (저수온기)",
+      "water_temp_c": "4.5~10°C (40~50°F) 및 2.2°C (36°F 섀드 집단 폐사 구간)",
+      "water_clarity": "Clear",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "맑은 물 저수온",
+      "structure": "수직 암반 직벽(bluff walls) 및 채널 스윙(channel swings) 중층"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "서스펜딩 저크베이트 (컬러로 실루엣 크기 조절 & 합사+카본 리더 세팅)",
+      "bait_shape_and_size": "Ima Flit 120 (3훅 저크베이트) / Ima Foxy Fry (소형)",
+      "recommended_colors": ["큰 기자드 섀드 포식 시(맑은 물이라도): 불투명 본 화이트 (Bone White - 실루엣 확대)", "작은 베이트 포식 시: 반투명 고스트 미노우 (Ghost Minnow - 3훅 유지하며 실루엣 축소)"],
+      "weight_spec": "시인성 높은 30lb 합사 원줄(수면 부상 인디케이터) + 10lb 플루오로카본 리더(1.5~1.8m) + 가벼운 브론즈 #4 EWG 트레블 훅",
+      "retrieve_and_action": "캐스팅 직후 몇 번 감으며 저킹(winding jerks)해 목표 수심까지 빠르게 내린 뒤, 로드 팁을 단 20~25cm(8~10인치)만 짧게 톡, 톡 치고 멈추는(twitch, twitch, pause) 미세 액션으로 스트라이크존 이탈 방지. 수면에 뜬 합사 줄이 움찔하면 강하게 챔질하지 말고 로드를 숙이며 빠르게 릴링해 걸어냄"
+    },
+    "technical_reasoning": "수온 4.5~10°C에서 직벽에 뜬 배스는 슬로우 모션처럼 움직여 루어를 쫓지 않는다. 불투명한 본 화이트 컬러는 물속에서 루어를 실제보다 훨씬 커 보이게 만들어 큰 섀드를 노리는 빅배스를 자극하고, 반투명 고스트 컬러는 3훅의 훅업률을 유지하면서도 루어를 작아 보이게 만든다.",
+    "source_evidence": "\"'When the water temperatures are in the 40 to 50-degree range, these bass don't want to chase and become suspended. ... When you take a bone white jerkbait and compare it to a translucent-colored jerkbait in the water, it will look considerably larger,' Roumbanis said. 'So when I'm seeing large concentrations of big gizzard shad in an area, I'll often use an opaque color to boost my lure's profile. ... On the contrary, Roumbanis believes translucent colors can make a rather large, three-hook jerkbait look much smaller ... I'll actually go with a \"twitch, twitch, pause\" cadence in which I only move the tip of my rod 8 to 10 inches.'\""
+  },
+  {
+    "source_url": "https://www.wired2fish.com/fishing-videos/speed-fishing-deep-diving-crankbaits-for-summer-bass",
+    "source_authority": "Wired2Fish (Kobie Koenig / Elite Pro Keith Combs)",
+    "environment_condition": {
+      "season": "여름 (최고 수온기)",
+      "water_temp_c": "여름 피크 고수온",
+      "water_clarity": "Clear | Stained",
+      "water_level": "원문 미기재",
+      "barometric_pressure": "원문 미기재",
+      "wind_and_weather": "한낮 무더위",
+      "structure": "수중 수몰나무(submerged timber) 및 오픈워터 오프쇼어 딥 스쿨링 지점"
+    },
+    "lure_selection": {
+      "rig_or_lure_type": "딥 다이버 크랭크베이트 (고속 버닝 리트리브)",
+      "bait_shape_and_size": "Strike King Pro-Model 6XD",
+      "recommended_colors": ["Powder Blue Back Chartreuse", "Tennessee Shad", "Tennessee Shad 2.0"],
+      "weight_spec": "7'6\" MH 글래스 로드 + 7.4:1 릴 + 15lb 플루오로카본 라인",
+      "retrieve_and_action": "피싱 프레셔가 심하고 고수온으로 배스가 피네스 채비를 무시하는 오프쇼어 깊은 수심에서, 7'6\" 롱 글래스 로드로 초장타(bomb cast)를 날린 뒤 6XD 딥크랭크를 맹렬한 속도로 빠르게 감아(burning/speed-fishing) 소리·속도·컬러 3박자로 반사 입질 강제 유도"
+    },
+    "technical_reasoning": "한여름 최고 수온기 오프쇼어 배스는 느린 피네스 웜 채비를 찬찬히 보고 거절하는 경우가 많다. 오히려 큰 래틀음과 파동을 내는 딥 크랭크베이트를 초고속으로 감아 눈앞을 스치게 하면 생각할 틈을 주지 않고 본능적인 리액션 바이트를 받아낼 수 있다.",
+    "source_evidence": "\"Peak annual water temperatures can make catching summer bass difficult in the south. Combs uses three factors to trigger reaction strikes: sound, speed, and color. He employs a fast-paced approach to deep crankbait fishing using an aggressive Strike King 6XD. Burning it in these areas is an overlooked method to triggering bass unwilling to eat finesse techniques. ... CRANKBAIT – Strike King Pro-Model 6XD, color – Powder Blue Back Chartreuse ... Other Key Colors: Tennessee Shad & Tennessee Shad 2.0\""
+  }
+]

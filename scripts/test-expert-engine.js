@@ -133,22 +133,26 @@ check("All EXPERT_RULES map to valid LURES IDs and have valid citations", () => 
   }
 });
 
-check("Single-source rule r21_clear_mid_strolling_single never alters score", () => {
+check("Single-source rule r35_korea_extreme_temp_nosinker_single never alters score while multi-source r21 boosts mid_strolling", () => {
   const singleRule = EXPERT_RULES.find(r => r.sourceCount === 1);
   assert.ok(singleRule, "Expected at least 1 single-source rule for reference advice testing");
+  assert.strictEqual(singleRule.id, "r35_korea_extreme_temp_nosinker_single");
   assert.strictEqual(singleRule.effect.score, 0);
   const res = ExpertEngine.evaluate({
-    season: "spring",
-    temp: 14,
+    season: "summer",
+    temp: 28,
     time: "midday",
     waterTrend: "stable",
     wind: "calm",
     clarity: "clear",
     struct: "deep_open"
   }, null);
-  assert.strictEqual(ExpertEngine.lureBonus("mid_strolling", res), 0);
-  const adv = ExpertEngine.adviceFor("mid_strolling", res);
-  assert.ok(adv.primary && adv.primary.id === "r21_clear_mid_strolling_single");
+  assert.strictEqual(ExpertEngine.lureBonus("no_sinker", res), 0);
+  const adv = ExpertEngine.adviceFor("no_sinker", res);
+  assert.ok(adv.primary && adv.primary.id === "r35_korea_extreme_temp_nosinker_single");
+
+  // Meanwhile r21_clear_mid_strolling_single is now 4-source cross-validated
+  assert.ok(ExpertEngine.lureBonus("mid_strolling", res) >= 9);
 });
 
 console.log("\n=== [2/3] 12 Golden Tactical Scenarios ===");
@@ -376,6 +380,70 @@ check("S12: Fresh Cold Mud penalty in TacticEngine + graceful null live data han
   assert.strictEqual(noLive.expert.ctx.freshMud, false);
   assert.strictEqual(freshMudLive.expert.ctx.freshMud, true);
   assert.strictEqual(freshMudLive.tactic.zone, "shallow", "Stable muddy water should shift zone to shallow cover");
+});
+
+// Scenario 13: Korean Reclaimed Lake Rock-Slope Pilot (간척호 석축 카이젤 파일럿 & 네꼬 청태/행오프)
+check("S13: Korea Reclaimed Lake Rock Slope -> kaizer_rig & neko_rig boosted with hang-off/curve-falling & algae hopping tactics", () => {
+  const { ranked } = rankLuresForScenario({
+    season: "spring",
+    temp: 15,
+    time: "midday",
+    waterTrend: "stable",
+    wind: "calm",
+    clarity: "stained",
+    struct: "rock_slope"
+  });
+  const kz = ranked.find(l => l.id === "kaizer_rig");
+  const nk = ranked.find(l => l.id === "neko_rig");
+  assert.ok(kz.expertAdvice.bonus >= 9, `Expected kaizer_rig bonus >= 9, got ${kz.expertAdvice.bonus}`);
+  assert.ok(kz.expertAdvice.primary.advice.action.includes("행오프"));
+  assert.ok(nk.expertAdvice.bonus >= 8, `Expected neko_rig bonus >= 8, got ${nk.expertAdvice.bonus}`);
+  assert.ok(nk.expertAdvice.primary.advice.action.includes("청태"));
+});
+
+// Scenario 14: Korean Autumn Turnover Deep Channel (가을 턴오버 수중 채널 12시 롱저킹 메탈바이브)
+check("S14: Korea Autumn Turnover 14°C Deep Channel -> metal_vibe boosted with 12-o'clock long-jerk free-fall tactic", () => {
+  const { ranked } = rankLuresForScenario({
+    season: "autumn",
+    temp: 14,
+    time: "midday",
+    waterTrend: "stable",
+    wind: "moderate",
+    clarity: "stained",
+    struct: "deep_open"
+  });
+  const mv = ranked.find(l => l.id === "metal_vibe");
+  assert.ok(mv.expertAdvice.bonus >= 9, `Expected metal_vibe bonus >= 9, got ${mv.expertAdvice.bonus}`);
+  assert.ok(mv.expertAdvice.primary.advice.action.includes("12시"));
+});
+
+// Scenario 15: Early Spring 8°C Cold Weed & Ditch (초봄 저수온 대형 블레이드 스피너베이트 & 스몰러버지그 & 저크베이트)
+check("S15: Early Spring 8°C Cold Water -> spinnerbait oversized blade, small rubber_jig, and ditch minnow_jerk boosted", () => {
+  const { ranked: weedRanked } = rankLuresForScenario({
+    season: "spring",
+    temp: 8,
+    time: "midday",
+    waterTrend: "stable",
+    wind: "calm",
+    clarity: "stained",
+    struct: "shallow_weed"
+  });
+  const sp = weedRanked.find(l => l.id === "spinnerbait");
+  const rj = weedRanked.find(l => l.id === "rubber_jig");
+  assert.ok(sp.expertAdvice.bonus >= 9, `Expected spinnerbait bonus >= 9, got ${sp.expertAdvice.bonus}`);
+  assert.ok(rj.expertAdvice.bonus >= 9, `Expected rubber_jig bonus >= 9, got ${rj.expertAdvice.bonus}`);
+
+  const { ranked: ditchRanked } = rankLuresForScenario({
+    season: "spring",
+    temp: 8,
+    time: "midday",
+    waterTrend: "stable",
+    wind: "calm",
+    clarity: "clear",
+    struct: "rock_slope"
+  });
+  const mj = ditchRanked.find(l => l.id === "minnow_jerk");
+  assert.ok(mj.expertAdvice.bonus >= 9, `Expected minnow_jerk bonus >= 9, got ${mj.expertAdvice.bonus}`);
 });
 
 console.log("\n=== [3/3] Exhaustive 6,480 State Boundary Sweep ===");

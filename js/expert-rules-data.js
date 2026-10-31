@@ -1,6 +1,6 @@
 // === 고수 노하우 규칙 데이터베이스 (자동 생성 파일 — scripts/build-expert-rules.js) ===
-// 원문 근거: data/lure-knowledge/*.json (47개 레코드, 41개 권위 출처 URL)
-// 생성 시각: 2026-10-30T14:43:47.912Z
+// 원문 근거: data/lure-knowledge/*.json (71개 레코드, 65개 권위 출처 URL)
+// 생성 시각: 2026-10-31T13:20:32.376Z
 
 const EXPERT_RULES = [
   {
@@ -95,9 +95,14 @@ const EXPERT_RULES = [
         "authority": "TacticalBassin · Tim Little",
         "url": "https://www.tacticalbassin.com/blog/muddy-water-baits",
         "quote": "Painted Blade Spinnerbaits (1/2 oz) Colors: ColeSlaw, White/Chartreuse."
+      },
+      {
+        "authority": "Wired2Fish · Shaye Baker",
+        "url": "https://www.wired2fish.com/fishing-tips/choosing-the-right-bladed-bait-for-muddy-water",
+        "quote": "A spinnerbait creates much more distinct pulses in the water... the spinnerbait comes through wood far better than any other moving bait... Cold and muddiest: 3/8-ounce spinnerbait with a large #5 Colorado blade on the back and a smaller #3 Colorado blade in the front."
       }
     ],
-    "sourceCount": 4
+    "sourceCount": 5
   },
   {
     "id": "r03_muddy_chatterbait",
@@ -124,9 +129,9 @@ const EXPERT_RULES = [
       ],
       "weight": "1/2 oz (14.2g)",
       "trailer": "펄 화이트 또는 차트루즈 섀드/핀테일 트레일러 (꼬리 오렌지 디핑 추천)",
-      "action": "일정한 속도로 감아 육각 블레이드의 강한 진동과 금속성 클릭음을 유지하며, 수초나 장애물에 걸리면 강하게 낚아채(rip) 뜯어내며 리액션 유도"
+      "action": "일정한 속도로 감아 육각 블레이드의 강한 진동과 금속성 클릭음을 유지하며, 수초 줄기에 걸리면 강하게 낚아채(rip) 뜯어내며 리액션 유도 (잔교·오버행 아래로는 스키핑 진입)"
     },
-    "reason": "채터베이트는 크랭크베이트의 강력한 진동과 러버지그의 장애물 돌파력을 동시에 갖춰, 시야가 차단된 탁수 수초·커버 주변에서 배스의 시각(형광·강한 대비 컬러)과 청각·측선을 동시에 자극합니다.",
+    "reason": "채터베이트는 크랭크베이트의 강력한 진동과 러버지그의 장애물 돌파력을 동시에 갖춰, 시야가 차단된 탁수 수초·잔교 주변에서 배스의 시각(형광·강한 대비 컬러)과 청각·측선을 동시에 자극합니다.",
     "sources": [
       {
         "authority": "Bassmaster Elite · Bill Weidler",
@@ -137,9 +142,14 @@ const EXPERT_RULES = [
         "authority": "TacticalBassin · Tim Little",
         "url": "https://www.tacticalbassin.com/blog/muddy-water-baits",
         "quote": "Evergreen JackHammer Chatterbait (1/2 oz) Colors: Chartreuse/White, White, Fire Craw."
+      },
+      {
+        "authority": "Wired2Fish · Shaye Baker",
+        "url": "https://www.wired2fish.com/fishing-tips/choosing-the-right-bladed-bait-for-muddy-water",
+        "quote": "If we’re talking grass, especially submerged grass like hydrilla or milfoil, then I’m going with a ChatterBait 10 times out of 10... You can skip a ChatterBait under docks and overhangs like a regular jig."
       }
     ],
-    "sourceCount": 2
+    "sourceCount": 3
   },
   {
     "id": "r04_muddy_shallow_crank",
@@ -189,9 +199,14 @@ const EXPERT_RULES = [
         "authority": "TacticalBassin · Matt Allen",
         "url": "https://www.tacticalbassin.com/blog/how-to-catch-bass-in-muddy-water-spinnerbait-crankbait-and-jig-fishing-tips",
         "quote": "Ultra-Shallow Squarebills... Colors: Chartreuse Black Back, Citrus Nasty, Firetiger Crystal, Delta Craw."
+      },
+      {
+        "authority": "Wired2Fish · Shaye Baker",
+        "url": "https://www.wired2fish.com/tackle-tips/does-crankbait-color-really-matter-in-muddy-water",
+        "quote": "The bass use their lateral lines to track down moving baits... making repeated deflections off the rocky bank and alerting those finely tuned lateral lines on the fish."
       }
     ],
-    "sourceCount": 3
+    "sourceCount": 4
   },
   {
     "id": "r05_drawdown_stained_lipless",
@@ -383,9 +398,14 @@ const EXPERT_RULES = [
         "authority": "TacticalBassin · Matt Allen",
         "url": "https://www.tacticalbassin.com/blog/how-to-catch-suspended-bass-fishing-during-the-fall-draw-down",
         "quote": "Favorite Topwater Baits (Fall Draw Down): River2Sea Rover 128 (Abalone Shad, Ghost Minnow), Evergreen Shower Blows 125 (Skeleton Chartreuse, Bone)."
+      },
+      {
+        "authority": "Wired2Fish · Terry Bolton & Casey Martin",
+        "url": "https://www.wired2fish.com/fall-fishing/how-to-fish-isolated-cover-on-drawdowns",
+        "quote": "When the water draws down in the fall, there is only so much cover left in the water... Isolated wood becomes a high-percentage target... topwaters (walking baits, buzzbaits, poppers)."
       }
     ],
-    "sourceCount": 3
+    "sourceCount": 4
   },
   {
     "id": "r09_spring_autumn_jerkbait",
@@ -489,7 +509,7 @@ const EXPERT_RULES = [
   },
   {
     "id": "r11_winter_cold_downshot",
-    "title": "겨울 저수온 딥 경량 다운샷 & 무액션 롱스테이",
+    "title": "겨울 저수온 딥·급경사 경량 다운샷 & 무액션 롱스테이",
     "lureId": "downshot_rig",
     "when": {
       "tempRange": [
@@ -510,11 +530,11 @@ const EXPERT_RULES = [
         "고비(밀어) 펄 / 스몰마우스 시크릿",
         "스모크 블랙 퍼플 / 프로 블루 레드 펄"
       ],
-      "weight": "1/16 ~ 1/8 oz (1.8~3.5g) 경량 텅스텐 싱커 + 4~6lb 극세사 플루오로카본 라인",
+      "weight": "1/16 ~ 1/8 oz (1.8~3.5g) 경량 텅스텐 싱커 + 4~6lb 극세사 플루오로카본 라인 + 단차 30cm~1m(수로 부상 배스 대응)",
       "trailer": "3.5~4인치 소형 플랫웜/C테일웜 + #2 세단 훅 노즈훅(코꿰기)",
-      "action": "햇빛을 받는 사면이나 딥 스트럭처에서 수직에 가깝게 내린 뒤, 싱커가 돌에 부딪히는 느낌(deflection)을 확인하고 10~60초간 인위적인 액션 없이 그대로 멈춰 둠. '투둑' 대신 채비가 '무거워지는(heavy)' 느낌이 오면 지그시 감아 챔질"
+      "action": "간척호·수로 급경사(드롭오프) 아래나 딥 스트럭처에 채비를 고정해 두고 10~60초간 인위적인 액션 없이 스테이. 동절기 수로 중층에 뜬 배스를 노릴 때는 단차를 50cm~1m까지 파격적으로 길게 줌"
     },
-    "reason": "수온 10°C 이하 저수온기에는 배스가 최소한의 운동량으로 먹을 수 있는 작은 먹잇감만 노립니다. 라인(4~6lb)과 싱커(1/16~1/8oz)를 극한으로 낮추고 의도적인 흔들기 없이 긴 스테이를 주어야 경계심 많은 대형 개체가 흡입합니다.",
+    "reason": "수온 10°C 이하 저수온기에는 배스가 최소한의 운동량으로 먹을 수 있는 작은 먹잇감만 노립니다. 호핑 시 포인트에서 쉽게 벗어나는 프리리그와 달리 다운샷은 급경사 바로 아래에 채비를 고정할 수 있고, 단차 조절로 바닥~중층 부상 배스를 모두 공략합니다.",
     "sources": [
       {
         "authority": "TacticalBassin · Tim Little",
@@ -525,9 +545,14 @@ const EXPERT_RULES = [
         "authority": "낚시춘추 · 이정구 & 강시원 프로",
         "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=2298",
         "quote": "겨울 저수온기... 5lb 카본 라인 + 4인치 이하 C테일 웜 + 다운샷전용바늘 #2 + 1/16온스 싱커... 루어의 액션도 주지 않는다. 캐스팅한 뒤 슬랙라인만 조금 주고 기다리는데 최대 1분까지 반응이 없으면 다시 거둬들여..."
+      },
+      {
+        "authority": "낚시춘추 · 박기현 KSA 프로 (동절기 수로·간척호)",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=15852",
+        "quote": "다운샷리그의 경우, 급경사 아래에 정확하게 채비를 넣어 둔 상태로 액션을 줄 수 있어 입질 받을 확률이 훨씬 높다... 겨울 배스는 바닥에서 살짝 떠 있는 경우가 많기에 단차를 최소 30cm, 길게는 50cm~1m 이상 주는 경우도 있다."
       }
     ],
-    "sourceCount": 2
+    "sourceCount": 3
   },
   {
     "id": "r12_winter_metal_vibe",
@@ -567,9 +592,14 @@ const EXPERT_RULES = [
         "authority": "낚시춘추 · 유해일 KSA 프로",
         "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=13782",
         "quote": "메탈지그: 깊은 수심의 바닥층에 배스들이 모여 있을 때 빠르게 잡아낼 수 있는 루어다. 무게는 21~30g을 주로 사용하고 크롬 컬러를 즐겨 사용하는 편."
+      },
+      {
+        "authority": "Wired2Fish · Jason Sealock",
+        "url": "https://www.wired2fish.com/bass-fishing/temperature-based-bass-lure-selector-chart",
+        "quote": "Water Temp 32-45°F: Deep & Muddy -> Blade bait (Silver/Gold 1/2 oz)... vibrates hard enough for cold, sluggish bass to track in low visibility."
       }
     ],
-    "sourceCount": 2
+    "sourceCount": 3
   },
   {
     "id": "r13_summer_heat_shade_frog",
@@ -622,7 +652,7 @@ const EXPERT_RULES = [
   },
   {
     "id": "r14_summer_heat_deep_crank",
-    "title": "한여름 고수온 오프쇼어 렛지 매그넘·딥 크랭킹",
+    "title": "한여름 고수온 오프쇼어 렛지 매그넘·스피드 딥 크랭킹",
     "lureId": "deep_crank",
     "when": {
       "season": [
@@ -651,10 +681,10 @@ const EXPERT_RULES = [
         "메탈릭 섀드 / 내추럴 블루길"
       ],
       "weight": "4~6m+ 잠행 딥/매그넘 다이버 (Strike King 6XD/10XD, Tactical DD 75, Rapala DT16/20)",
-      "trailer": "롱 크랭킹 로드 + 10~14lb 플루오로카본",
-      "action": "수온약층이 형성되는 수심 3~6m 본류 브레이크라인, 수중 험프, 채널 스윙 바닥에 립을 강하게 박아 돌·바닥을 긁으며 리액션 바이트 유도"
+      "trailer": "7'6\" MH 글라스/컴포지트 크랭킹 로드 + 12~15lb 플루오로카본",
+      "action": "수온약층이 형성되는 수심 3~6m 본류 브레이크라인, 수중 험프, 채널 스윙 바닥에 립을 강하게 박은 뒤, 프레셔 받은 무리를 깨우기 위해 고속으로 릴링(burning)해 돌에 부딪혀 튕겨나가는 순간의 반사 입질 유도"
     },
-    "reason": "여름 더위가 절정에 달하면 대형 배스들은 수온이 낮고 베이트피시가 몰리는 깊은 본류 렛지와 험프로 빠집니다. 큰 실루엣의 딥 다이버 크랭크베이트로 바닥을 때려주면 더위에 지쳐 있던 오프쇼어 빅배스 무리가 반사적으로 입을 엽니다.",
+    "reason": "여름 더위가 절정에 달하면 대형 배스들은 수온이 낮고 베이트피시가 몰리는 깊은 본류 렛지와 험프로 빠집니다. 큰 실루엣의 딥 다이버 크랭크베이트로 바닥을 빠르게 때려주면(speed cranking) 루어를 자세히 관찰할 틈을 주지 않고 본능적인 리액션 바이트를 끌어냅니다.",
     "sources": [
       {
         "authority": "TacticalBassin · Matt Allen",
@@ -665,9 +695,14 @@ const EXPERT_RULES = [
         "authority": "TacticalBassin · Matt Allen & Tim Little",
         "url": "https://www.tacticalbassin.com/blog/how-to-catch-bass-when-its-hot-outside",
         "quote": "deep fish make room to let the giants feed. We target them during periods of high sun using large profile baits... CRANKBAITS: River2Sea Tactical DD 75 (Summer Minnow, Chartreuse Blue), Azuma Z Boss 22."
+      },
+      {
+        "authority": "Wired2Fish · Keith Combs",
+        "url": "https://www.wired2fish.com/fishing-videos/speed-fishing-deep-diving-crankbaits-for-summer-bass",
+        "quote": "Speed fishing deep-diving crankbaits (Strike King 6XD) in the heat of the summer triggers reaction strikes from pressured offshore schools... Burning the crankbait and deflecting it hard off bottom structure."
       }
     ],
-    "sourceCount": 2
+    "sourceCount": 3
   },
   {
     "id": "r15_strong_wind_spinnerbait",
@@ -923,9 +958,14 @@ const EXPERT_RULES = [
         "authority": "Bassmaster · Gettys Brannon (Weight Selection)",
         "url": "https://www.bassmaster.com/bass-basics/news/the-texas-rig-part-3-weight-selection/",
         "quote": "With larger worms that work best being dragged across bottom, heavier weights such as 3/8 to 1/2 ounce are needed to maintain constant contact... When the wind is strong, you need to equip your rig with a heavier weight."
+      },
+      {
+        "authority": "Wired2Fish · Jason Sealock",
+        "url": "https://www.wired2fish.com/buyers-guides/best-fishing-weights-and-sinker-types",
+        "quote": "Tungsten is much denser than lead, meaning a 1/2-ounce tungsten weight is significantly smaller in profile than a 1/2-ounce lead weight and transmits bottom composition (rock vs. mud vs. shell) much better."
       }
     ],
-    "sourceCount": 3
+    "sourceCount": 4
   },
   {
     "id": "r21_clear_mid_strolling_single",
@@ -946,7 +986,7 @@ const EXPERT_RULES = [
       ]
     },
     "effect": {
-      "score": 0
+      "score": 9
     },
     "advice": {
       "colors": [
@@ -954,19 +994,34 @@ const EXPERT_RULES = [
         "스모킨 섀드 (Smokin Shad)",
         "알비노 / 배드 섀드"
       ],
-      "weight": "호버스트롤링: 1/96 ~ 3/32 oz (0.3~2.7g) 텅스텐 네일싱커 + #2~#1 호버 훅 / 미드: 0.9~1.8g 90° 지그헤드",
-      "trailer": "4~5인치 노액션 세장형 미노우/핀테일 웜 (ZMan Jerk Shadz 4\", Super Fluke Jr)",
-      "action": "중층에 떠서 바닥 채비를 무시하는 배스의 수심층에 맞춰 카운트다운한 뒤, 라인 슬랙을 흔들어 웜이 좌우로 롤링하며 수평 유영하게 운용"
+      "weight": "호버스트롤링: 1/96 ~ 3/32 oz (0.3~2.7g) 텅스텐 네일싱커 + L형 호버 훅 / 미드: 0.9~1.8g(1/32~1/16oz) 90° 지그헤드 또는 스몰러버지그",
+      "trailer": "3~5인치 노액션 세장형 미노우/핀테일/중공 피시웜 (ZMan Jerk Shadz 4\", Super Fluke Jr, 3인치 중공 피시웜)",
+      "action": "로드를 60° 각도로 세우고 가볍게 위아래로 털어주며(shaking) 릴 핸들을 1초에 1바퀴 속도로 감아 중층 수평 롤링 유영 연출. 맑은 물 사이트피싱 시에는 1/96oz(0.3g) 호버 채비로 배스 눈앞을 극슬로우 폴링"
     },
-    "reason": "맑은 물에서 바닥 채비에 학습된 배스는 중층에 떠서 회유합니다. 0.3~2.7g 극경량 네일싱커를 웜 내부에 넣은 호버/미드스트롤링은 지그헤드 납 노출 없이 가장 느리고 자연스러운 중층 롤링 액션을 만듭니다.",
+    "reason": "맑은 물에서 바닥 채비에 학습된 배스는 중층에 떠서 회유합니다. 0.3~1.8g 극경량 웨이트를 활용한 호버·미드스트롤링은 중층에서 상처 입은 베이트피시의 번뜩이는 롤링 파동을 가장 자연스럽게 재현해 하이프레셔 배스의 입을 엽니다.",
     "sources": [
       {
         "authority": "TacticalBassin · Matt Allen & Tim Little",
         "url": "https://www.tacticalbassin.com/blog/buyers-guide-hover-strolling-and-mid-strolling",
         "quote": "HOVER STROLLING: Ryugi Hover Shot Hook Size 3, 2 + Reins Tungsten Nail Size 3/32 - 1/96 + ZMan 4\" Jerk Shadz / Zoom Super Fluke Jr (Hologram Shad, Smokin Shad, Albino)."
+      },
+      {
+        "authority": "낚시춘추 · 박기현 KSA 프로 (호버스트롤링 특집)",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=15638",
+        "quote": "호버스트롤링은 극도로 가벼운 싱커(1/96온스 텅스텐 네일싱커)와 특수한 바늘(L형 훅)을 사용해 웜이 물속에서 거의 떠 있는 듯한(Hovering) 수평 자세로 극도로 느리게 폴링하고 유영하게 만드는 기법이다."
+      },
+      {
+        "authority": "낚시춘추 · 최영교 프로",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=8547",
+        "quote": "미드스트롤링: 중층을 공략하는 방법이다. 1/16온스 스몰러버지그에 3~4인치 웜을 세팅한 후, 바닥에서 루어를 띄운 상태에서 로드를 60도 각도로 세우고 가볍게 위아래로 흔들어주며 천천히 감아들인다."
+      },
+      {
+        "authority": "Wired2Fish · Sam Hanggi",
+        "url": "https://www.wired2fish.com/bass-fishing/winter-bass-lures",
+        "quote": "An overcast day tends to make the bass roam and suspend more in the water column... This is when a jighead minnow (Damiki rig / strolling) shines."
       }
     ],
-    "sourceCount": 1
+    "sourceCount": 4
   },
   {
     "id": "r22_prespawn_stained_cover_jig",
@@ -1014,9 +1069,14 @@ const EXPERT_RULES = [
         "authority": "TacticalBassin · Matt Allen",
         "url": "https://www.tacticalbassin.com/blog/top-5-baits-for-muddy-water-bass-fishing",
         "quote": "Focus on lures that have flash, vibration, and bold colors... Dirty Jigs 1/2 oz Pitchin' Jig (Hematoma, Blackend Blue) + Reaction Innovations Kinky Beaver."
+      },
+      {
+        "authority": "Wired2Fish · Jamie Horton",
+        "url": "https://www.wired2fish.com/spring-fishing-tips/do-you-know-how-to-fish-laydowns-for-big-bass",
+        "quote": "pick apart the trunk and heavy forks with a 1/2-ounce jig on 20-pound fluorocarbon."
       }
     ],
-    "sourceCount": 2
+    "sourceCount": 3
   },
   {
     "id": "r23_spring_spawn_fluke_nosinker",
@@ -1107,6 +1167,538 @@ const EXPERT_RULES = [
       }
     ],
     "sourceCount": 2
+  },
+  {
+    "id": "r25_korea_reclaimed_rock_kaizer_pilot",
+    "title": "한국 간척호·워킹 석축 1/8oz 카이젤 파일럿 & 행오프",
+    "lureId": "kaizer_rig",
+    "when": {
+      "struct": [
+        "rock_slope",
+        "deep_open"
+      ],
+      "clarity": [
+        "clear",
+        "stained"
+      ],
+      "wind": [
+        "calm",
+        "moderate"
+      ]
+    },
+    "effect": {
+      "score": 9
+    },
+    "advice": {
+      "colors": [
+        "그린펌킨 (Green Pumpkin)",
+        "브라운 / 어스웜(지렁이)",
+        "워터멜론 레드"
+      ],
+      "weight": "1단계 파일럿 수심·험프 탐색: 1/8 oz (3.5g) 지그헤드 / 2단계 석축 틈새 커브폴링: 1/16 oz (1.8g) / 3단계 데드워밍: 1/32 oz (0.9g)",
+      "trailer": "4~5인치 스트레이트 웜(중앙 체결) 또는 3인치 가재웜(석축 밑걸림 방지 커브폴링용)",
+      "action": "처음 선 워킹 포인트나 평택호·부남호 등 간척호 석축에서 1/8oz 카이젤리그로 바둑판식 20회 캐스팅하며 폴링 카운트로 수심과 석축이 끝나는 턱을 파악. 석축과 뻘 바닥 경계 턱에 1~2초 걸쳤다 톡 빼내는 행오프(hang-off)와 1/16oz 커브폴링(바닥 드래깅 금지)으로 공략"
+    },
+    "reason": "배스 활성도가 낮거나 수심·지형을 모르는 국내 워킹 필드에서는 어필력이 과한 스피너베이트보다 1/8oz 카이젤리그가 최고의 파일럿 루어입니다. 특히 간척호 연안 석축은 돌 틈 밑걸림이 심하므로 드래깅 대신 커브폴링과 석축 끝 턱 행오프를 구사해야 손실 없이 빅배스를 낚습니다.",
+    "sources": [
+      {
+        "authority": "낚시춘추 · 손혁 프로 (파일럿 루어 기법)",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=3889",
+        "quote": "내가 파일럿 루어로 가장 애용하는 것은 뜻밖에도 1/8온스 지그헤드를 사용한 카이젤리그다... 1/8온스 지그헤드는 초당 약 50cm 가라앉으므로 카운트다운을 통해 수심을 정확히 알 수 있고... 약 20회 바둑판식으로 캐스팅하면 물속 지형도가 머릿속에 그려진다."
+      },
+      {
+        "authority": "낚시춘추 · 손혁 프로 (간척호 석축 로테이션)",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=9480",
+        "quote": "석축이 끝나는 지점(석축과 바닥 뻘이 만나는 경계)에서 채비를 살짝 걸쳤다가 빼내는 '행오프(Hang-off)' 기법으로 입질을 유도한다... 석축 틈새에 빠지지 않도록 바닥을 질질 끄는 드래깅 대신, 라인 텐션을 유지해 대각선으로 유영해 내려오는 '커브폴링(Curve falling)' 위주로 운용해야 밑걸림을 줄이고 폴링 바이트를 유도할 수 있다."
+      },
+      {
+        "authority": "Wired2Fish · Jason Sealock",
+        "url": "https://www.wired2fish.com/bass-fishing/temperature-based-bass-lure-selector-chart",
+        "quote": "Water Temp 45-55°F Clear: Ned rig, shaky head, suspending jerkbait... 65-75°F Clear: Topwater walker, shaky head, swimbait."
+      }
+    ],
+    "sourceCount": 3
+  },
+  {
+    "id": "r26_korea_neko_algae_rock_hangoff",
+    "title": "한국 수상좌대·청태 바닥·석축 네꼬리그 4대 비법",
+    "lureId": "neko_rig",
+    "when": {
+      "struct": [
+        "rock_slope",
+        "heavy_cover",
+        "shallow_weed"
+      ],
+      "clarity": [
+        "clear",
+        "stained"
+      ],
+      "tempRange": [
+        11,
+        27
+      ]
+    },
+    "effect": {
+      "score": 8
+    },
+    "advice": {
+      "colors": [
+        "시나몬 블루플레이크 (Cinnamon Blue Flake)",
+        "그린펌킨",
+        "워터멜론 시드"
+      ],
+      "weight": "1/16 ~ 1/8 oz (1.8~3.5g) 네일/인서트 싱커 (수상좌대 안쪽 사선 폴링 시 사선 삽입)",
+      "trailer": "4~6인치 스트레이트 웜 + 5~6mm 실리콘 튜브/오링 + 네꼬 전용 훅 (모기 바늘/와이드갭)",
+      "action": "① 수상좌대 아래로 넣을 땐 싱커를 사선으로 박아 좌대 안쪽으로 파고들게 폴링 ② 청태나 잔돌이 많은 한국 저수지 바닥에서는 웜이 바닥에 완전히 쓰러지기 전(착저 후 1~1.5초 이내)에 다음 호핑을 시작해 바늘에 청태가 묻는 것을 원천 차단 ③ 석축 턱에서는 살짝 걸쳤다 빼는 행오프"
+    },
+    "reason": "한국 저수지 특유의 바닥 청태(이끼)가 바늘에 한 올이라도 묻으면 배스는 절대 입질하지 않습니다. 싱커만 바닥을 찍고 웜이 쓰러지기 직전(1~1.5초)에 연속 호핑하면 청태와 석축 밑걸림을 동시에 피하면서 바닥을 쪼는 베이트피시를 완벽히 연출합니다.",
+    "sources": [
+      {
+        "authority": "낚시춘추 · 손혁 프로 (네꼬리그 4대 비법)",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=4895",
+        "quote": "싱커를 비스듬히 박아 넣으면 수상좌대 같은 장애물 안쪽으로 파고드는 사선 폴링을 유도할 수 있다... 싱커가 바닥에 닿은 뒤 웜이 완전히 바닥에 쓰러지기까지는 약 1~1.5초의 시간이 걸리는데, 웜이 다 쓰러지기 전에 다음 호핑 동작을 시작하면 바늘이 바닥 돌 틈이나 청태에 닿지 않아 밑걸림과 이물질 걸림을 완벽히 방지할 수 있다."
+      },
+      {
+        "authority": "Bassmaster · David A. Brown & Bill Lowen",
+        "url": "https://www.bassmaster.com/go-fish/news/catching-fish-in-cold-front-conditions-takes-strategy/",
+        "quote": "You’ll also tempt them by free-falling a wacky-rigged stickworm (add a nail weight to the head if you need to reach the fish faster)."
+      }
+    ],
+    "sourceCount": 2
+  },
+  {
+    "id": "r27_early_spring_finesse_small_rubber_jig",
+    "title": "초봄 저수온·포스트스폰 1/8oz 이하 피네스 스몰러버지그",
+    "lureId": "rubber_jig",
+    "when": {
+      "season": [
+        "spring",
+        "winter"
+      ],
+      "tempRange": [
+        5,
+        14
+      ],
+      "clarity": [
+        "clear",
+        "stained"
+      ],
+      "struct": [
+        "shallow_weed",
+        "rock_slope",
+        "deep_open"
+      ],
+      "wind": [
+        "calm",
+        "moderate"
+      ]
+    },
+    "effect": {
+      "score": 9
+    },
+    "advice": {
+      "colors": [
+        "그린펌킨 (Green Pumpkin)",
+        "브라운 / 가재 컬러",
+        "블랙 (수초 그림자 대비)"
+      ],
+      "weight": "1/16 ~ 1/8 oz (1.8~3.5g) 실리콘 스커트 스몰러버지그 (브러시가드 1~2가닥만 남기고 컷팅 추천)",
+      "trailer": "2~3인치 소형 크로우/호그/슈림프 웜 또는 3인치 핀테일 웜",
+      "action": "초봄 삭은 수초대·수몰나무·돌바닥에서 20~30cm 짧은 2회 호핑 후 10초 스테이, 또는 극저활성 시 바닥을 50cm 천천히 끌고(dragging) 30초 스테이. 스커트가 물속에서 스스로 하늘거리며 저활성 배스를 유혹함"
+    },
+    "reason": "3~4월 초봄 일교차가 큰 시기나 산란 직후 지친 배스는 빠른 하드베이트나 무거운 지그를 쫓지 못합니다. 1/8oz(3.5g) 이하 스몰러버지그는 느린 폴링과 실리콘 스커트의 미세한 자체 파동으로 가만히 멈춰 있는 스테이 중에도 강한 생명감을 전달합니다.",
+    "sources": [
+      {
+        "authority": "낚시춘추 · 김진현 기자 & 최영교 프로",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=3708",
+        "quote": "배스의 활성이 낮을 때 가장 효과적인 루어를 꼽으라면 스몰러버지그를 들 수 있다... 1/8온스 이하의 가벼운 무게로 천천히 폴링하며, 바닥에 멈춰 있을 때도 실리콘 스커트가 물의 흐름에 따라 미세하게 움직여 배스의 입질을 유도한다."
+      },
+      {
+        "authority": "낚시춘추 · 최영교 프로 (스몰러버지그 4대 액션)",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=8547",
+        "quote": "호핑: 바닥에 가라앉힌 스몰러버지그를 20~30cm 높이로 톡톡 두 번 정도 튀어 오르게 한 뒤 다시 바닥에 가라앉혀 10초 정도 기다린다... 드래깅: 활성도가 극도로 낮을 때 바닥에서 루어를 띄우지 않고 50cm 정도 천천히 끈 다음 30초 정도 길게 스테이한다."
+      },
+      {
+        "authority": "Wired2Fish · Sam Hanggi",
+        "url": "https://www.wired2fish.com/bass-fishing/winter-bass-lures",
+        "quote": "In clear water with high skies, a small finesse jig (5/16 to 3/8 oz) trimmed down with a compact craw trailer crawled slowly on rocky banks gets bites when nothing else will."
+      }
+    ],
+    "sourceCount": 3
+  },
+  {
+    "id": "r28_korea_spring_flatland_longcast_freerig",
+    "title": "한국 봄 평지형 저수지·간척호 40m 장타 프리리그",
+    "lureId": "free_rig",
+    "when": {
+      "season": [
+        "spring"
+      ],
+      "tempRange": [
+        11,
+        20
+      ],
+      "struct": [
+        "shallow_weed",
+        "rock_slope"
+      ]
+    },
+    "effect": {
+      "score": 9
+    },
+    "advice": {
+      "colors": [
+        "그린펌킨",
+        "워터멜론 레드",
+        "시나몬 블루플레이크"
+      ],
+      "weight": "3/8 ~ 1/2 oz (10.5~14g) 고비중 텅스텐 고리봉돌 + MH 베이트 로드 + 12lb 카본 라인",
+      "trailer": "3.5~4인치 호그웜 / 크로우웜 / 더블테일 그럽",
+      "action": "수심이 얕아 봄 시즌이 계곡형보다 훨씬 빠르게 시작되는 국내 평지형·늪지형 저수지와 간척호에서 40m 이상 장타를 날려, 연안 경계심이 없는 먼 거리 1차 브레이크라인과 수중 험프·수초 뿌리 군락을 탐색"
+    },
+    "reason": "한국의 평지형 저수지와 간척호는 수심이 완만해 봄 수온이 가장 먼저 오르지만 워킹 낚시인의 발걸음 프레셔로 대형 배스가 연안에서 멀리 떨어져 있습니다. 40m 이상 원투가 가능한 프리리그로 먼 거리 바닥 지형 변화와 수초 군락을 직공하는 것이 봄 마릿수와 대물의 핵심입니다.",
+    "sources": [
+      {
+        "authority": "낚시춘추 · 박기현 KSA 프로 (한국 봄 필드 공식)",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=16185",
+        "quote": "계곡형 저수지보다 수심이 얕고 부영양화가 진행된 평지형이나 늪지형 저수지, 혹은 간척호의 수초대가 시즌이 훨씬 빠르게 시작된다... MH 로드에 12lb 플로로카본 라인을 세팅한 프리리그로 40m 이상 장타를 쳐서 먼 거리의 브레이크라인과 바닥 지형 변화를 탐색한다."
+      },
+      {
+        "authority": "낚시춘추 · 김선필 프로",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=3474",
+        "quote": "바닥 탐색을 할 때는 무거운 봉돌이 달린 프리 리그를 써야 멀리 캐스팅할 수 있고 바닥을 더 세밀하게 읽어 나갈 수 있다."
+      }
+    ],
+    "sourceCount": 2
+  },
+  {
+    "id": "r29_early_spring_cold_oversized_blade_spinnerbait",
+    "title": "초봄 저수온 수초대 대형 블레이드 스피너베이트 초슬로우 롤링",
+    "lureId": "spinnerbait",
+    "when": {
+      "season": [
+        "spring",
+        "winter"
+      ],
+      "tempRange": [
+        6,
+        12
+      ],
+      "struct": [
+        "shallow_weed",
+        "heavy_cover"
+      ]
+    },
+    "effect": {
+      "score": 9
+    },
+    "advice": {
+      "colors": [
+        "화이트 / 차트루즈 화이트",
+        "골드/실버 탠덤 또는 대형 콜로라도 블레이드"
+      ],
+      "weight": "3/8 ~ 1/2 oz (10.5~14.2g) — 순정보다 한 치수 큰 오버사이즈 블레이드 튜닝 (강한 양력과 저속 회전 확보)",
+      "trailer": "3.5~4인치 그럽 또는 섀드웜 트레일러",
+      "action": "저수온기 배스는 수초에서 30cm 이상 벗어나 루어를 쫓지 않으므로, 양력이 큰 대형 블레이드 스피너베이트로 수초 상단 30cm 이내를 스치듯 극도로 느리게 릴링. 수초 사이 빈 공간(pocket)에서는 감기를 멈춰 수직 프리폴링 바이트 유도"
+    },
+    "reason": "수온 6~12°C의 이른 봄에 가장 먼저 얕은 수초대로 올라오는 개체는 전부 대형 빅배스입니다. 블레이드를 한 치수 키워 양력(lift)을 높이면 수초에 걸리지 않고 극초저속 릴링이 가능해져 수초 30cm 반경에 붙은 대물의 입을 열 수 있습니다.",
+    "sources": [
+      {
+        "authority": "낚시춘추 · 최석민 프로 (대호만 봄 수초 스피너베이트)",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=2783",
+        "quote": "저수온기 배스는 수초에서 30cm 이상 벗어나서 루어를 쫓아오지 않는다... 블레이드를 한 치수 큰 것으로 교체해 양력(Lift)을 높이면, 수초 상단에 걸리지 않으면서도 훨씬 느린 속도로 수초 바로 위를 스치듯 지나가게 할 수 있다. 또한 수초 사이의 빈 공간(포켓)에서는 릴링을 멈추어 수직으로 떨어뜨리는 프리폴링(Free-falling) 액션을 주면 강한 바이트가 들어온다."
+      },
+      {
+        "authority": "Wired2Fish · Shaye Baker",
+        "url": "https://www.wired2fish.com/fishing-tips/choosing-the-right-bladed-bait-for-muddy-water",
+        "quote": "Cold and muddiest: 3/8-ounce spinnerbait with a large #5 Colorado blade on the back and a smaller #3 Colorado blade in the front... creates maximum thump and allows a slow retrieve."
+      }
+    ],
+    "sourceCount": 2
+  },
+  {
+    "id": "r30_spring_staging_suspending_deep_crank",
+    "title": "봄 프리스폰 2~4m 사면 편납 서스펜딩 튜닝 딥크랭크",
+    "lureId": "deep_crank",
+    "when": {
+      "season": [
+        "spring"
+      ],
+      "tempRange": [
+        9,
+        16
+      ],
+      "struct": [
+        "rock_slope",
+        "deep_open"
+      ]
+    },
+    "effect": {
+      "score": 8
+    },
+    "advice": {
+      "colors": [
+        "크로우 패턴 (레드 크로우 / 브라운 크로우)",
+        "내추럴 섀드 / 차트루즈 블루"
+      ],
+      "weight": "2.5 ~ 4m 잠행 딥크랭크 + 복부 편납(납 스티커 / Zappu 보드 웨이트) 부착으로 슬로우 플로팅·서스펜딩 튜닝",
+      "trailer": "10~12lb 플루오로카본 라인",
+      "action": "산란 전 배스가 머무는 수심 2~4m 돌사면 바닥을 찍은 뒤 릴링을 멈춰도 급부상하지 않고 제자리에 머물도록 편납 튜닝. 바닥 접촉 후 2~5초 스테이하거나, 초저속 릴링과 초고속 릴링 양극단을 번갈아 구사"
+    },
+    "reason": "일반 딥크랭크는 부력이 너무 강해 봄철 저수온에서 릴링을 멈추면 쏜살같이 떠올라 배스의 추격 범위를 벗어납니다. 배에 편납을 붙여 물속에서 멈추거나 천천히 떠오르게 튜닝하면 돌에 부딪힌 뒤 멈춘 순간 결정적인 바이트가 들어옵니다.",
+    "sources": [
+      {
+        "authority": "낚시춘추 · 장성호 봄 크랭킹 특집",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=9846",
+        "quote": "봄철 배스는 수심 2~4m 권에 머무는 경우가 많아 섈로우 크랭크베이트보다는 딥크랭크베이트가 유리하다... 부력이 강한 크랭크베이트 배 부분에 편납(웨이트 씰)을 붙여 물속에서 서스펜딩(멈춤)하거나 아주 천천히 떠오르는 슬로우 플로팅 상태로 튜닝하면, 바닥 장애물에 부딪힌 뒤 멈췄을 때(스테이) 배스가 덮치는 확률이 비약적으로 높아진다."
+      },
+      {
+        "authority": "Wired2Fish · Jason Sealock",
+        "url": "https://www.wired2fish.com/buyers-guides/best-fishing-weights-and-sinker-types",
+        "quote": "Adhesive lead strips (like Zappu Board Weights) stuck to the belly of jerkbaits, crankbaits, or swimbaits allow anglers to fine-tune buoyancy so a floating plug suspends or slowly sinks in cold water."
+      }
+    ],
+    "sourceCount": 2
+  },
+  {
+    "id": "r31_autumn_turnover_channel_metal_longjerk",
+    "title": "가을 턴오버 수중 채널 메탈지그·바이브 12시 롱저킹",
+    "lureId": "metal_vibe",
+    "when": {
+      "season": [
+        "autumn"
+      ],
+      "tempRange": [
+        10,
+        18
+      ],
+      "struct": [
+        "deep_open",
+        "rock_slope"
+      ]
+    },
+    "effect": {
+      "score": 9
+    },
+    "advice": {
+      "colors": [
+        "크롬 실버 (Chrome Silver)",
+        "골드 & 레드 헤드",
+        "아유 / 내추럴 샤드"
+      ],
+      "weight": "14 ~ 28g (1/2 ~ 1 oz) 메탈지그 또는 메탈바이브",
+      "trailer": "바늘걸림 감소를 위한 리어 싱글/더블훅 세팅",
+      "action": "가을 턴오버로 수질이 뒤집혀 수중 물골(채널) 경사면 근처에 떠 있는 저활성 배스를 노려 원투 후 착저. 로드를 머리 위 12시 방향까지 크게 들어 올리는 '롱저킹(Long Jerking)' 후, 루어가 수직으로 떨어지도록 적정량의 슬랙라인을 주며 폴링 바이트를 유도"
+    },
+    "reason": "가을 턴오버가 발생한 한국 저수지(송전지·신갈지 등)에서 배스는 산소와 수온이 상대적으로 나은 수중 채널 턱에 서스펜드한 채 웜과 일반 하드베이트를 모두 외면합니다. 이때 메탈 루어를 12시까지 크게 저킹해 수직 프리폴링시키면 눈앞에서 번쩍이며 떨어지는 금속 파동에 본능적으로 반응합니다.",
+    "sources": [
+      {
+        "authority": "낚시춘추 · 손혁 프로 (가을 턴오버 돌파법)",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=4355",
+        "quote": "가을 턴오버가 발생하면 물색이 탁해지고 수면에 거품이 일며 배스들이 바닥에서 떠올라 극도로 예민해진다. 이때 배스들은 수중 물골(채널) 경사면(드롭오프) 근처에 모이는데... 메탈지그나 바이브레이션을 원투해 바닥을 찍은 뒤, 로드를 12시 방향까지 크게 들어 올리는 '롱저킹'을 하고 적당한 슬랙라인을 주어 루어가 수직으로 프리폴링하게 만들면 반사적인 바이트를 받아낼 수 있다."
+      },
+      {
+        "authority": "낚시춘추 · 유해일 KSA 프로",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=13782",
+        "quote": "메탈지그: 깊은 수심의 바닥층에 배스들이 모여 있을 때 빠르게 잡아낼 수 있는 루어다. 무게는 21~30g을 주로 사용하고 크롬 컬러를 즐겨 사용하는 편."
+      },
+      {
+        "authority": "Wired2Fish · Jason Sealock",
+        "url": "https://www.wired2fish.com/bass-fishing/temperature-based-bass-lure-selector-chart",
+        "quote": "Deep & Muddy -> Blade bait (Silver/Gold 1/2 oz)... vibrates hard enough for sluggish bass to track in low visibility."
+      }
+    ],
+    "sourceCount": 3
+  },
+  {
+    "id": "r32_summer_rain_dissolved_oxygen_topwater",
+    "title": "한국 여름비 표층 수온 하강·용존산소 급증 섈로우 톱워터",
+    "lureId": "top_popper_pencil",
+    "when": {
+      "season": [
+        "summer",
+        "autumn"
+      ],
+      "tempRange": [
+        20,
+        30
+      ],
+      "sky": [
+        "rain",
+        "overcast"
+      ],
+      "waterTrend": [
+        "stable",
+        "rising"
+      ]
+    },
+    "effect": {
+      "score": 9
+    },
+    "advice": {
+      "colors": [
+        "본 (Bone) / 화이트",
+        "블랙 / 크롬 (로우라이트 수면 대비)",
+        "차트루즈 백"
+      ],
+      "weight": "7 ~ 14g (1/4 ~ 1/2 oz) 포퍼, 워킹 펜슬베이트, 또는 프롭베이트",
+      "trailer": "리어 페더 훅",
+      "action": "고수온기 적당한 비가 내려 표층 수온이 식고 용존산소가 급증할 때, 급심으로 내려갈 필요 없이 워킹 연안 섈로우와 새물 유입구 주변 수면을 톱워터로 빠르게 공략 (단, 폭우로 육초가 잠겨 썩거나 농경지 흙탕물이 유입된 직후는 피할 것)"
+    },
+    "reason": "한국의 한여름 고수온기에 적당한 비가 내리면 ①표층 수온 하강 ②빗방울에 의한 표층 용존산소 증가 ③구름 그늘 형성 ④약탁수로 인한 경계심 해소의 4대 호재가 겹치며 배스가 얕은 워킹 연안 표층으로 대거 부상해 톱워터를 공격합니다.",
+    "sources": [
+      {
+        "authority": "낚시춘추 · 이형근 KSA 프로 (한국 여름비 배스 과학 분석)",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=12621",
+        "quote": "여름에 적당한 비가 내리면 1) 표층 수온이 내려가고, 2) 빗방울이 수면을 때리며 용존산소량이 증가하며, 3) 구름이 햇빛을 가려 배스의 경계심을 풀어주고, 4) 물색이 적당히 흐려져 루어를 속이기 쉬워진다. 이때는 깊은 수심을 노릴 필요 없이 워킹으로 얕은 연안에서 톱워터, 웨이크베이트, 섈로우 크랭크베이트, 미노우 같은 하드베이트로 마릿수 조과를 거둘 수 있다."
+      },
+      {
+        "authority": "Wired2Fish · Jason Sealock",
+        "url": "https://www.wired2fish.com/bass-fishing/temperature-based-bass-lure-selector-chart",
+        "quote": "Water Temp 65-80°F+: Topwater walker, hollow body frog, buzzbait... overcast and low-light conditions pull fish shallow to chase surface baits."
+      }
+    ],
+    "sourceCount": 2
+  },
+  {
+    "id": "r33_coldwater_ditch_bluff_jerkbait",
+    "title": "저수온 수중 물골(Ditch)·석축 저크베이트 마이크로 트위칭",
+    "lureId": "minnow_jerk",
+    "when": {
+      "season": [
+        "winter",
+        "spring"
+      ],
+      "tempRange": [
+        5,
+        11
+      ],
+      "clarity": [
+        "clear",
+        "stained"
+      ],
+      "struct": [
+        "rock_slope",
+        "deep_open"
+      ]
+    },
+    "effect": {
+      "score": 9
+    },
+    "advice": {
+      "colors": [
+        "베이트피시가 클 때(프로파일 확대): 불투명 본 화이트 (Opaque Bone White)",
+        "베이트피시가 작거나 맑은 물(프로파일 축소): 반투명 고스트 미노우 (Translucent Ghost Minnow)",
+        "약탁수/봄 물골: 크롬/차트루즈 사이드"
+      ],
+      "weight": "60~110mm 서스펜딩 저크베이트 (합사 원줄 + 10lb 플루오로카본 리더 4m + 가벼운 브론즈 #4 세단 훅)",
+      "trailer": "단독 운용 (7.5:1 이상 고속 기어비 릴로 슬랙 회수)",
+      "action": "수온 5~11°C의 이른 봄·겨울 수중 물골(ditch)이나 석축에서 로드를 크게 당기지 말고, 합사+카본 리더 조합으로 로드 팁만 까딱여 루어가 제자리에서 20~25cm(8~10인치)만 좌우로 돌게 한 뒤 5~15초 롱스테이"
+    },
+    "reason": "저수온기 배스는 산란장 앞 수중 물골을 따라 이동하지만 긴 거리를 추격하지 못합니다. 불투명 본(Bone) 컬러로 실루엣을 키우거나 반투명 고스트 컬러로 실루엣을 줄여 베이트 크기에 맞추고, 20cm 이내 마이크로 트위칭과 긴 스테이를 주어야 코앞에서 바이트를 유도합니다.",
+    "sources": [
+      {
+        "authority": "Wired2Fish · Fred Roumbanis",
+        "url": "https://www.wired2fish.com/jerkbait-tips/unconventional-coldwater-jerkbait-tips",
+        "quote": "Opaque colors like Bone White make a 4.5-inch jerkbait look larger in clear water, while translucent colors like Ghost Minnow make the same bait appear smaller... Use 30-lb floating braid to a 10-lb fluorocarbon leader so the bait twitches with micro-movements (moving only 8 to 10 inches) while staying in the strike zone longer."
+      },
+      {
+        "authority": "Wired2Fish · Stephen Browning",
+        "url": "https://www.wired2fish.com/jerkbait-tips/jerkbait-fishing-ditches-for-early-prespawn-bass",
+        "quote": "When the water temperature is in the mid-40s (45°F / 7.2°C), ditches act as highways for prespawn bass... Throw a suspending jerkbait (LiveTarget Yearling Baitball 110) on 10-pound fluorocarbon with a high-speed 7.5:1 reel."
+      },
+      {
+        "authority": "낚시춘추 · 박기현 KSA 프로",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=16185",
+        "quote": "스피닝 태클을 이용해 60~90mm(4~6g) 크기의 소형 미노우(숏빌 미노우)를 연안 브레이크라인과 수초 언저리에 저킹&포즈로 운용하면 산란 전후 베이트피시를 사냥하는 배스에게 강한 리액션 바이트를 유도할 수 있다."
+      }
+    ],
+    "sourceCount": 3
+  },
+  {
+    "id": "r34_laydown_two_stage_crank_and_jig",
+    "title": "수몰나무(Laydown) 수심별 2단계 공략 & 상단 가지 피칭 지그",
+    "lureId": "rubber_jig",
+    "when": {
+      "struct": [
+        "heavy_cover"
+      ],
+      "clarity": [
+        "clear",
+        "stained"
+      ],
+      "tempRange": [
+        14,
+        30
+      ]
+    },
+    "effect": {
+      "score": 9
+    },
+    "advice": {
+      "colors": [
+        "그린펌킨",
+        "블랙 & 블루",
+        "브라운 크로우"
+      ],
+      "weight": "3/8 ~ 1/2 oz (10.5~14.2g) 아키(Arky) 헤드 또는 플리핑 지그 + 17~20lb 플루오로카본",
+      "trailer": "트윈테일 그럽 또는 크로우 트레일러",
+      "action": "① 수심 2m(6ft) 이하 섈로우 수몰나무: 먼저 스퀘어빌 크랭크베이트로 바깥쪽 잔가지의 활성 개체를 낚은 뒤 1/2oz 지그로 밑동(trunk)을 피칭 ② 수심 6m(20ft)+ 깊은 직벽 수몰나무: 바닥까지 내리지 말고 나무 수관(crown) 위 가지로 피칭해 1.2~1.5m(4~5ft)만 폴링시킨 뒤 회수"
+    },
+    "reason": "수몰나무를 처음부터 지그로만 치면 가장자리에 떠 있던 활성 배스가 줄에 놀라 도망칩니다. 또한 깊은 직벽에 쓰러진 나무의 배스는 바닥이 아니라 수관 상단 가지에 서스펜드하므로 가지 위로 1.5m만 폴링시키는 것이 핵심입니다.",
+    "sources": [
+      {
+        "authority": "Wired2Fish · Jamie Horton",
+        "url": "https://www.wired2fish.com/spring-fishing-tips/do-you-know-how-to-fish-laydowns-for-big-bass",
+        "quote": "Shallow laydowns (6 feet or less): First make several casts around the outside limbs with a squarebill crankbait to catch aggressive fish without spooking the rest of the tree; then pick apart the trunk and heavy forks with a 1/2-ounce jig on 20-pound fluorocarbon. Deep laydowns (20+ feet): Bass suspend in the top crown of the tree rather than on the bottom. Pitch a 1/2-ounce jig over limbs and let it fall only 4 to 5 feet before reeling in."
+      },
+      {
+        "authority": "Wired2Fish · Terry Bolton & Casey Martin",
+        "url": "https://www.wired2fish.com/fall-fishing/how-to-fish-isolated-cover-on-drawdowns",
+        "quote": "When the water draws down in the fall, there is only so much cover left in the water. Isolated wood (stumps, laydowns, brushpiles) becomes a high-percentage target... 3/8- to 1/2-ounce flipping jig (Green Pumpkin or Black/Blue)."
+      }
+    ],
+    "sourceCount": 2
+  },
+  {
+    "id": "r35_korea_extreme_temp_nosinker_single",
+    "title": "한여름 고수온 무풍 그늘 이물감 제로 노싱커 폴링",
+    "lureId": "no_sinker",
+    "when": {
+      "tempRange": [
+        26,
+        32
+      ],
+      "clarity": [
+        "clear",
+        "stained"
+      ],
+      "wind": [
+        "calm"
+      ]
+    },
+    "effect": {
+      "score": 0
+    },
+    "advice": {
+      "colors": [
+        "워터멜론 시드 (Watermelon Seed)",
+        "그린펌킨",
+        "시나몬"
+      ],
+      "weight": "노싱커 (#2/0 ~ #4/0 오프셋 훅 또는 와키 훅 단독) + 6~10lb 플루오로카본",
+      "trailer": "4~5인치 고비중 스트레이트 스틱웜 (센코 타입)",
+      "action": "수초·수몰나무·수상좌대 그늘 바로 옆에 캐스팅한 뒤 라인 텐션을 완전히 풀어주어 웜 자체 무게로만 수평 흔들림(wobbling)을 내며 천천히 가라앉게 두고, 바닥 착저 후 10초 이상 스테이"
+    },
+    "reason": "수온이 26°C를 넘고 바람마저 없는 한낮에는 배스의 먹성이 극도로 떨어져 봉돌이 달린 채비의 빠른 폴링과 이물감을 기피합니다. 웜 자체 비중으로만 천천히 수평 폴링하는 노싱커 채비가 그늘 속 저활성 배스에게 가장 확실한 한 입 거리입니다.",
+    "sources": [
+      {
+        "authority": "낚시춘추 · 이달의 채비 (노싱커 리그)",
+        "url": "https://m.fishingseasons.co.kr/news_Detail.asp?b_no=3599",
+        "quote": "해빙기 저수온이나 한여름 고수온기처럼 배스의 먹성이 극도로 떨어졌을 때는 봉돌의 이물감이 전혀 없고 가장 자연스럽게 천천히 가라앉는 노싱커 리그(No-sinker rig)가 최고의 위력을 발휘한다."
+      }
+    ],
+    "sourceCount": 1
   }
 ];
 
