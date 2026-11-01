@@ -1,22 +1,22 @@
-// === 1. 국내 대표 배스 필드 프리셋 데이터 (농어촌공사 RAWRIS 실시간 수위 equipNo 연동 · 수원 광교 기준 거리순 정렬, 기본 선택 아산호) ===
+// === 1. 국내 대표 배스 필드 프리셋 데이터 (농어촌공사 RAWRIS 실시간 수위 equipNo + 필드별 기본 물색·지형 프로필 연동) ===
 const KOREA_SPOTS = [
-  { id: "gps", name: "📍 내 현재 위치", lat: null, lon: null, equipNo: null, region: "GPS 자동 탐색" },
-  { id: "idong", name: "경기 용인 이동저수지", lat: 37.1107, lon: 127.1845, equipNo: 899, region: "경기도 용인시 처인구 이동읍" },
-  { id: "misan", name: "경기 안성 미산저수지", lat: 37.1310, lon: 127.2570, equipNo: 913, region: "경기도 안성시 양성면 미산리" },
-  { id: "gosam", name: "경기 안성 고삼저수지", lat: 37.0818, lon: 127.2719, equipNo: 920, region: "경기도 안성시 고삼면 봉산리" },
-  { id: "pyeongtaek", name: "경기/충남 평택호", lat: 36.9138, lon: 126.9096, equipNo: 4140, region: "경기도 평택시 현덕면 권관리" },
-  { id: "asan", name: "충남 아산호", lat: 36.9012, lon: 126.8834, equipNo: 4140, region: "충청남도 아산시 영인면 / 평택시" },
-  { id: "sapgyo", name: "충남 당진/아산 삽교호", lat: 36.8876, lon: 126.8286, equipNo: 4139, region: "충청남도 당진시 신평면 운정리" },
-  { id: "daeho", name: "충남 당진 대호만", lat: 36.9990, lon: 126.4553, equipNo: 4318, region: "충청남도 당진시 정미면" },
-  { id: "yedang", name: "충남 예산 예당호", lat: 36.6290, lon: 126.8020, equipNo: 1081, region: "충청남도 예산군 응봉면" },
-  { id: "daecheong", name: "대전/충북 대청호", lat: 36.4775, lon: 127.4808, equipNo: null, region: "대전광역시 동구 / 청주시" },
-  { id: "tapjeong", name: "충남 논산 탑정호", lat: 36.1760, lon: 127.1810, equipNo: 1046, region: "충청남도 논산시 부적면" },
-  { id: "busa", name: "충남 보령/서천 부사호", lat: 36.1907, lon: 126.5582, equipNo: 3928, region: "충청남도 보령시 웅천읍" },
-  { id: "andong", name: "경북 안동호", lat: 36.6056, lon: 128.8124, equipNo: null, region: "경상북도 안동시 와룡면" },
-  { id: "hapcheon", name: "경남 합천호", lat: 35.5653, lon: 128.0268, equipNo: null, region: "경상남도 합천군 대병면" },
-  { id: "jangseong", name: "전남 장성호", lat: 35.3880, lon: 126.8390, equipNo: 1311, region: "전라남도 장성군 북하면" },
-  { id: "damyang", name: "전남 담양호", lat: 35.3777, lon: 127.0117, equipNo: 1212, region: "전라남도 담양군 용면" },
-  { id: "naju", name: "전남 나주호", lat: 34.9637, lon: 126.8450, equipNo: 1206, region: "전라남도 나주시 다도면" }
+  { id: "gps", name: "📍 내 현재 위치", lat: null, lon: null, equipNo: null, region: "GPS 자동 탐색", spotType: "auto", baseClarity: "stained", defaultStruct: "rock_slope" },
+  { id: "idong", name: "경기 용인 이동저수지", lat: 37.1107, lon: 127.1845, equipNo: 899, region: "경기도 용인시 처인구 이동읍", spotType: "valley_res", baseClarity: "stained", defaultStruct: "rock_slope" },
+  { id: "misan", name: "경기 안성 미산저수지", lat: 37.1310, lon: 127.2570, equipNo: 913, region: "경기도 안성시 양성면 미산리", spotType: "valley_res", baseClarity: "clear", defaultStruct: "rock_slope" },
+  { id: "gosam", name: "경기 안성 고삼저수지", lat: 37.0818, lon: 127.2719, equipNo: 920, region: "경기도 안성시 고삼면 봉산리", spotType: "flat_res", baseClarity: "stained", defaultStruct: "heavy_cover" },
+  { id: "pyeongtaek", name: "경기/충남 평택호", lat: 36.9138, lon: 126.9096, equipNo: 4140, region: "경기도 평택시 현덕면 권관리", spotType: "reclaimed_lake", baseClarity: "stained", defaultStruct: "shallow_weed" },
+  { id: "asan", name: "충남 아산호", lat: 36.9012, lon: 126.8834, equipNo: 4140, region: "충청남도 아산시 영인면 / 평택시", spotType: "reclaimed_lake", baseClarity: "stained", defaultStruct: "rock_slope" },
+  { id: "sapgyo", name: "충남 당진/아산 삽교호", lat: 36.8876, lon: 126.8286, equipNo: 4139, region: "충청남도 당진시 신평면 운정리", spotType: "reclaimed_lake", baseClarity: "stained", defaultStruct: "shallow_weed" },
+  { id: "daeho", name: "충남 당진 대호만", lat: 36.9990, lon: 126.4553, equipNo: 4318, region: "충청남도 당진시 정미면", spotType: "reclaimed_lake", baseClarity: "stained", defaultStruct: "shallow_weed" },
+  { id: "yedang", name: "충남 예산 예당호", lat: 36.6290, lon: 126.8020, equipNo: 1081, region: "충청남도 예산군 응봉면", spotType: "flat_res", baseClarity: "stained", defaultStruct: "heavy_cover" },
+  { id: "daecheong", name: "대전/충북 대청호", lat: 36.4775, lon: 127.4808, equipNo: null, region: "대전광역시 동구 / 청주시", spotType: "canyon_dam", baseClarity: "clear", defaultStruct: "rock_slope" },
+  { id: "tapjeong", name: "충남 논산 탑정호", lat: 36.1760, lon: 127.1810, equipNo: 1046, region: "충청남도 논산시 부적면", spotType: "flat_res", baseClarity: "stained", defaultStruct: "rock_slope" },
+  { id: "busa", name: "충남 보령/서천 부사호", lat: 36.1907, lon: 126.5582, equipNo: 3928, region: "충청남도 보령시 웅천읍", spotType: "reclaimed_lake", baseClarity: "stained", defaultStruct: "shallow_weed" },
+  { id: "andong", name: "경북 안동호", lat: 36.6056, lon: 128.8124, equipNo: null, region: "경상북도 안동시 와룡면", spotType: "canyon_dam", baseClarity: "clear", defaultStruct: "rock_slope" },
+  { id: "hapcheon", name: "경남 합천호", lat: 35.5653, lon: 128.0268, equipNo: null, region: "경상남도 합천군 대병면", spotType: "canyon_dam", baseClarity: "clear", defaultStruct: "heavy_cover" },
+  { id: "jangseong", name: "전남 장성호", lat: 35.3880, lon: 126.8390, equipNo: 1311, region: "전라남도 장성군 북하면", spotType: "valley_res", baseClarity: "clear", defaultStruct: "rock_slope" },
+  { id: "damyang", name: "전남 담양호", lat: 35.3777, lon: 127.0117, equipNo: 1212, region: "전라남도 담양군 용면", spotType: "valley_res", baseClarity: "clear", defaultStruct: "rock_slope" },
+  { id: "naju", name: "전남 나주호", lat: 34.9637, lon: 126.8450, equipNo: 1206, region: "전라남도 나주시 다도면", spotType: "valley_res", baseClarity: "clear", defaultStruct: "rock_slope" }
 ];
 
 // === 2. 19종 배스 루어 & 채비 완벽 데이터베이스 (물색/훅/싱커/시간대 확장) ===

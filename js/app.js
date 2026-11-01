@@ -67,7 +67,7 @@ let state = {
   selectedLureId: "chatterbait",
   selectedSpotId: getInitialSpotId(), // 최근 선택 기억 (기억된 게 없으면 'gps')
   activeTab: "tab-simulator",
-  mobileControlsOpen: false,
+  mobileControlsOpen: true,
   mobileWeatherMoreOpen: false,
   mobileDetailMoreOpen: false,
   mobileAllLuresOpen: false,
@@ -830,20 +830,107 @@ function renderWeatherBanner(w) {
   }
 }
 
+// 필드 지형·수계 프로필 + 실시간 기상/수위/수온 기반 물색(Clarity) 자동 판별
+function inferAutoClarity(spot, w, temp, season) {
+  const wl = w.waterLevel;
+  // GPS 자동 탐색 시 최근접 저수지 제정고(해발고도)가 높으면 계곡지(맑은물)로 추정
+  const isHighValleyGps = (!spot || spot.id === "gps") && wl && wl.altitudeWlvl >= 80;
+  const spotType = spot?.spotType === "auto"
+    ? (isHighValleyGps ? "valley_res" : "flat_res")
+    : (spot?.spotType || "flat_res");
+  const baseClarity = isHighValleyGps ? "clear" : (spot?.baseClarity || "stained");
+
+  // 1) 호우(>2.0mm) · 강풍(>=5.5m/s) · 급격한 오름수위(전일 대비 +45cm 이상 유입) -> 탁수(muddy)
+  if (w.precipitation > 2.0 || w.windSpeedMs >= 5.5 || (wl && wl.diffWlvl >= 0.45)) {
+    return "muddy";
+  }
+  // 2) 간척호(평택/아산/삽교/대호/부사)는 중강풍(>=3.8m/s)에도 바닥 뻘이 뒤집혀 빠르게 탁수화
+  if (spotType === "reclaimed_lake" && w.windSpeedMs >= 3.8) {
+    return "muddy";
+  }
+  // 3) 저수온기(10°C 이하) 무강수·약풍 시에는 동물성 플랑크톤/조류 감소로 물색이 맑아짐 (단, 간척호는 보통 유지)
+  if (temp <= 10 && w.precipitation === 0 && w.windSpeedMs < 3.5 && spotType !== "reclaimed_lake") {
+    return "clear";
+  }
+  // 4) 한여름 고수온기(26°C 이상)에는 평소 맑은 계곡지/댐도 녹조 발생으로 스테인(보통) 물색 형성
+  if (season === "summer" && temp >= 26 && baseClarity === "clear") {
+    return "stained";
+  }
+  return baseClarity;
+}
+
+// 필드 특성 + 수위 변동 + 수온/계절 + 출조 시간대 기반 주력 공략 지형(Structure) 자동 추천
+function inferAutoStructure(spot, w, temp, season, time, waterTrend, clarity) {
+  const wl = w.waterLevel;
+  const isHighValleyGps = (!spot || spot.id === "gps") && wl && wl.altitudeWlvl >= 80;
+  const spotType = spot?.spotType === "auto"
+    ? (isHighValleyGps ? "valley_res" : "flat_res")
+    : (spot?.spotType || "flat_res");
+  const defaultStruct = spot?.defaultStruct || "rock_slope";
+
+  // 1) 겨울철 / 저수온기(9°C 이하): 수온이 안정된 본류 딥채널 또는 급심 석축 브레이크라인
+  if (temp <= 9) {
+    return (time === "midday" || temp <= 7) ? "deep_open" : "rock_slope";
+  }
+
+  // 2) 오름수위(rising): 육초·버드나무가 잠기며 배스가 쉘로우 커버/수초 엣지로 대거 진입
+  if (waterTrend === "rising") {
+    return spotType === "reclaimed_lake" ? "shallow_weed" : "heavy_cover";
+  }
+
+  // 3) 내림수위 / 배수기(falling): 쉘로우 수초가 드러나므로 1차 브레이크라인(석축) 또는 딥채널로 후퇴
+  if (waterTrend === "falling") {
+    if (time === "midday" && clarity === "clear" && temp >= 24) {
+      return "deep_open";
+    }
+    return "rock_slope";
+  }
+
+  // 4) 평수위 / 안정(stable): 계절·시간대·필드 주력 지형 조합
+  if (season === "summer" && time === "midday" && clarity !== "muddy") {
+    // 한낮 직사광 고수온: 맑은 계곡댐은 깊은 수온약층(deep_open), 일반 저수지는 수몰나무 그늘(heavy_cover)
+    return spotType === "canyon_dam" ? "deep_open" : "heavy_cover";
+  }
+  if (season === "spring" && temp >= 14 && temp <= 19) {
+    // 봄 산란기: 간척호/평지지는 수초/연밭 엣지, 계곡지/댐은 자갈·석축 브레이크라인 또는 수몰나무
+    if (spotType === "reclaimed_lake") return "shallow_weed";
+    return defaultStruct;
+  }
+
+  return defaultStruct;
+}
+
 function applyLiveWeatherToSimulator(showToast = true) {
   const w = WeatherEngine.currentData;
   if (!w) return;
 
+  const spot = (typeof KOREA_SPOTS !== "undefined" && KOREA_SPOTS.find(s => s.id === state.selectedSpotId)) || KOREA_SPOTS[0];
+
+  // 1~3, 5. 계절 · 시간대 · 추정 수온 · 바람 자동 설정
   state.season = w.season;
   state.time = w.timeOfDay;
   state.temp = w.estimatedWaterTemp;
   state.wind = w.windState;
+
+  // 4. 수위 변동 자동 설정 (RAWRIS 계측 저수지는 실측 기반, 다목적댐은 강수량/시기 기반 추정)
   if (w.waterLevel) {
     state.waterTrend = w.waterLevel.trend;
+  } else {
+    const month = new Date().getMonth() + 1;
+    if (w.precipitation >= 5.0) {
+      state.waterTrend = "rising";
+    } else if (month === 5 || month === 6) {
+      state.waterTrend = "falling"; // 영농기·장마 전 수위 조절 배수기
+    } else {
+      state.waterTrend = "stable";
+    }
   }
-  if (w.precipitation > 2.0 || w.windSpeedMs >= 5.5) {
-    state.clarity = "muddy";
-  }
+
+  // 6. 물색 / 탁도 자동 판별 (필드 고유 수질 + 강수/풍속/수위유입/수온 조합)
+  state.clarity = inferAutoClarity(spot, w, state.temp, state.season);
+
+  // 7. 공략 지형 자동 추천 (필드 주력 지형 + 수위 변동 + 수온/시간대 조합)
+  state.struct = inferAutoStructure(spot, w, state.temp, state.season, state.time, state.waterTrend, state.clarity);
 
   const top = getFilteredAndRankedLures()[0];
   if (top) state.selectedLureId = top.id;
@@ -852,7 +939,7 @@ function applyLiveWeatherToSimulator(showToast = true) {
   if (showToast) {
     const btn = document.getElementById("btnApplyLive");
     const orig = btn.innerHTML;
-    btn.innerHTML = "✅ 실시간 기상·수위 반영 완료!";
+    btn.innerHTML = "✅ 7대 필드 조건 자동 맞춤 완료!";
     setTimeout(() => { btn.innerHTML = orig; }, 1800);
   }
 }
