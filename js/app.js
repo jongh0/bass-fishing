@@ -1,6 +1,39 @@
 // === 메인 애플리케이션 컨트롤러 (스코어링 엔진 · 2D 캔버스 · 실시간 날씨/RAWRIS 수위 동기화 · 조행일지) ===
 
 const SPOT_STORAGE_KEY = "bass_selected_spot_id";
+const THEME_STORAGE_KEY = "bass_theme_mode";
+
+function getInitialTheme() {
+  try {
+    const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    if (saved === "light" || saved === "dark") return saved;
+  } catch (e) {
+    // ignore
+  }
+  return "dark"; // 기본: 차콜 다크 모드
+}
+
+function applyTheme(theme) {
+  const nextTheme = theme === "light" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", nextTheme);
+  const metaTheme = document.getElementById("metaThemeColor");
+  if (metaTheme) {
+    metaTheme.setAttribute("content", nextTheme === "light" ? "#f3f4f6" : "#121316");
+  }
+  const btn = document.getElementById("btnThemeToggle");
+  if (btn) {
+    // 현재 모드 표시 및 전환 안내 (다크일 때 ☀️ 라이트 전환 버튼, 라이트일 때 🌙 차콜다크 전환 버튼)
+    btn.innerHTML = nextTheme === "light"
+      ? `<span class="theme-icon" id="themeIcon">🌙</span><span class="theme-label" id="themeLabel">다크</span>`
+      : `<span class="theme-icon" id="themeIcon">☀️</span><span class="theme-label" id="themeLabel">라이트</span>`;
+    btn.setAttribute("title", nextTheme === "light" ? "차콜 다크 모드로 전환" : "라이트 모드로 전환");
+  }
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+  } catch (e) {
+    // ignore
+  }
+}
 
 function getInitialSpotId() {
   try {
@@ -34,7 +67,12 @@ let state = {
   selectedLureId: "chatterbait",
   selectedSpotId: getInitialSpotId(), // 최근 선택 기억 (기억된 게 없으면 'gps')
   activeTab: "tab-simulator",
-  mobileControlsOpen: false
+  mobileControlsOpen: false,
+  mobileWeatherMoreOpen: false,
+  mobileDetailMoreOpen: false,
+  mobileAllLuresOpen: false,
+  mobileRawrisSpecOpen: false,
+  theme: getInitialTheme()
 };
 
 const seasonPresets = {
@@ -218,9 +256,10 @@ function renderUI() {
     const rankClass = idx === 0 ? "rank-1" : idx === 1 ? "rank-2" : idx === 2 ? "rank-3" : "";
     const catTagClass = lure.category === "HARD" ? "tag-hard" : lure.category === "WIRE" ? "tag-wire" : "tag-soft";
     const barColor = lure.score >= 85 ? "#22c55e" : lure.score >= 70 ? "#38bdf8" : lure.score >= 55 ? "#f59e0b" : "#64748b";
+    const mobileHiddenClass = idx >= 5 && !state.mobileAllLuresOpen ? "mobile-hidden-lure" : "";
 
     const item = document.createElement("div");
-    item.className = `lure-item ${rankClass} ${isSelected ? "selected" : ""}`;
+    item.className = `lure-item ${rankClass} ${isSelected ? "selected" : ""} ${mobileHiddenClass}`;
     item.onclick = () => {
       state.selectedLureId = lure.id;
       renderUI();
@@ -232,8 +271,8 @@ function renderUI() {
     const expAdv = lure.expertAdvice;
     const expBadgeHtml = expAdv && expAdv.primary
       ? (expAdv.bonus > 0
-          ? `<span class="mini-tag tag-expert">🧠 고수노하우 +${expAdv.bonus}</span>`
-          : `<span class="mini-tag tag-expert-ref">🧠 참고노하우</span>`)
+          ? `<span class="mini-tag tag-expert">🧠 고수 +${expAdv.bonus}</span>`
+          : `<span class="mini-tag tag-expert-ref">🧠 참고</span>`)
       : "";
 
     item.innerHTML = `
@@ -242,6 +281,7 @@ function renderUI() {
           <span class="rank-num">${idx + 1}</span>
           <span class="lure-title">${lure.name}</span>
           <span class="mini-tag ${catTagClass}">${lure.catLabel}</span>
+          <span class="mini-tag lure-depth-inline">수심 ${lure.depthText}</span>
           ${lure.tacticFit === "best" ? '<span class="mini-tag tag-fit">🧭 전술 적합</span>' : ""}
           ${expBadgeHtml}
         </div>
@@ -261,6 +301,21 @@ function renderUI() {
     `;
     listEl.appendChild(item);
   });
+
+  if (ranked.length > 5) {
+    const moreBtn = document.createElement("button");
+    moreBtn.type = "button";
+    moreBtn.className = "btn-more-lures";
+    moreBtn.id = "btnMoreLuresMobile";
+    moreBtn.innerHTML = state.mobileAllLuresOpen
+      ? `🔼 상위 5개 루어만 간결히 보기`
+      : `🔽 나머지 루어 더보기 (+${ranked.length - 5}종)`;
+    moreBtn.onclick = () => {
+      state.mobileAllLuresOpen = !state.mobileAllLuresOpen;
+      renderUI();
+    };
+    listEl.appendChild(moreBtn);
+  }
 
   // 상세 패널 업데이트
   const activeLure = ranked.find(l => l.id === state.selectedLureId) || ranked[0];
@@ -283,23 +338,26 @@ function renderUI() {
       ? `<span class="expert-inline-badge">고수 추천</span> ${expColors}<div class="spec-sub-note">기본 가이드: ${currentColorRec}</div>${finishTip}`
       : `${currentColorRec}${finishTip}`;
 
-    // 조건별 동적 무게·트레일러 표시
+    // 조건별 동적 무게·트레일러 표시 (모바일 2x2 그리드 균형을 위해 4번째 카드 항상 제공)
     const expWeight = primaryRule?.advice?.weight || null;
     const expTrailer = primaryRule?.advice?.trailer || null;
     const dynWeightPrinciple = expAdv?.weightPrinciple || null;
     const weightSpecHtml = expWeight
       ? `<div class="spec-item" style="border-left-color:#38bdf8;">
-          <span class="label">⚖️ 현재 조건 맞춤 무게 & 트레일러</span>
+          <span class="label">⚖️ 권장 무게 & 트레일러</span>
           <div class="value"><span class="expert-inline-badge">고수 세팅</span> ${expWeight}</div>
           ${expTrailer ? `<div class="spec-sub-note">트레일러/웜: ${expTrailer}</div>` : ""}
         </div>`
       : (dynWeightPrinciple && activeLure.category !== "HARD"
           ? `<div class="spec-item" style="border-left-color:#38bdf8;">
-              <span class="label">⚖️ 현재 환경 권장 싱커 무게 공식</span>
+              <span class="label">⚖️ 권장 싱커 무게 공식</span>
               <div class="value">${dynWeightPrinciple.spec}</div>
               <div class="spec-sub-note">${dynWeightPrinciple.reason}</div>
             </div>`
-          : "");
+          : `<div class="spec-item" style="border-left-color:#38bdf8;">
+              <span class="label">📏 공략 수심 & 템포</span>
+              <div class="value">${activeLure.depthText} · ${activeLure.speed}</div>
+            </div>`);
 
     // 고수 실전 노하우 & 출처 박스
     let expertBoxHtml = "";
@@ -345,6 +403,8 @@ function renderUI() {
       ? `🧭 [통합 전술: ${t.zoneLabel} × ${t.speedLabel}] ${fitText}`
       : "";
 
+    const coreActionSummary = primaryRule?.advice?.action || currentTimeTip;
+
     detailEl.innerHTML = `
       <div class="detail-top">
         <div>
@@ -361,34 +421,56 @@ function renderUI() {
       </div>
 
       <div class="detail-specs">
-        <div class="spec-item" style="border-left-color:#a855f7;">
-          <span class="label">🎣 스탠다드 베이트/스피닝 세팅</span>
-          <div class="value">${activeLure.stdSpec}</div>
-        </div>
-        <div class="spec-item" style="border-left-color:#10b981;">
-          <span class="label">🪝 권장 바늘(훅) & 채비 팁</span>
-          <div class="value">${activeLure.hookGuide || "표준 훅 세팅"}</div>
-        </div>
         <div class="spec-item" style="border-left-color:#f59e0b;">
-          <span class="label">🎨 현재 물색(${clarityLabels[state.clarity]}) 베스트 컬러</span>
+          <span class="label">🎨 물색(${clarityLabels[state.clarity].split(" ")[0]}) 추천 컬러</span>
           <div class="value">${colorValueHtml}</div>
         </div>
         ${weightSpecHtml}
+        <div class="spec-item" style="border-left-color:#a855f7;">
+          <span class="label">🎣 권장 장비 스펙</span>
+          <div class="value">${activeLure.stdSpec}</div>
+        </div>
+        <div class="spec-item" style="border-left-color:#10b981;">
+          <span class="label">🪝 권장 바늘 & 채비</span>
+          <div class="value">${activeLure.hookGuide || "표준 훅 세팅"}</div>
+        </div>
       </div>
 
-      ${expertBoxHtml}
-
-      <div class="tactical-box" style="border-color:rgba(250, 204, 21, 0.35); background:rgba(250, 204, 21, 0.07);">
-        <strong style="color:#facc15;">🕒 [${timeLabels[state.time]}] & [${waterTrendLabels[state.waterTrend]}] 공략 포인트</strong>
-        ${currentTimeTip}<br/>
-        <span style="color:#93c5fd; font-size:0.81rem; display:inline-block; margin-top:4px;">${waterTrendAdvice}</span>
+      <div class="detail-core-action">
+        <strong>🎯 핵심 운용법:</strong> ${coreActionSummary}
       </div>
 
-      <div class="tactical-box">
-        <strong>💡 기본 액션 & 바이트 유도 원리</strong>
-        ${activeLure.desc}
+      <button type="button" class="btn-detail-more-toggle" id="btnDetailMoreToggle">
+        ${state.mobileDetailMoreOpen ? "🔼 고수 노하우 근거 · 시간대 전술 · 출처 접기" : "📖 고수 노하우 근거 · 시간대 전술 · 출처 더보기 ▾"}
+      </button>
+
+      <div class="detail-more-body ${state.mobileDetailMoreOpen ? "open" : ""}" id="detailMoreBody">
+        ${expertBoxHtml}
+
+        <div class="tactical-box" style="border-color:rgba(250, 204, 21, 0.35); background:rgba(250, 204, 21, 0.07);">
+          <strong style="color:#eab308;">🕒 [${timeLabels[state.time]}] & [${waterTrendLabels[state.waterTrend]}] 공략 포인트</strong>
+          ${currentTimeTip}<br/>
+          <span style="color:var(--accent); font-size:0.81rem; display:inline-block; margin-top:4px;">${waterTrendAdvice}</span>
+        </div>
+
+        <div class="tactical-box">
+          <strong>💡 기본 액션 & 바이트 유도 원리</strong>
+          ${activeLure.desc}
+        </div>
       </div>
     `;
+
+    const btnDetailMore = document.getElementById("btnDetailMoreToggle");
+    const detailMoreBody = document.getElementById("detailMoreBody");
+    if (btnDetailMore && detailMoreBody) {
+      btnDetailMore.onclick = () => {
+        state.mobileDetailMoreOpen = !state.mobileDetailMoreOpen;
+        detailMoreBody.classList.toggle("open", state.mobileDetailMoreOpen);
+        btnDetailMore.innerHTML = state.mobileDetailMoreOpen
+          ? "🔼 고수 노하우 근거 · 시간대 전술 · 출처 접기"
+          : "📖 고수 노하우 근거 · 시간대 전술 · 출처 더보기 ▾";
+      };
+    }
 
     const logLureSelect = document.getElementById("logLureInput");
     if (logLureSelect && !logLureSelect.dataset.userEdited) {
@@ -782,8 +864,8 @@ function initStaticGuideTables() {
     sinkerBody.innerHTML = SINKER_CHART.map(row => `
       <tr>
         <td><strong>${row.oz}</strong></td>
-        <td style="color:#38bdf8; font-weight:700;">${row.gram}</td>
-        <td style="color:#cbd5e1;">${row.use}</td>
+        <td style="color:var(--accent); font-weight:700;">${row.gram}</td>
+        <td style="color:var(--text-sub);">${row.use}</td>
       </tr>
     `).join("");
   }
@@ -808,7 +890,7 @@ function renderGuideTabDynamic() {
 
   const info = COLOR_PALETTE_GUIDE[state.clarity] || COLOR_PALETTE_GUIDE.stained;
   colorBox.innerHTML = `
-    <div style="margin-bottom:8px; font-size:0.86rem; color:#38bdf8; font-weight:700;">
+    <div style="margin-bottom:8px; font-size:0.86rem; color:var(--accent); font-weight:700;">
       현재 선택된 물색: ${info.label}
     </div>
     <p style="font-size:0.82rem; color:var(--text-muted);">${info.summary}</p>
@@ -817,7 +899,7 @@ function renderGuideTabDynamic() {
         <div class="swatch-item">
           <span class="swatch-circle" style="background:${s.hex};"></span>
           <div>
-            <div style="font-size:0.84rem; font-weight:700; color:#f8fafc;">${s.name}</div>
+            <div style="font-size:0.84rem; font-weight:700; color:var(--text-main);">${s.name}</div>
             <div style="font-size:0.72rem; color:var(--text-muted);">${s.sub}</div>
           </div>
         </div>
@@ -859,14 +941,14 @@ function renderCatchLogs() {
     <div class="log-entry">
       <div>
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">
-          <span style="font-weight:800; color:#4ade80; font-size:0.95rem;">🐟 ${item.sizeCm}cm 히트!</span>
-          <span style="font-weight:700; color:#f8fafc;">${item.lure}</span>
+          <span style="font-weight:800; color:#22c55e; font-size:0.95rem;">🐟 ${item.sizeCm}cm 히트!</span>
+          <span style="font-weight:700; color:var(--text-main);">${item.lure}</span>
           <span class="mini-tag tag-spot">${item.spot}</span>
         </div>
         <div style="font-size:0.78rem; color:var(--text-muted);">
           📅 ${item.date} | 🌡️ 기온 ${item.airTemp}°C (수온 ${item.waterTemp}°C) | 🌊 ${item.waterLevelText || "평수위"} | 🧭 ${item.pressure}hPa
         </div>
-        ${item.memo ? `<div style="font-size:0.82rem; color:#e2e8f0; margin-top:4px;">💬 ${item.memo}</div>` : ""}
+        ${item.memo ? `<div style="font-size:0.82rem; color:var(--text-sub); margin-top:4px;">💬 ${item.memo}</div>` : ""}
       </div>
       <button class="btn-delete-log" onclick="deleteCatchLog('${item.id}')">삭제</button>
     </div>
@@ -1324,6 +1406,42 @@ function closeSpotDropdown() {
 }
 
 function initEvents() {
+  applyTheme(state.theme);
+
+  const btnThemeToggle = document.getElementById("btnThemeToggle");
+  if (btnThemeToggle) {
+    btnThemeToggle.addEventListener("click", () => {
+      state.theme = state.theme === "light" ? "dark" : "light";
+      applyTheme(state.theme);
+    });
+  }
+
+  // 모바일 상단 기상 배너 보조 지표(기온·바람·일출일몰) 더보기 토글
+  const btnWeatherMore = document.getElementById("btnMobileWeatherMore");
+  const weatherMetricsGrid = document.getElementById("weatherMetricsGrid");
+  if (btnWeatherMore && weatherMetricsGrid) {
+    btnWeatherMore.addEventListener("click", () => {
+      state.mobileWeatherMoreOpen = !state.mobileWeatherMoreOpen;
+      weatherMetricsGrid.classList.toggle("show-secondary-metrics", state.mobileWeatherMoreOpen);
+      btnWeatherMore.innerHTML = state.mobileWeatherMoreOpen
+        ? `🔼 기온 · 바람 · 일출/일몰 접기`
+        : `🌡️ 기온 · 바람 · 일출/일몰 더보기 ▾`;
+    });
+  }
+
+  // 모바일 수위 탭 저수지 토목 제원 상세 토글
+  const btnToggleRawrisSpec = document.getElementById("btnToggleRawrisSpec");
+  const rawrisSpecCard = document.getElementById("rawrisSpecCard");
+  if (btnToggleRawrisSpec && rawrisSpecCard) {
+    btnToggleRawrisSpec.addEventListener("click", () => {
+      state.mobileRawrisSpecOpen = !state.mobileRawrisSpecOpen;
+      rawrisSpecCard.classList.toggle("collapsed-mobile", !state.mobileRawrisSpecOpen);
+      btnToggleRawrisSpec.innerHTML = state.mobileRawrisSpecOpen
+        ? `📋 저수지 제원 상세 접기 ▴`
+        : `📋 저수지 제원 상세 보기 (제정고·저수량·소재지) ▾`;
+    });
+  }
+
   renderCustomSpotPicker();
 
   const triggerBtn = document.getElementById("spotTriggerBtn");
@@ -1489,6 +1607,10 @@ function initEvents() {
     document.querySelectorAll(".tab-btn, .m-nav-item").forEach(b => {
       b.classList.toggle("active", b.getAttribute("data-target") === tabId);
     });
+    const bannerEl = document.querySelector(".live-weather-banner");
+    if (bannerEl) {
+      bannerEl.classList.toggle("compact-tab-mode", tabId !== "tab-simulator");
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 

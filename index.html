@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <meta name="theme-color" content="#070c17" />
+  <meta name="theme-color" content="#121316" id="metaThemeColor" />
   <meta name="description" content="실시간 위치·날씨·기압·수온·농어촌공사 수위 연동 사계절 배스 루어 택티컬 시뮬레이터 & 레이더" />
   <meta name="application-name" content="배스 전략" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -14,7 +14,17 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=20261031" />
   <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=20261031" />
   <link rel="manifest" href="manifest.json?v=20261031" />
-  <link rel="stylesheet" href="css/style.css?v=20261030_1" />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("bass_theme_mode") || "dark";
+        document.documentElement.setAttribute("data-theme", t);
+        var m = document.getElementById("metaThemeColor");
+        if (m) m.setAttribute("content", t === "light" ? "#f3f4f6" : "#121316");
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css?v=20261101_1" />
 </head>
 <body>
   <div class="container">
@@ -24,10 +34,16 @@
         <h1>🎣 배스 전략</h1>
         <p class="header-sub-desc">실시간 날씨 · 기압 · 농어촌공사 수위(오름/배수) · 수온 · 물색 기반 19종 루어 완벽 매칭 & 수중 액션</p>
       </div>
-      <div class="badge-row">
-        <span class="cat-badge cat-hard">● 하드베이트 (7종)</span>
-        <span class="cat-badge cat-wire">● 와이어베이트 (3종)</span>
-        <span class="cat-badge cat-soft">● 소프트베이트 채비 (9종)</span>
+      <div class="header-right-actions">
+        <div class="badge-row">
+          <span class="cat-badge cat-hard">● 하드베이트 (7종)</span>
+          <span class="cat-badge cat-wire">● 와이어베이트 (3종)</span>
+          <span class="cat-badge cat-soft">● 소프트베이트 채비 (9종)</span>
+        </div>
+        <button type="button" class="theme-toggle-btn" id="btnThemeToggle" aria-label="라이트/다크 모드 전환">
+          <span class="theme-icon" id="themeToggleIcon">☀️</span>
+          <span class="theme-label" id="themeToggleText">라이트</span>
+        </button>
       </div>
     </header>
 
@@ -62,8 +78,8 @@
         </div>
       </div>
 
-      <div class="weather-metrics-grid">
-        <div class="metric-card">
+      <div class="weather-metrics-grid" id="weatherMetricsGrid">
+        <div class="metric-card metric-secondary">
           <span class="m-label">🌡️ 기온 / 날씨</span>
           <span class="m-val" id="mAirTemp">--°C</span>
           <span class="m-sub" id="mAirSub">실시간 조회 중</span>
@@ -78,7 +94,7 @@
           <span class="m-val" id="mWaterLevel">86.9% (2.05m)</span>
           <span class="m-sub" id="mWaterLevelSub" style="color:#22c55e;">아산호: 📈 오름수위 (+0.05m)</span>
         </div>
-        <div class="metric-card">
+        <div class="metric-card metric-secondary">
           <span class="m-label">💨 풍속 / 수면</span>
           <span class="m-val" id="mWind">-- m/s</span>
           <span class="m-sub" id="mWindSub">풍향 분석 중</span>
@@ -88,7 +104,7 @@
           <span class="m-val" id="mPressure">---- hPa</span>
           <span class="m-sub" id="mPressureSub">3시간 추이</span>
         </div>
-        <div class="metric-card">
+        <div class="metric-card metric-secondary">
           <span class="m-label">🌅 일출 / 일몰</span>
           <span class="m-val" id="mSunTime">--:-- / --:--</span>
           <span class="m-sub" id="mSunSub">음력 물때</span>
@@ -101,6 +117,10 @@
           </div>
         </div>
       </div>
+
+      <button type="button" class="btn-mobile-weather-more" id="btnMobileWeatherMore">
+        🌡️ 기온 · 바람 · 일출/일몰 더보기 ▾
+      </button>
 
       <div class="bite-tactic-strip" id="livePressureTactic">
         <span>📡 실시간 기압·수위 브리핑 수신 중...</span>
@@ -121,10 +141,10 @@
       <!-- 모바일 전용 필터 요약/접기 바 -->
       <div class="controls-header-mobile" id="mobileControlToggle">
         <div>
-          <strong style="font-size:0.86rem; color:#f8fafc;">🎛️ 필드 조건 설정: </strong>
+          <strong style="font-size:0.86rem; color:var(--text-main);">🎛️ 필드 조건 설정: </strong>
           <span class="summary-chips" id="mobileControlSummary">16°C · 새벽/해질녘 · 오름수위 · 석축</span>
         </div>
-        <span id="mobileToggleIcon" style="font-size:0.78rem; color:#94a3b8; font-weight:700;">▼ 상세 조절</span>
+        <span id="mobileToggleIcon" style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">▼ 상세 조절</span>
       </div>
 
       <!-- 8대 환경 컨트롤 그리드 -->
@@ -348,7 +368,36 @@
 
             <!-- 우측 컬럼: 제원 리스트 + 전일/금일 비교 테이블 -->
             <div class="rawris-right-col">
-              <div class="rawris-spec-card">
+              <div class="rawris-comp-card">
+                <table class="rawris-comp-table">
+                  <tr>
+                    <td id="rwYdayDate">2026-10-18</td>
+                    <td class="comp-mid">기준일시</td>
+                    <td id="rwNowDate" style="color:var(--accent);">2026-10-19 22:40</td>
+                  </tr>
+                  <tr>
+                    <td id="rwYdayVow">71,065.7</td>
+                    <td class="comp-mid">저수량 <small>(천m³)</small></td>
+                    <td id="rwNowVow">72,058</td>
+                  </tr>
+                  <tr>
+                    <td id="rwYdayWlvl">2.00</td>
+                    <td class="comp-mid">저수위 <small>(EL.m)</small></td>
+                    <td id="rwNowWlvl" style="color:var(--green);">2.05</td>
+                  </tr>
+                  <tr>
+                    <td id="rwYdayDischarge">0</td>
+                    <td class="comp-mid">방류량 <small>(천m³)</small></td>
+                    <td id="rwNowDischarge">0</td>
+                  </tr>
+                </table>
+              </div>
+
+              <button type="button" class="btn-mobile-spec-toggle" id="btnToggleRawrisSpec">
+                📋 저수지 제원 상세 보기 (제정고·저수량·소재지) ▾
+              </button>
+
+              <div class="rawris-spec-card collapsed-mobile" id="rawrisSpecCard">
                 <div class="rawris-spec-row">
                   <span class="s-label">제정고</span>
                   <span class="s-val"><span id="rwAltitude">8.50</span><small>EL.m</small></span>
@@ -385,31 +434,6 @@
                   <span class="s-label">관할지사</span>
                   <span class="s-val" id="rwOffice">경기 평택</span>
                 </div>
-              </div>
-
-              <div class="rawris-comp-card">
-                <table class="rawris-comp-table">
-                  <tr>
-                    <td id="rwYdayDate">2026-10-18</td>
-                    <td class="comp-mid">기준일시</td>
-                    <td id="rwNowDate" style="color:#38bdf8;">2026-10-19 22:40</td>
-                  </tr>
-                  <tr>
-                    <td id="rwYdayVow">71,065.7</td>
-                    <td class="comp-mid">저수량 <small>(천m³)</small></td>
-                    <td id="rwNowVow">72,058</td>
-                  </tr>
-                  <tr>
-                    <td id="rwYdayWlvl">2.00</td>
-                    <td class="comp-mid">저수위 <small>(EL.m)</small></td>
-                    <td id="rwNowWlvl" style="color:#4ade80;">2.05</td>
-                  </tr>
-                  <tr>
-                    <td id="rwYdayDischarge">0</td>
-                    <td class="comp-mid">방류량 <small>(천m³)</small></td>
-                    <td id="rwNowDischarge">0</td>
-                  </tr>
-                </table>
               </div>
             </div>
           </div>
@@ -577,9 +601,9 @@
   <script src="js/lures-data.js?v=20261030_1"></script>
   <script src="js/weather-api.js?v=20261030_1"></script>
   <script src="js/tactic-engine.js?v=20261030_1"></script>
-  <script src="js/expert-rules-data.js?v=20261030_1"></script>
-  <script src="js/expert-engine.js?v=20261030_1"></script>
-  <script src="js/app.js?v=20261030_1"></script>
+  <script src="js/expert-rules-data.js?v=20261101_1"></script>
+  <script src="js/expert-engine.js?v=20261101_1"></script>
+  <script src="js/app.js?v=20261101_1"></script>
 
   <script>
     // 서비스 워커 등록 (PWA 오프라인 캐시 및 앱 설치 지원)

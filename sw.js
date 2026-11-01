@@ -1,5 +1,5 @@
 // 배스 전략 (Bass Tactics) Service Worker
-const CACHE_NAME = 'basstactics-v1.2.0';
+const CACHE_NAME = 'basstactics-v1.3.0';
 
 const STATIC_ASSETS = [
   './',
