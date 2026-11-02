@@ -12,6 +12,7 @@ const TARGET_EQUIPS = [
   { spotId: "sapgyo", equipNo: 4139, label: "충남 당진/아산 삽교호" },
   { spotId: "daeho", equipNo: 4318, label: "충남 당진 대호만" },
   { spotId: "yedang", equipNo: 1081, label: "충남 예산 예당호" },
+  { spotId: "cheonsuman", equipNo: 1042, label: "충남 서산 천수만" },
   { spotId: "tapjeong", equipNo: 1046, label: "충남 논산 탑정호" },
   { spotId: "busa", equipNo: 3928, label: "충남 보령/서천 부사호" },
   { spotId: "jangseong", equipNo: 1311, label: "전남 장성호" },

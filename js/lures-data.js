@@ -9,6 +9,7 @@ const KOREA_SPOTS = [
   { id: "sapgyo", name: "충남 당진/아산 삽교호", lat: 36.8876, lon: 126.8286, equipNo: 4139, region: "충청남도 당진시 신평면 운정리", spotType: "reclaimed_lake", baseClarity: "stained", defaultStruct: "shallow_weed" },
   { id: "daeho", name: "충남 당진 대호만", lat: 36.9990, lon: 126.4553, equipNo: 4318, region: "충청남도 당진시 정미면", spotType: "reclaimed_lake", baseClarity: "stained", defaultStruct: "shallow_weed" },
   { id: "yedang", name: "충남 예산 예당호", lat: 36.6290, lon: 126.8020, equipNo: 1081, region: "충청남도 예산군 응봉면", spotType: "flat_res", baseClarity: "stained", defaultStruct: "heavy_cover" },
+  { id: "cheonsuman", name: "충남 서산 천수만 (간월·부남호)", lat: 36.6435, lon: 126.4465, equipNo: 1042, region: "충청남도 서산시 부석면 / 태안군 남면", spotType: "reclaimed_lake", baseClarity: "stained", defaultStruct: "shallow_weed" },
   { id: "daecheong", name: "대전/충북 대청호", lat: 36.4775, lon: 127.4808, equipNo: null, region: "대전광역시 동구 / 청주시", spotType: "canyon_dam", baseClarity: "clear", defaultStruct: "rock_slope" },
   { id: "tapjeong", name: "충남 논산 탑정호", lat: 36.1760, lon: 127.1810, equipNo: 1046, region: "충청남도 논산시 부적면", spotType: "flat_res", baseClarity: "stained", defaultStruct: "rock_slope" },
   { id: "busa", name: "충남 보령/서천 부사호", lat: 36.1907, lon: 126.5582, equipNo: 3928, region: "충청남도 보령시 웅천읍", spotType: "reclaimed_lake", baseClarity: "stained", defaultStruct: "shallow_weed" },

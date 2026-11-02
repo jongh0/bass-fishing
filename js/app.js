@@ -13,6 +13,9 @@ function getInitialTheme() {
   return "dark"; // 기본: 차콜 다크 모드
 }
 
+const SUN_SVG_ICON = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>`;
+const MOON_SVG_ICON = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+
 function applyTheme(theme) {
   const nextTheme = theme === "light" ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", nextTheme);
@@ -22,10 +25,7 @@ function applyTheme(theme) {
   }
   const btn = document.getElementById("btnThemeToggle");
   if (btn) {
-    // 현재 모드 표시 및 전환 안내 (다크일 때 ☀️ 라이트 전환 버튼, 라이트일 때 🌙 차콜다크 전환 버튼)
-    btn.innerHTML = nextTheme === "light"
-      ? `<span class="theme-icon" id="themeIcon">🌙</span><span class="theme-label" id="themeLabel">다크</span>`
-      : `<span class="theme-icon" id="themeIcon">☀️</span><span class="theme-label" id="themeLabel">라이트</span>`;
+    btn.innerHTML = nextTheme === "light" ? MOON_SVG_ICON : SUN_SVG_ICON;
     btn.setAttribute("title", nextTheme === "light" ? "차콜 다크 모드로 전환" : "라이트 모드로 전환");
   }
   try {
@@ -55,9 +55,10 @@ function saveSelectedSpotId(spotId) {
   }
 }
 
+const initialNow = new Date();
 let state = {
-  season: "autumn",
-  time: "dawn_dusk",
+  season: typeof WeatherEngine !== "undefined" ? WeatherEngine.getSeasonFromDate(initialNow) : "autumn",
+  time: typeof WeatherEngine !== "undefined" ? WeatherEngine.determineTimeOfDay(initialNow) : "dawn_dusk",
   temp: 16,
   waterTrend: "rising", // rising (오름수위) | stable (평수위) | falling (내림/배수기)
   wind: "moderate",
@@ -68,7 +69,6 @@ let state = {
   selectedSpotId: getInitialSpotId(), // 최근 선택 기억 (기억된 게 없으면 'gps')
   activeTab: "tab-simulator",
   mobileControlsOpen: true,
-  mobileWeatherMoreOpen: false,
   mobileDetailMoreOpen: false,
   mobileAllLuresOpen: false,
   mobileRawrisSpecOpen: false,
@@ -679,7 +679,10 @@ function renderRawrisWidget(wl, fallbackSpotName = "선택한 필드", distanceN
     return;
   }
 
-  document.getElementById("rwEquipTitle").textContent = wl.equipName;
+  const displayEquipTitle = (state.selectedSpotId === "cheonsuman" && wl.equipName === "신송")
+    ? "천수만 간월·부남호 (상류 신송수계)"
+    : wl.equipName;
+  document.getElementById("rwEquipTitle").textContent = displayEquipTitle;
   document.getElementById("rwBranchSub").textContent = `${wl.headName} · ${wl.branchName} | 실시간 수위 계측정보 (${wl.nowDate} 기준)${distanceNote}`;
 
   document.getElementById("rwNorRate").textContent = wl.norRate ? wl.norRate.toFixed(1) : "-";
@@ -1500,19 +1503,6 @@ function initEvents() {
     btnThemeToggle.addEventListener("click", () => {
       state.theme = state.theme === "light" ? "dark" : "light";
       applyTheme(state.theme);
-    });
-  }
-
-  // 모바일 상단 기상 배너 보조 지표(기온·바람·일출일몰) 더보기 토글
-  const btnWeatherMore = document.getElementById("btnMobileWeatherMore");
-  const weatherMetricsGrid = document.getElementById("weatherMetricsGrid");
-  if (btnWeatherMore && weatherMetricsGrid) {
-    btnWeatherMore.addEventListener("click", () => {
-      state.mobileWeatherMoreOpen = !state.mobileWeatherMoreOpen;
-      weatherMetricsGrid.classList.toggle("show-secondary-metrics", state.mobileWeatherMoreOpen);
-      btnWeatherMore.innerHTML = state.mobileWeatherMoreOpen
-        ? `🔼 기온 · 바람 · 일출/일몰 접기`
-        : `🌡️ 기온 · 바람 · 일출/일몰 더보기 ▾`;
     });
   }
 

@@ -124,21 +124,22 @@ header.app-header {
 .theme-toggle-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
   background: var(--bg-elevated);
   color: var(--text-main);
   border: 1px solid var(--border-light);
-  border-radius: 999px;
-  padding: 6px 13px;
-  font-size: 0.78rem;
-  font-weight: 800;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.16s ease;
-  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .theme-toggle-btn:hover {
   border-color: var(--accent);
+  color: var(--accent);
   background: var(--bg-card-hover);
 }
 
@@ -531,30 +532,6 @@ header.app-header {
 .metric-card .m-sub {
   font-size: 0.72rem;
   color: var(--accent);
-}
-
-/* 모바일 보조 기상 지표 토글 버튼 (PC에서는 숨김) */
-.btn-mobile-weather-more {
-  display: none;
-  width: 100%;
-  background: var(--bg-panel);
-  border: 1px dashed var(--border-light);
-  color: var(--text-sub);
-  border-radius: 9px;
-  padding: 6px 10px;
-  font-size: 0.74rem;
-  font-weight: 700;
-  cursor: pointer;
-  margin-bottom: 8px;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  transition: all 0.16s ease;
-}
-
-.btn-mobile-weather-more:hover {
-  background: var(--bg-card-hover);
-  color: var(--text-main);
 }
 
 .bite-tactic-strip {
@@ -1860,8 +1837,8 @@ canvas#waterCanvas {
   }
 
   .theme-toggle-btn {
-    padding: 5px 10px;
-    font-size: 0.74rem;
+    width: 32px;
+    height: 32px;
     border-radius: 8px;
   }
 
@@ -1874,7 +1851,6 @@ canvas#waterCanvas {
 
   /* 비시뮬레이터 탭(수위/가이드/기압)에서는 포인트 선택 바만 남기고 기상 그리드/브리핑 자동 접기 */
   .live-weather-banner.compact-tab-mode .weather-metrics-grid,
-  .live-weather-banner.compact-tab-mode .btn-mobile-weather-more,
   .live-weather-banner.compact-tab-mode .bite-tactic-strip {
     display: none !important;
   }
@@ -1973,19 +1949,11 @@ canvas#waterCanvas {
     min-width: 0;
   }
 
-  /* 3. 기상 지표: 핵심 3지표(수온·저수율·기압) 3열 1행 + 활성도 1줄 바, 보조 지표는 기본 접기 */
+  /* 3. 기상 지표: 6개 항목 모두 3열 × 2행 그리드 + 활성도 1줄 바로 표시 */
   .weather-metrics-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 5px;
-    margin-bottom: 6px;
-  }
-
-  .weather-metrics-grid:not(.show-secondary-metrics) .metric-secondary {
-    display: none;
-  }
-
-  .btn-mobile-weather-more {
-    display: flex;
+    margin-bottom: 7px;
   }
 
   .metric-card {

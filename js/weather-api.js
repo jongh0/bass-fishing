@@ -84,22 +84,40 @@ const WeatherEngine = {
   },
 
   // 현재 시각과 일출/일몰 시각을 비교하여 출조 시간대(dawn_dusk / midday / night) 판별
-  determineTimeOfDay(nowDate, sunriseStr, sunsetStr) {
+  // - 새벽 피딩(dawn_dusk): 일출 1시간 전 ~ 일출 후 2시간
+  // - 한낮(midday): 일출 후 2시간 ~ 일몰 1시간 30분 전
+  // - 해질녘 피딩(dawn_dusk): 일몰 1시간 30분 전 ~ 일몰 후 1시간
+  // - 야간(night): 일몰 후 1시간 ~ 익일 일출 1시간 전
+  determineTimeOfDay(nowDate = new Date(), sunriseStr = null, sunsetStr = null) {
     const hour = nowDate.getHours() + nowDate.getMinutes() / 60;
-    let srHour = 6.2;
-    let ssHour = 18.2;
+    const m = nowDate.getMonth() + 1;
 
-    if (sunriseStr && sunsetStr) {
-      const sr = new Date(sunriseStr);
-      const ss = new Date(sunsetStr);
-      srHour = sr.getHours() + sr.getMinutes() / 60;
-      ssHour = ss.getHours() + ss.getMinutes() / 60;
-    }
+    // API 응답 전에도 계절별 한국 일출/일몰 평균 시각을 기본값으로 사용
+    const monthlySun = {
+      1: [7.7, 17.6], 2: [7.3, 18.2], 3: [6.7, 18.7], 4: [6.0, 19.1],
+      5: [5.4, 19.6], 6: [5.2, 19.9], 7: [5.4, 19.8], 8: [5.8, 19.3],
+      9: [6.2, 18.6], 10: [6.6, 17.9], 11: [7.1, 17.4], 12: [7.6, 17.3]
+    };
+    let [srHour, ssHour] = monthlySun[m] || [6.3, 18.2];
 
-    if ((hour >= srHour - 1.0 && hour <= srHour + 2.5) || (hour >= ssHour - 2.0 && hour <= ssHour + 1.0)) {
+    const parseIsoHour = (str) => {
+      if (!str || typeof str !== "string") return null;
+      const timePart = str.includes("T") ? str.split("T")[1] : str;
+      const match = timePart.match(/^(\d{1,2}):(\d{2})/);
+      if (match) return parseInt(match[1], 10) + parseInt(match[2], 10) / 60;
+      const d = new Date(str);
+      return isNaN(d.getTime()) ? null : d.getHours() + d.getMinutes() / 60;
+    };
+
+    const parsedSr = parseIsoHour(sunriseStr);
+    const parsedSs = parseIsoHour(sunsetStr);
+    if (parsedSr !== null) srHour = parsedSr;
+    if (parsedSs !== null) ssHour = parsedSs;
+
+    if ((hour >= srHour - 1.0 && hour <= srHour + 2.0) || (hour >= ssHour - 1.5 && hour <= ssHour + 1.0)) {
       return "dawn_dusk";
     }
-    if (hour > srHour + 2.5 && hour < ssHour - 2.0) {
+    if (hour > srHour + 2.0 && hour < ssHour - 1.5) {
       return "midday";
     }
     return "night";

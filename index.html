@@ -24,7 +24,7 @@
       } catch (e) {}
     })();
   </script>
-  <link rel="stylesheet" href="css/style.css?v=20261101_1" />
+  <link rel="stylesheet" href="css/style.css?v=20261102_1" />
 </head>
 <body>
   <div class="container">
@@ -40,9 +40,11 @@
           <span class="cat-badge cat-wire">● 와이어베이트 (3종)</span>
           <span class="cat-badge cat-soft">● 소프트베이트 채비 (9종)</span>
         </div>
-        <button type="button" class="theme-toggle-btn" id="btnThemeToggle" aria-label="라이트/다크 모드 전환">
-          <span class="theme-icon" id="themeToggleIcon">☀️</span>
-          <span class="theme-label" id="themeToggleText">라이트</span>
+        <button type="button" class="theme-toggle-btn" id="btnThemeToggle" aria-label="라이트/다크 모드 전환" title="라이트 모드로 전환">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+          </svg>
         </button>
       </div>
     </header>
@@ -79,7 +81,7 @@
       </div>
 
       <div class="weather-metrics-grid" id="weatherMetricsGrid">
-        <div class="metric-card metric-secondary">
+        <div class="metric-card">
           <span class="m-label">🌡️ 기온 / 날씨</span>
           <span class="m-val" id="mAirTemp">--°C</span>
           <span class="m-sub" id="mAirSub">실시간 조회 중</span>
@@ -94,7 +96,7 @@
           <span class="m-val" id="mWaterLevel">86.9% (2.05m)</span>
           <span class="m-sub" id="mWaterLevelSub" style="color:#22c55e;">아산호: 📈 오름수위 (+0.05m)</span>
         </div>
-        <div class="metric-card metric-secondary">
+        <div class="metric-card">
           <span class="m-label">💨 풍속 / 수면</span>
           <span class="m-val" id="mWind">-- m/s</span>
           <span class="m-sub" id="mWindSub">풍향 분석 중</span>
@@ -104,7 +106,7 @@
           <span class="m-val" id="mPressure">---- hPa</span>
           <span class="m-sub" id="mPressureSub">3시간 추이</span>
         </div>
-        <div class="metric-card metric-secondary">
+        <div class="metric-card">
           <span class="m-label">🌅 일출 / 일몰</span>
           <span class="m-val" id="mSunTime">--:-- / --:--</span>
           <span class="m-sub" id="mSunSub">음력 물때</span>
@@ -117,10 +119,6 @@
           </div>
         </div>
       </div>
-
-      <button type="button" class="btn-mobile-weather-more" id="btnMobileWeatherMore">
-        🌡️ 기온 · 바람 · 일출/일몰 더보기 ▾
-      </button>
 
       <div class="bite-tactic-strip" id="livePressureTactic">
         <span>📡 실시간 기압·수위 브리핑 수신 중...</span>
@@ -598,12 +596,12 @@
 
   <script src="js/water-levels-data.js?v=20261021_8"></script>
   <script src="js/reservoirs-data.js?v=20261022_1"></script>
-  <script src="js/lures-data.js?v=20261101_2"></script>
-  <script src="js/weather-api.js?v=20261030_1"></script>
+  <script src="js/lures-data.js?v=20261102_1"></script>
+  <script src="js/weather-api.js?v=20261102_1"></script>
   <script src="js/tactic-engine.js?v=20261030_1"></script>
   <script src="js/expert-rules-data.js?v=20261101_1"></script>
   <script src="js/expert-engine.js?v=20261101_1"></script>
-  <script src="js/app.js?v=20261101_2"></script>
+  <script src="js/app.js?v=20261102_1"></script>
 
   <script>
     // 서비스 워커 등록 (PWA 오프라인 캐시 및 앱 설치 지원)
